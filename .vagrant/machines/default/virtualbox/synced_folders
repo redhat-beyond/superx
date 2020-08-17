@@ -1,1 +1,0 @@
-{"virtualbox":{"/var/www/html":{"mount_options":["dmode=777","fmode=666","uid=1000","gid=1000"],"guestpath":"/var/www/html","hostpath":"C:/Users/tzach/Desktop/vgdemo/superx","disabled":false,"__vagrantfile":true}}}
