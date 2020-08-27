@@ -7,6 +7,6 @@ sudo pip3 install flask
 
 export FLASK_APP=/vagrant/app.py
 
-export FLASK_ENV=development    
-flask run -h 0.0.0.0 -p 5000
+export FLASK_ENV=development
 
+flask run -h 0.0.0.0 -p 5000
