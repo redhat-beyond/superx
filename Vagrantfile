@@ -7,5 +7,5 @@ Vagrant.configure("2") do |config|
     config.vm.provider "virtualbox" do |vb|
       vb.name = "super"
     end
-config.vm.provision "shell", path: "bootstrap.sh", privileged: false
+config.vm.provision "shell", path: "bootstrap.sh"
 end
