@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 sudo apt-get update
-sudo apt-get install python3
-sudo apt-get install python3-pip -y
+sudo apt-get install python3 python3-pip -y
 sudo pip3 install flask
 
 export FLASK_APP=/vagrant/app.py
