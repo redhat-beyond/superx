@@ -39,14 +39,14 @@ ________________________________
 
 1. Contains system's data- products prices by firm, branch & date
 2. Saves users' copmared shopping carts' prices
-*MongoDB based
+*MySQL based
 
 #### MVP:
 
 Our first MVP is focused on technological POC:
 1. Download xml files from supermarkets' servers script
 2. Parser to read those xml files and allocate them to the right place on the DB
-3. MongoDB based DB to contain all the relevant data
+3. MySQL based DB to contain all the relevant data
 4. Basic UI to represent the data to the user, Django/Flusk based
 *For the MVP stage, we will focus on one branch of Shufersal firm
 
