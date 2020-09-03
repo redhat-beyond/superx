@@ -4,7 +4,7 @@ apt-get update
 apt-get install python3 python3-pip -y
 pip3 install flask
 
-export FLASK_APP=/vagrant/app.py
+export FLASK_APP=/vagrant/superx/app.py
 
 export FLASK_ENV=development
 
