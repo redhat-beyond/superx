@@ -21,6 +21,12 @@
         color: black;
 
       }
+      #searchbutton {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 40%;
+      }
       .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -39,10 +45,12 @@
 
   <body>
     <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
-  <a class="navbar-brand" href="index.html">SuperX</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+
+    <a class="navbar-brand" href="index.html"><strong>SuperX</strong></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
 
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
@@ -58,31 +66,20 @@
       <li class="nav-item active">
         <a class="nav-link" href="#">עזרה</a>
       </li>
-
-      <!-- <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-        <div class="dropdown-menu" aria-labelledby="dropdown01">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-    </ul> -->
-    <!-- <form class="form-inline my-2 my-lg-0">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form> -->
   </div>
 </nav>
 
 <main role="main">
-
   <!-- Main jumbotron for a primary marketing message or call to action -->
   <div class="jumbotron">
     <div class="container">
       <h1 class="display-3 text-center"><strong>SuperX</strong></h1>
-      <p >כאן יוכנס טקסט בהמשך</p>
-      <!-- <p><a class="btn btn-primary btn-lg" href="#" role="button">לבדיקת מחירים לחץ כאן!</a></p> -->
-      <div class="dropdown">
+      <p>השווה מחירים בעזרת כפתור החיפוש</p>
+      <form id="searchbutton" class="form-inline mt-2 mt-md-0">
+          <input class="form-control mr-sm-2 text-center" type="text" placeholder="הקלד מוצר לחיפוש" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0 text-center" type="submit">חפש</button>
+      </form>
+      <!-- <div class="dropdown">
         <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Dropdown link
         </a>
@@ -92,14 +89,14 @@
           <a class="dropdown-item" href="#">Another action</a>
           <a class="dropdown-item" href="#">Something else here</a>
         </div>
-      </div>
+      </div> -->
     </div>
     </div>
 
 
   <div class="container">
     <!-- Example row of columns -->
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-md-4">
         <h2>Test</h2>
         <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
@@ -115,8 +112,7 @@
         <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
         <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
       </div>
-    </div>
-    <hr>
+    </div> -->
   </div> <!-- /container -->
 </main>
 
@@ -128,5 +124,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
  <!-- Latest compiled and minified JavaScript -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-<script>$('.dropdown-toggle').dropdown();</script>
+<!-- <script>$('.dropdown-toggle').dropdown();</script> -->
 </html>
