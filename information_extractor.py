@@ -18,7 +18,7 @@ url_list = ['http://publishprice.mega.co.il/%s' % datetime.today().strftime('%Y%
 current_url_index = 0
 
 # connects to relevant sql database
-conn = mysql.connector.connect(user='root', password='zaq1xsw2', host='localhost', database='testdb')
+conn = mysql.connector.connect(user='root', password='', host='localhost', database='testdb')
 # cursor for db
 cursor = conn.cursor()
 
@@ -63,7 +63,7 @@ def mega_and_shufersal_info_parser(zip_links):
         # gets relevant child
         items = tree.getchildren()[-1]
         extract_information(items)
-        break  # only use 1 link
+        break  # only use 1 link from each url
 
 
 def extract_information(items):
