@@ -10,19 +10,19 @@ ________________________________
 
 ## Initial System Spesification:
 
-**SuperX purpose:** prices comparison between supermarkets in Israel
+**SuperX purpose:** price comparison between supermarkets in Israel
   
 #### User Story:
-1. User logs in to the website and chooses his relevant grocery
+1. User logs in to the website and chooses the relevant grocery store
 2. The user enters "Prices Comparison" button
 3. A get request is sent to the prices' table in the server
 4. The user gets a list of supermarkets' prices around him, cheapest first
 *There are details about the prices of each product
-5. The user gets an option to order the grocery list directly from the wanted supermarket by clicking "order" button
+5. The user gets an option to order the grocery list directly from the wanted supermarket by clicking on the "order" button
 
-*There's an option to show the supermarkets only in a certain radius from user's location
+*There's an option to show the supermarkets that are in a certain radius from user's location
 
-*Catching mistakes- there is more thinking to do about how to deal with products that are sold in one supermarket but not in another (maybe suggest similar products)
+*Catching mistakes- further thiking is required with regards to how to deal with products that are sold in one supermarket but not in another (maybe suggest similar products)
 
 #### Front-End:
 
