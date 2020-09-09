@@ -5,6 +5,11 @@
       footer {
       	text-align:center;
       }
+      #header {
+      	font-family: 'Syncopate', sans-serif;
+      	font-size: 500%;
+
+       }
       .jumbotron {
         background-image: url("https://thumbor.thedailymeal.com/9-S6usaC3fCTj3BFHLU7tAgeUaM=//https://www.thedailymeal.com/sites/default/files/2019/08/13/0_Hero_Image_Shutterstock.jpg");
         background-size: cover;

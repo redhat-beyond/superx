@@ -9,13 +9,15 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <!-- fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&display=swap" rel="stylesheet">
   </head>
 
 
   <body dir="rtl">
     <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
 
-    <a class="navbar-brand" href="#"><strong>SuperX</strong></a>
+    <a class="navbar-brand" href="{{ url_for('index_route')}}"><strong>SuperX</strong></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -24,7 +26,7 @@
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">כניסה</a>
+        <a class="nav-link" href="{{ url_for('login')}}">כניסה</a>
       </li>
       <li class="nav-item active">
         <a class="nav-link" href="#">אזור אישי</a>
