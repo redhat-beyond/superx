@@ -1,4 +1,3 @@
-  <!-- styling -->
       body {
         padding-top: 3.5rem;
         direction: rtl;
@@ -12,12 +11,6 @@
         text-align: center;
         color: black;
 
-      }
-      #searchbutton {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width: 40%;
       }
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -38,4 +31,10 @@
         .bd-placeholder-img-lg {
         font-size: 3.5rem;
         }
+      }
+      #searchbutton {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 40%;
       }

@@ -15,7 +15,7 @@
   <body dir="rtl">
     <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
 
-    <a class="navbar-brand" href="index.html"><strong>SuperX</strong></a>
+    <a class="navbar-brand" href="#"><strong>SuperX</strong></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -46,25 +46,43 @@
       <p>השווה מחירים בעזרת תיבת החיפוש</p>
       <form id="searchbutton" class="form-inline mt-2 mt-md-0">
           <input id="myInput" onkeyup="myFunction()" class="form-control mr-sm-2 text-center" type="text" placeholder="הכנס שם מוצר" aria-label="Search">
+          <p></p>
+          <!-- this button is corrently disabled -->
+          <button id="comperbutton" type="button" class="btn btn-outline-success btn-lg" disabled>השווה מחירים</button>
       </form>
     </div>
     </div>
 
 
   <div class="container">
+  <div class="row mb-3">
+  <div class="col-6 themed-grid-col">
   <table id="myTable" class="table text-center" dir="rtl">
   <thead>
     <tr>
-      <th scope="col">קוד מוצר</th>
-      <th scope="col">שם המוצר</th>
-      <th scope="col">מחיר</th>
+      <th scope="col" colspan="2">שם המוצר</th>
     </tr>
   </thead>
   <tbody id="tbody">
 
   </tbody>
 </table>
-  </div> <!-- /container -->
+</div> <!-- col  -->
+
+<div class="col-6 themed-grid-col">
+<table id="myCart" class="table text-center" dir="rtl">
+<thead>
+  <tr>
+    <th scope="col" colspan="2">מוצרים בעגלה</th>
+  </tr>
+</thead>
+<tbody id="cartbody">
+
+</tbody>
+</table>
+</div><!-- row -->
+</div> <!-- col -->
+</div> <!-- /container -->
 </main>
 
 <footer class="container">
@@ -77,4 +95,5 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
  <!-- scripts and more -->
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
 </html>
