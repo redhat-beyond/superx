@@ -1,0 +1,41 @@
+  <!-- styling -->
+      body {
+        padding-top: 3.5rem;
+        direction: rtl;
+      }
+      footer {
+      	text-align:center;
+      }
+      .jumbotron {
+        background-image: url("https://thumbor.thedailymeal.com/9-S6usaC3fCTj3BFHLU7tAgeUaM=//https://www.thedailymeal.com/sites/default/files/2019/08/13/0_Hero_Image_Shutterstock.jpg");
+        background-size: cover;
+        text-align: center;
+        color: black;
+
+      }
+      #searchbutton {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 40%;
+      }
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      .table {
+        text-align: right;
+      }
+      #myTable tr:hover {
+        /* Add a grey background color to the table header and on hover */
+        background-color: #f1f1f1;
+       }
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+        }
+      }
