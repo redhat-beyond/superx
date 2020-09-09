@@ -8,3 +8,4 @@ def index_route():
 @app.route('/login')
 def login():
 	return home.login()
+	
