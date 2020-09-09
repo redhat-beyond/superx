@@ -1,0 +1,51 @@
+{#HOME HTML#}
+
+{% extends "base.html" %}
+{%block content%}
+<main role="main">
+  <!-- Main jumbotron for a primary marketing message or call to action -->
+  <div class="jumbotron">
+    <div class="container">
+      <h1 class="display-3 text-center"><strong>SuperX</strong></h1>
+      <p>השווה מחירים בעזרת תיבת החיפוש</p>
+      <form id="searchbutton" class="form-inline mt-2 mt-md-0">
+          <input id="myInput" onkeyup="myFunction()" class="form-control mr-sm-2 text-center" type="text" placeholder="הכנס שם מוצר" aria-label="Search">
+          <p></p>
+          <!-- this button is corrently disabled -->
+          <button id="comperbutton" type="button" class="btn btn-outline-success btn-lg" disabled>השווה מחירים</button>
+      </form>
+    </div>
+    </div>
+
+
+  <div class="container">
+  <div class="row mb-3">
+  <div class="col-6 themed-grid-col">
+  <table id="myTable" class="table text-center" dir="rtl">
+  <thead>
+    <tr>
+      <th scope="col" colspan="2">שם המוצר</th>
+    </tr>
+  </thead>
+  <tbody id="tbody">
+
+  </tbody>
+</table>
+</div> <!-- col  -->
+
+<div class="col-6 themed-grid-col">
+<table id="myCart" class="table text-center" dir="rtl">
+<thead>
+  <tr>
+    <th scope="col" colspan="2">מוצרים בעגלה</th>
+  </tr>
+</thead>
+<tbody id="cartbody">
+
+</tbody>
+</table>
+</div><!-- row -->
+</div> <!-- col -->
+</div> <!-- /container -->
+</main>
+{%endblock%}
