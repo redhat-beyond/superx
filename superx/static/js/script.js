@@ -102824,12 +102824,12 @@
 }
 
 
-const tableBody = $('.table tbody');
+const tableBody = $('#tbody');
 for (item of DATA.Root.Items.Item)
    tableBody.append($(`<tr>
-      <td>${item.ItemCode}</td>
       <td>${item.ItemName}</td>
-      <td>${item.ItemPrice} ש"ח</td>
+      <td>${item.Quantity} ${item.UnitOfMeasure}</td>
+      <td><button id="${item.ItemCode}" type="button" class="btn btn-outline-success">הוסף לעגלה</button><td>
     </tr>`))
 
 function myFunction() {
@@ -102841,7 +102841,7 @@ function myFunction() {
 
   // Loop through all table rows, and hide those who don't match the search query
   for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[1];
+    td = tr[i].getElementsByTagName("td")[0];
     if (td) {
       txtValue = td.textContent || td.innerText;
       if (txtValue.indexOf(input.value) > -1) {
