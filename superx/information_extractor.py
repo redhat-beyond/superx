@@ -41,7 +41,7 @@ url_list = ['http://publishprice.mega.co.il/%s' % datetime.today().strftime('%Y%
 # current supermarket name
 super_name = ''
 # connects to relevant sql database
-conn = mysql.connector.connect(user='root', password='zaq1xsw2', host='localhost', database='testdb')
+conn = mysql.connector.connect(user='root', password='', host='localhost', database='testdb')
 # cursor for db
 cursor = conn.cursor()
 
@@ -130,10 +130,3 @@ def extract_information(items):
             cursor.execute(price_table_shufersal, (code, price, price))
         conn.commit()
 
-
-t = time.time()
-get_zip_file_links()
-# get_shufersal_zip_file_links()
-t1 = time.time()
-
-print(t1-t)
