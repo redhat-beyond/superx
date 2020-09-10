@@ -32,12 +32,12 @@ def get_xml_file_links():
         page = requests.get(url)
         web_scrapper = BeautifulSoup(page.content, 'html.parser')
         links_list = web_scrapper.find_all('a')
-        zip_links = []
+        zip_links = set()
 
         for link in links_list:
             https = str(link.attrs['href'])
             if 'PriceFull' in https:
-                zip_links.append(https)
+                zip_links.add(https)
 
         if 'mega' or 'shufersal' in url:
             mega_and_shufersal_info_parser(zip_links)
@@ -57,13 +57,13 @@ def mega_and_shufersal_info_parser(zip_links):
             zip_link = url_list[0] + '/' + zip_link
 
         request = requests.get(zip_link)
-        xml_file = gzip.decompress(request.content)
+        content = request.content
+        xml_file = gzip.decompress(content).decode('utf-8')
         # parses the xml document into a tree
-        tree = ET.fromstring(str(xml_file, 'utf-8'))
+        tree = ET.fromstring(xml_file)
         # gets relevant child
         items = tree.getchildren()[-1]
         extract_information(items)
-        break  # only use 1 link from each url
 
 
 def extract_information(items):
