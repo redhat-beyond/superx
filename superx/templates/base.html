@@ -15,7 +15,7 @@
   <body dir="rtl">
     <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
 
-    <a class="navbar-brand" href="index.html"><strong>SuperX</strong></a>
+    <a class="navbar-brand" href="#"><strong>SuperX</strong></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -37,35 +37,13 @@
       </li>
   </div>
 </nav>
-
-<main role="main">
-  <!-- Main jumbotron for a primary marketing message or call to action -->
-  <div class="jumbotron">
-    <div class="container">
-      <h1 class="display-3 text-center"><strong>SuperX</strong></h1>
-      <p>השווה מחירים בעזרת תיבת החיפוש</p>
-      <form id="searchbutton" class="form-inline mt-2 mt-md-0">
-          <input id="myInput" onkeyup="myFunction()" class="form-control mr-sm-2 text-center" type="text" placeholder="הכנס שם מוצר" aria-label="Search">
-      </form>
-    </div>
-    </div>
+{%block content%}
 
 
-  <div class="container">
-  <table id="myTable" class="table text-center" dir="rtl">
-  <thead>
-    <tr>
-      <th scope="col">קוד מוצר</th>
-      <th scope="col">שם המוצר</th>
-      <th scope="col">מחיר</th>
-    </tr>
-  </thead>
-  <tbody id="tbody">
 
-  </tbody>
-</table>
-  </div> <!-- /container -->
-</main>
+
+
+{%endblock%}
 
 <footer class="container">
   <p>&copy; SuperX  2020</p>
@@ -77,4 +55,5 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
  <!-- scripts and more -->
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
 </html>
