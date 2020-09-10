@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="generator" content="Jekyll v4.1.1">
   <title>SuperX</title>
+  {%block style%}
+
+
+
+
+
+  {%endblock%}
   <!-- styling with css -->
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
   <!-- Bootstrap core CSS -->
@@ -17,7 +24,7 @@
   <body dir="rtl">
     <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
 
-    <a class="navbar-brand" href="{{ url_for('index_route')}}"><strong>SuperX</strong></a>
+    <a class="navbar-brand" href="{{ url_for('index')}}"><strong>SuperX</strong></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -26,17 +33,15 @@
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="{{ url_for('login')}}">כניסה</a>
+        <a class="nav-link" href="{{ url_for('login')}}">כניסה/הרשמה</a>
       </li>
       <li class="nav-item active">
         <a class="nav-link" href="#">אזור אישי</a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="#">הרשמה</a>
-      </li>
-      <li class="nav-item active">
         <a class="nav-link" href="#">עזרה</a>
       </li>
+    </ul>
   </div>
 </nav>
 {%block content%}
@@ -57,5 +62,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
  <!-- scripts and more -->
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{%block scripts%}
 
+{%endblock%}
 </html>

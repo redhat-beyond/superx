@@ -5,4 +5,3 @@ def home():
 
 def login():
 	return render_template('login.html')
-	
