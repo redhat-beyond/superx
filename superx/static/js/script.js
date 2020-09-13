@@ -102823,7 +102823,6 @@
   }
 }
 
-
 const tableBody = $('#tbody');
 for (item of DATA.Root.Items.Item)
    tableBody.append($(`<tr>
@@ -102852,3 +102851,5 @@ function myFunction() {
     }
   }
 }
+
+
