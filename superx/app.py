@@ -10,4 +10,4 @@ db.init_app(app)
 
 from routing import *
 
-app.run(debug=False)
+app.run(debug=True)
