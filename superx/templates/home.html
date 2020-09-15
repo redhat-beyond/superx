@@ -38,20 +38,18 @@
 <table id="myCart" class="table text-center" dir="rtl">
 <thead>
   <tr>
-    <th scope="col" colspan="2">תז</th>
+    <th scope="col" colspan="2">ת''ז</th>
     <th scope="col" colspan="2">שם מוצר</th>
-    <th scope="col" colspan="2">כמות</th>
     <th scope="col" colspan="2">במשקל</th>
   </tr>
 </thead>
 <tbody id="cartbody">
-    {% for product in products %}
+    {% for item in basket.items %}
 
     <tr>
-       <th> {{ product.id }} </th>
-       <th> {{ product.name }} </th>
-       <th> {{ product.quantity }} </th>
-       <th> {{ product.is_weighted }} </th>
+       <td> {{ item.product.name }} </td>
+       <td> {{ item.product.quantity }} </td>
+       <td> {{ item.product.unit_of_measure }} </td>
     </tr>
 
     {% endfor %}

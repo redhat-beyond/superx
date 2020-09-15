@@ -4,8 +4,8 @@ from models import *
 
 
 def home():
-    products = db.session.query(Product).all()
-    return render_template('home.html', products=products)
+    basket = db.session.query(Basket).get(1)
+    return render_template('home.html', basket=basket)
 
 
 def login():
