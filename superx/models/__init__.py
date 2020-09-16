@@ -23,6 +23,7 @@ class Branch(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(Text)
+    address = Column(Text)
     sub_chin_id = Column(Integer)
     chain_id = Column(db.ForeignKey('chain.id'))
 
