@@ -46,13 +46,13 @@ class BranchPrice(db.Model):
     price = Column(Integer)
     update_date = Column(Text)
 
+
 class Basket(db.Model):
     __tablename__ = 'basket'
 
     id = Column(Integer, primary_key=True)
     cheapest_branch_id = Column(db.ForeignKey('branch.id'))
     user_id = Column(db.ForeignKey('user.id'))
-    price = Column(Float)
 
     items = db.relationship('BasketProduct', primaryjoin='Basket.id == BasketProduct.basket_id')
 
