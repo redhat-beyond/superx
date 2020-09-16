@@ -44,7 +44,7 @@ class BranchPrice(db.Model):
     item_code = Column(db.ForeignKey('product.id'), primary_key=True)
     branch_id = Column(db.ForeignKey('branch.id'))
     price = Column(Integer)
-
+    update_date = Column(Text)
 
 class Basket(db.Model):
     __tablename__ = 'basket'
