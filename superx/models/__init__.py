@@ -41,7 +41,8 @@ class Product(db.Model):
 class BranchPrice(db.Model):
     __tablename__ = 'branch_price'
 
-    item_code = Column(db.ForeignKey('product.id'), primary_key=True)
+    branch_price_id = Column(Integer, primary_key=True, autoincrement=True)
+    item_code = Column(db.ForeignKey('product.id'))
     branch_id = Column(db.ForeignKey('branch.id'))
     price = Column(Integer)
     update_date = Column(Text)
