@@ -1,7 +1,13 @@
 from flask import render_template
- 
+
+from models import *
+
+
 def home():
-    return render_template('home.html')
+    basket = db.session.query(Basket).get(1)
+    return render_template('home.html', basket=basket)
+
 
 def login():
-	return render_template('login.html')
+    return render_template('login.html')
+
