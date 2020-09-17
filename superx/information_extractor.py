@@ -9,7 +9,6 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import gzip
 import xml.etree.ElementTree as ET
-import time
 
 # url list with category PriceFull
 url_list = ['http://publishprice.mega.co.il/%s' % datetime.today().strftime('%Y%m%d'),  # mega link with correct date
@@ -115,12 +114,12 @@ def extract_information(items):
         except AttributeError:
             item_id = 0
 
-        item_info_formula = """INSERT INTO item_info (itemCode,itemId,itemName, itemPrice) VALUES(%s,%s,%s,%s) ON DUPLICATE KEY UPDATE itemPrice = %s"""
+        item_info_formula = """INSERT INTO item_info (itemCode,itemId,itemName) VALUES(%s,%s,%s) ON DUPLICATE KEY UPDATE itemName = itemName """
         price_table_shufersal = """INSERT INTO price_table (itemCode, shufersal) VALUES(%s, %s)  ON DUPLICATE KEY UPDATE shufersal = %s """
-        price_table_mega = """INSERT INTO price_table (itemCode, mega) VALUES(%s, %s)  ON DUPLICATE KEY UPDATE mega = %s"""
+        price_table_mega = """INSERT INTO price_table (itemCode, mega) VALUES(%s, %s)  ON DUPLICATE KEY UPDATE mega = %s """
 
         # places the info into the the item_info table
-        cursor.execute(item_info_formula, (code, item_id, name, price, price))
+        cursor.execute(item_info_formula, (code, item_id, name))
         conn.commit()
 
         # places the info into the price_table, according to the supermarket
