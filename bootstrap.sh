@@ -2,7 +2,7 @@
 
 apt-get update
 apt-get install python3 python3-pip -y
-pip3 install flask
+pip3 install flask Flask-SQLAlchemy SQLAlchemy pymysql
 
 export FLASK_APP=/vagrant/superx/app.py
 
