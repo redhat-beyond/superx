@@ -1,6 +1,6 @@
 from sqlalchemy import Integer, Column, Text, Boolean, Float
 
-from app import db
+from superx.app import db
 
 
 class User(db.Model):
