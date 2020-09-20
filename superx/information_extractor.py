@@ -1,18 +1,25 @@
-
-'''
-    This is in charge of extracting the XML document
-    XML files are found @ https://www.consumers.org.il/item/transparency_price
-'''
-import mysql.connector
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import gzip
 import xml.etree.ElementTree as ET
+from superx.models.__init__ import Product, BranchPrice
 from superx.app import db
 
 
 class info_extractor:
+    """
+    This class executes the following task:
+        1. web scrapes the url's from the url list and retrieves the relevant gzip file links
+        2. extracts the xml file from the gzip file and parses it into an xml tree
+        3. the relevant information is then extracted from the parsed xml tree
+        4. the information is placed in the relevant table in the db.
+            - this script only updates the product information (db table name = products)
+            - and branch price information (db table name = branch_price)
+
+        Currently this class can only handle the supermarkets: shufersal, mega and victory
+        XML files are found @https://www.consumers.org.il/item/transparency_price
+    """
 
     def __init__(self):
         # url list with category PriceFull
@@ -39,19 +46,18 @@ class info_extractor:
                          'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=20',
                          'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=21',
                          'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=22',  # shufersal
+                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=23',
                          'http://matrixcatalog.co.il/NBCompetitionRegulations.aspx'      # victory
                          ]
         # current supermarket name
         self.super_name = ''
-        # connects to relevant sql database
-        self.conn = mysql.connector.connect(user='root', password='zaq1xsw2', host='localhost', database='testdb')
-        # cursor for db
-        self.cursor = self.conn.cursor()
+        db.create_all()
+        db.session.commit()
 
     def get_zip_file_links(self):
         """
-        web scrapes the urls in url_list and gets the links for the xml files
-        :return: a list of links to the zip files
+        This method web scrapes the urls in url_list and creates a set of the gzip file links.
+        The method then updates super_name and sends the set to parsing
         """
         for url in self.url_list:
             page = requests.get(url)
@@ -65,21 +71,15 @@ class info_extractor:
                     if 'PriceFull' in https:
                         zip_links.add(https)
 
-            if 'mega' in url:
-                self.super_name = 'mega'
-            elif 'shufersal' in url:
-                self.super_name = 'shufersal'
-            elif 'matrix' in url:
-                self.super_name = 'victory'
-
+            self.update_super_name(url)
             self.info_parser(zip_links)
 
     def info_parser(self, zip_links):
         """
-        parses info for supermarket
+        This method retrieves the xml file in the gzip file and parses it into an xml tree
+        The branch_id is retrieved from the xml file and then it is sent for retrieval of the item information
         :param zip_links: list of zip file links from the website
         """
-        i = 0
         for zip_link in zip_links:
             # corrects the urls
             if self.super_name == 'mega':
@@ -94,12 +94,19 @@ class info_extractor:
             tree = ET.fromstring(xml_file)
             # gets the branch/store ID of current xml file
             branch_id = self.get_branch_id(tree.getchildren())
-            # gets relevant child
+            # gets child containing item information
             items = tree.getchildren()[-1]
             self.extract_information(items, branch_id)
-            # break  # only use 1 link:
 
     def extract_information(self, items, current_branch_id):
+        """
+        This method iterates over all items in the supermarket and extracts the relevant data
+        The data is then committed into the relevant table in the data base
+        :param items: The child of the parsed xml tree containing all item information
+        :param current_branch_id: id of current branch
+        """
+        products_list = []
+        branch_price_list = []
         item = 'Item'
         bIsWeighted = 'bIsWeighted'
 
@@ -113,6 +120,7 @@ class info_extractor:
             name = item.find('ItemName').text
             quantity = item.find('Quantity').text
             price = item.find('ItemPrice').text
+            update_date = self.standardize_date(item.find('PriceUpdateDate').text)
             is_weighted = False
             if item.find(bIsWeighted).text == 1:
                 is_weighted = True
@@ -121,43 +129,73 @@ class info_extractor:
             if is_weighted:
                 unit_of_measure = self.convert_unit_name(item.find('UnitQty').text)
 
-            try:
-                item_id = item.find('ItemId').text
-            except AttributeError:
-                item_id = 0
+            products_list.append(Product(id=code, name=name, quantity=quantity, is_weighted=is_weighted, unit_of_measure=unit_of_measure))
+            branch_price_list.append(BranchPrice(item_code=code, branch_id=current_branch_id, price=price, update_date=update_date))
 
-            item_info_formula = """INSERT INTO item_info (itemCode,itemId,itemName) VALUES(%s,%s,%s) ON DUPLICATE KEY UPDATE itemName = itemName """
-            price_table_shufersal = """INSERT INTO price_table (itemCode, shufersal) VALUES(%s, %s)  ON DUPLICATE KEY UPDATE shufersal = %s """
-            price_table_mega = """INSERT INTO price_table (itemCode, mega) VALUES(%s, %s)  ON DUPLICATE KEY UPDATE mega = %s """
+        # add all the product info to the db and commit
+        db.session.add_all(products_list)
+        db.session.commit()
 
-            # places the info into the the item_info table
-            self.cursor.execute(item_info_formula, (code, item_id, name))
-            self.conn.commit()
-
-            # places the info into the price_table, according to the supermarket
-            if self.super_name == 'mega':
-                self.cursor.execute(price_table_mega, (code, price, price))
-            elif self.super_name == 'shufersal':
-                self.cursor.execute(price_table_shufersal, (code, price, price))
-            self.conn.commit()
+        # add all the branch price info to the db and commit
+        db.session.add_all(branch_price_list)
+        db.session.commit()
 
     def get_branch_id(self, tree_children_list):
-        """ Gets branch id from a parsed xml tree"""
+        """
+        Gets branch id from a parsed xml tree
+        :param tree_children_list: list of the children of the root
+        :return: the branch id
+        """
         for child in tree_children_list:
             if child.tag == 'StoreId':
                 return child.text
 
     def convert_unit_name(self, unit_in_hebrew):
-        """method to convert hebrew measurement to english measurement"""
+        """
+        This method standardizes the unit of measurement
+        if the unit of measurement is not know, returns unknown
+        :param unit_in_hebrew: unit of measurement in hebrew
+        :return: standardized version of the unit or unknown if the unit is not known
+        """
         unit_dict = {
-            'kg': ['קילו', 'ק"ג', 'קילו', 'קילוגרמים'],
-            'gram': ['גרם', 'גרמים'],
-            'liter': ['ליטר', 'ליטרים', 'ליטר    '],
-            'milliliter': ['מיליליטרים', 'מ"ל', 'מיליליטר']
+            'ק"ג': ['קילו', 'ק"ג', 'קילו', 'קילוגרמים'],
+            'גרם': ['גרם', 'גרמים'],
+            'ליטר': ['ליטר', 'ליטרים', 'ליטר    '],
+            'מ"ל': ['מיליליטרים', 'מ"ל', 'מיליליטר']
             }
 
         for unit in unit_dict.keys():
             if unit_in_hebrew in unit:
                 return unit
 
-        return 'none'
+        return 'unknown'
+
+    def standardize_date(self, date):
+        """
+        This method standardizes the update date of the item
+        :param date: string representation of the date from the xml file
+        :return: standardized date as a string
+        """
+        # remove time from date
+        date = date[:10]
+        # set the format according to the supermarket
+        shuf_mega_format = '%Y-%m-%d'
+        victory_format = '%Y/%m/%d'
+        date_format = shuf_mega_format
+        if self.super_name is 'victory':
+            date_format = victory_format
+
+        new_date = datetime.strptime(date, date_format).date()
+        return new_date.__str__()
+
+    def update_super_name(self, url):
+        """
+        This method updates the super name according to the link
+        :param url: url of the current supermarket
+        """
+        if 'mega' in url:
+            self.super_name = 'mega'
+        elif 'shufersal' in url:
+            self.super_name = 'shufersal'
+        elif 'matrix' in url:
+            self.super_name = 'victory'
