@@ -1,0 +1,2 @@
+pip3 install Flask-WTF Flask-Bootstrap 
+pip3 install email_validator
