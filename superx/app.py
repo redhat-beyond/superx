@@ -21,4 +21,4 @@ db.init_app(app)
 
 from routing import *
 
-# app.run(debug=True)
+app.run(debug=True)
