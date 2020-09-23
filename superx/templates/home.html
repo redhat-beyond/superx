@@ -29,7 +29,13 @@
     </tr>
   </thead>
   <tbody id="tbody">
-
+    {% for product in products %}
+    <tr>
+       <td> {{ product.name }} </td>
+       <td> {{ product.quantity }} {{ product.unit_of_measure }} </td>
+       <td> <button id="{{product.ItemCode}}" type="button" class="btn btn-outline-success">הוסף לעגלה</button> </td>
+    </tr>
+    {% endfor %}
   </tbody>
 </table>
 </div> <!-- col  -->
@@ -37,22 +43,16 @@
 <div class="col-6 themed-grid-col">
 <table id="myCart" class="table text-center" dir="rtl">
 <thead>
+    <tr>
+        <th colspan="4">העגלה שלי</th>
+    </tr>
   <tr>
-    <th scope="col" colspan="2">ת''ז</th>
+    <th scope="col" colspan="2">קוד מוצר</th>
     <th scope="col" colspan="2">שם מוצר</th>
-    <th scope="col" colspan="2">במשקל</th>
   </tr>
 </thead>
 <tbody id="cartbody">
-    {% for item in basket.items %}
 
-    <tr>
-       <td> {{ item.product.name }} </td>
-       <td> {{ item.product.quantity }} </td>
-       <td> {{ item.product.unit_of_measure }} </td>
-    </tr>
-
-    {% endfor %}
 </tbody>
 </table>
 </div><!-- row -->
