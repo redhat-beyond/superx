@@ -1,9 +1,9 @@
 from sqlalchemy import Integer, Column, Text, Boolean, Float
-
+from flask_login import LoginManager, UserMixin
 from app import db
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
@@ -76,4 +76,3 @@ class BasketProduct(db.Model):
     product = db.relationship('Product', primaryjoin='BasketProduct.product_id == Product.id', uselist=False)
     basket = db.relationship('Basket', primaryjoin='BasketProduct.basket_id == Basket.id', uselist=False)
 
-db.create_all()

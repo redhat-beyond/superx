@@ -1,0 +1,15 @@
+language: python
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"      
+  - "3.7"
+  - "3.8"
+  - "3.8-dev"  # 3.8 development branch
+  
+
+install:
+  - pip3 install flask Flask-SQLAlchemy SQLAlchemy pymysql Flask-WTF Flask-Bootstrap Flask_login pytest
+
+  script:
+  - pytest
