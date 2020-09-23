@@ -32,7 +32,13 @@
     {% for product in products %}
     <tr>
        <td> {{ product.name }} </td>
-       <td> {{ product.quantity }} {{ product.unit_of_measure }} </td>
+        {% if product.unit_of_measure == 'לא ידוע' %}
+            <td></td>
+        {% elif product.unit_of_measure == 'יחידה   '%}
+            <td> 1 יחידה </td>
+        {% else %}
+            <td>{{ product.quantity|int }} {{ product.unit_of_measure }}</td>
+        {% endif %}
        <td> <button id="{{product.ItemCode}}" type="button" class="btn btn-outline-success">הוסף לעגלה</button> </td>
     </tr>
     {% endfor %}
