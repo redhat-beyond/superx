@@ -17,10 +17,6 @@ class RegisterForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=3, max=10)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=80)])
 
-login_manager = LoginManager()
-login_manager = init_app(app)
-login_manager.login_view = 'login'
-
 
 @app.route('/')
 def index():
