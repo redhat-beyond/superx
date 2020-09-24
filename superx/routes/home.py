@@ -8,6 +8,10 @@ def home():
     return render_template('home.html', basket=basket)
 
 
-def login():
-    return render_template('login.html')
+def logged_in():
+   
+    basket = db.session.query(Basket).get(1)
 
+    return render_template('home-signedin.jinja2', basket=basket)
+
+    

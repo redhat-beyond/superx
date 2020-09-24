@@ -1,14 +1,22 @@
 from sqlalchemy import Integer, Column, Text, Boolean, Float
-
+from flask_login import LoginManager, UserMixin
 from app import db
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'user'
 
+    id = Column(db.Integer, primary_key=True)
+    name = Column(db.String(15))
+    email = Column(db.String(50), unique=True)
+    password = Column(db.String(80))
+
+class Test(db.Model):
+    __tablename__ = 'test'
+
     id = Column(Integer, primary_key=True)
-    name = Column(Text)
-    password = Column(Text)
+    
+
 
 
 class Chain(db.Model):
@@ -67,3 +75,4 @@ class BasketProduct(db.Model):
 
     product = db.relationship('Product', primaryjoin='BasketProduct.product_id == Product.id', uselist=False)
     basket = db.relationship('Basket', primaryjoin='BasketProduct.basket_id == Basket.id', uselist=False)
+
