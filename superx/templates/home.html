@@ -10,7 +10,7 @@
       <p></p>
       <p style="font-size: large">הכנס שם מוצר בתיבת החיפוש</p>
       <form id="searchbutton" class="form-inline mt-2 mt-md-0">
-          <input id="myInput" onkeyup="myFunction()" class="form-control mr-sm-2 text-center" type="text" placeholder="הכנס שם מוצר" aria-label="Search">
+          <input id="myInput" onkeyup="search()" class="form-control mr-sm-2 text-center" type="text" placeholder="הכנס שם מוצר" aria-label="Search">
           <p></p>
           <!-- this button is corrently disabled -->
           <button id="comperbutton" type="button" class="btn btn-outline-success btn-lg" disabled><strong>השווה מחירים</strong></button>
@@ -25,7 +25,12 @@
   <table id="myTable" class="table text-center" dir="rtl">
   <thead>
     <tr>
-      <th scope="col" colspan="2">שם המוצר</th>
+        <th colspan="3">מוצרים להשוואה</th>
+    </tr>
+    <tr>
+        <th scope="col" >שם המוצר</th>
+        <th scope="col" >כמות</th>
+        <th scope="col" >הוסף לעגלה</th>
     </tr>
   </thead>
   <tbody id="tbody">
@@ -33,13 +38,13 @@
     <tr>
        <td> {{ product.name }} </td>
         {% if product.unit_of_measure == 'לא ידוע' %}
-            <td></td>
+            <td>1 יחידה </td>
         {% elif product.unit_of_measure == 'יחידה   '%}
             <td> 1 יחידה </td>
         {% else %}
             <td>{{ product.quantity|int }} {{ product.unit_of_measure }}</td>
         {% endif %}
-       <td> <button id="{{product.ItemCode}}" type="button" class="btn btn-outline-success">הוסף לעגלה</button> </td>
+       <td> <button onclick="addItem({{ product.id }}, '{{product.name |replace('\'', '\"')}}')" type="button" class="btn btn-outline-success">הוסף לעגלה</button> </td>
     </tr>
     {% endfor %}
   </tbody>
@@ -50,11 +55,12 @@
 <table id="myCart" class="table text-center" dir="rtl">
 <thead>
     <tr>
-        <th colspan="4">העגלה שלי</th>
+        <th colspan="5">העגלה שלי</th>
     </tr>
   <tr>
-    <th scope="col" colspan="2">קוד מוצר</th>
-    <th scope="col" colspan="2">שם מוצר</th>
+        <th scope="col" colspan="2">קוד מוצר</th>
+        <th scope="col" colspan="2">שם מוצר</th>
+        <th scope="col" colspan="1">הסר מהעגלה</th>
   </tr>
 </thead>
 <tbody id="cartbody">
