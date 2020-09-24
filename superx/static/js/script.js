@@ -1,4 +1,7 @@
-function myFunction() {
+// JavaScripts functions
+
+// Search function that show only matching elements from search box
+function search() {
   // Declare variables
   var input, table, tr, td, i, txtValue;
   input = document.getElementById("myInput");
@@ -16,5 +19,25 @@ function myFunction() {
         tr[i].style.display = "none";
       }
     }
+  }
+}
+
+// adding Items from "myTable" table to "mycart" table
+function addItem(product_id, product_name){
+  console.log("someone click");
+  const tableBody = $('#cartbody');
+  tableBody.append($(`<tr id="${product_id}">
+      <td scope="col" colspan="2">${product_id}</td>
+      <td scope="col" colspan="2">${product_name}</td>
+      <td> <button onclick="removeItem(${product_id})" type="button" class="btn btn-outline-danger">הסר מהעגלה</button> </td>
+        </tr>`));
+  $("#comperbutton").removeAttr('disabled');
+}
+
+// function that removes table row and if there are no items in cart - disabled 'comparebutton' button
+function removeItem(product_id) {
+  $('#' + product_id).remove();
+  if ($('#cartbody tr').length === 0) {
+    $("#comperbutton").attr('disabled', '');
   }
 }
