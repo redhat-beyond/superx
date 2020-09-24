@@ -41,8 +41,9 @@ def register():
         new_user = User(name=form.username.data, email=form.email.data, password=hash_password) 
         db.session.add(new_user)
         db.session.commit()
-        # return '<h1>' + form.username.data + ' ' + form.password.data + ' ' +  form.email.data + '</h1>'
-
+        
     return render_template('register.jinja2', form=form)
+
+
 
 

@@ -16,3 +16,5 @@ def register():
 @app.route('/inhome', methods=['GET', 'POST'])
 def logged_in():
    return home.logged_in()
+
+   
