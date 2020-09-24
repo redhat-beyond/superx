@@ -6,6 +6,7 @@ from os import environ, path
 
 app = Flask(__name__)
 Bootstrap(app)
+
 app.config.from_object('config.BaseConfig')
 app.config['SECRET_KEY'] = 'aefguhw49t23465'
 FLASK_APP = environ.get('FLASK_APP')
