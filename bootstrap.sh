@@ -2,7 +2,10 @@
 
 apt-get update
 apt-get install python3 python3-pip -y
-pip3 install -r /vagrant/requirments.txt
+sudo pip3 install Flask Flask-SQLAlchemy flask_login flask_wtf PyMySQL
+# sudo pip3 install -r /vagrant/requirments.txt
+
+
 
 
 export FLASK_APP=/vagrant/superx/app.py

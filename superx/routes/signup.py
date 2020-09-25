@@ -2,22 +2,11 @@ from app import app
 from routes import home
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
-from wtforms.validators import InputRequired,  Length
+from wtforms.validators import InputRequired,  Length, ValidationError
 from flask import render_template, redirect, url_for, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import *
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
-
-class LoginForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Length(min=3, max=50)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=80)])
-
-class RegisterForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Length(max=50)])
-    username = StringField('username', validators=[InputRequired(), Length(min=3, max=10)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=80)])
-
-
 
 
 def login():
@@ -43,6 +32,37 @@ def register():
         db.session.commit()
         
     return render_template('register.jinja2', form=form)
+
+
+class LoginForm(FlaskForm):
+    email = StringField('email', validators=[InputRequired(), Length(min=3, max=50)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=80)])
+
+class RegisterForm(FlaskForm):
+    email = StringField('email', validators=[InputRequired(), Length(max=50)])
+    username = StringField('username', validators=[InputRequired(), Length(min=3, max=10)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=80)])
+
+
+    def validate_email(self, email):
+        user_object = User.query.filter_by(email=email.data).first()
+
+        if user_object:
+            raise ValidationError("email already exists, please login")
+
+        import requests
+
+        response = requests.get(
+        "https://isitarealemail.com/api/email/validate",
+        params = {'email': email.data})
+
+        status = response.json()['status']
+        if status != "valid":
+            raise ValidationError("please put in an real email")
+
+
+
+
 
 
 
