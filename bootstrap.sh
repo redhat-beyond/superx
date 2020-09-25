@@ -2,7 +2,7 @@
 
 apt-get update
 apt-get install python3 python3-pip -y
-sudo pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql python-logilab-common
+sudo pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql 
 
 
 
