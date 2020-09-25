@@ -22,96 +22,107 @@ class InfoExtractor:
     """
 
     def __init__(self):
-        # url list with category PriceFull
-        self.url_list = ['http://publishprice.mega.co.il/%s' % datetime.today().strftime('%Y%m%d'),  # mega link with correct date
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=1',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=2',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=3',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=4',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=5',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=6',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=7',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=8',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=9',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=10',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=11',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=12',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=13',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=14',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=15',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=16',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=17',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=18',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=19',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=20',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=21',
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=22',  # shufersal
-                         'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=23',
-                         'http://matrixcatalog.co.il/NBCompetitionRegulations.aspx'      # victory
-                         ]
-        # current supermarket name
-        self.super_name = ''
+        self.current_super = ''
         # list of unwanted names to be filter out
         self.exclude_names = ['משלוחים', 'ריק', 'פיקדון', 'תיבה', 'משלוח']
+        self.super_specific_information = {'mega': {'store_name': 'mega',
+                                                    'url': f'http://publishprice.mega.co.il/{str(datetime.today().strftime("%Y%m%d"))}',
+                                                    'multiple_pages': False,
+                                                    'zip_link_prefix': f'http://publishprice.mega.co.il/{str(datetime.today().strftime("%Y%m%d"))}/',
+                                                    'item_attr_name': 'Item',
+                                                    'is_weighted_attr_name': 'bIsWeighted',
+                                                    'item_date_format': '%Y-%m-%d'},
+                                           'shufersal': {'store_name': 'shufersal',
+                                                         'url': 'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=1',
+                                                         'multiple_pages': True,
+                                                         'zip_link_prefix': None,
+                                                         'item_attr_name': 'Item',
+                                                         'is_weighted_attr_name': 'bIsWeighted',
+                                                         'item_date_format': '%Y-%m-%d'},
+                                           'matrix': {'store_name': 'victory',
+                                                      'url': 'http://matrixcatalog.co.il/NBCompetitionRegulations.aspx',
+                                                      'multiple_pages': False,
+                                                      'zip_link_prefix': 'http://matrixcatalog.co.il/',
+                                                      'item_attr_name': 'Product',
+                                                      'is_weighted_attr_name': 'BisWeighted',
+                                                      'item_date_format': '%Y-%m-%d'}
+                                           }
 
-    def get_zip_file_links(self):
+    def run_extractor(self):
+        """
+        This method starts the extraction process
+        """
+        for key in self.super_specific_information:
+            self.current_super = self.super_specific_information[key]
+            url_list = []
+
+            if not self.current_super['multiple_pages']:
+                url_list.append(self.current_super['url'])
+            else:
+                url_list = self.get_all_super_links(self.current_super['store_name'])
+
+            self.get_zip_file_links(url_list)
+
+    def get_zip_file_links(self, url_list):
         """
         This method web scrapes the urls in url_list and creates a set of the gzip file links.
-        The method then updates super_name and sends the set to parsing
+        The method then sends the set to parsing
+        If connection to the url failed, moves on to next url
+        :param url_list: list of urls to extract zip files from
+
         """
-        for url in self.url_list:
-            page = requests.get(url)
-            web_scrapper = BeautifulSoup(page.content, 'html.parser')
-            links_list = web_scrapper.find_all('a')
-            zip_links = set()
+        for url in url_list:
+            try:
+                page = requests.get(url)
+                web_scrapper = BeautifulSoup(page.content, 'html.parser')
+            except ConnectionError:
+                continue
+            else:
+                links_list = web_scrapper.find_all('a')
+                zip_links = set()
 
-            for link in links_list:
-                if link.has_attr('href'):
-                    https = str(link.attrs['href'])
-                    if 'PriceFull' in https:
-                        zip_links.add(https)
+                for link in links_list:
+                    if link.has_attr('href'):
+                        https = str(link.attrs['href'])
+                        if 'PriceFull' in https:
+                            zip_links.add(https)
 
-            self.update_super_name(url)
-            self.info_parser(zip_links)
+                self.info_parser(zip_links)
 
     def info_parser(self, zip_links):
         """
         This method retrieves the xml file in the gzip file and parses it into an xml tree
         The branch_id is retrieved from the xml file and then it is sent for retrieval of the item information
+        If connection failed, moves on to next link
         :param zip_links: list of zip file links from the website
         """
         for zip_link in zip_links:
-            # corrects the urls
-            if self.super_name == 'mega':
-                zip_link = self.url_list[0] + '/' + zip_link
-            elif self.super_name == 'victory':
-                zip_link = 'http://matrixcatalog.co.il/' + zip_link
+            # fix zip link url if neccessary
+            if not self.current_super['zip_link_prefix']:
+                zip_link = self.current_super['zip_link_prefix'] + zip_link
 
-            request = requests.get(zip_link)
-            content = request.content
-            xml_file = gzip.decompress(content).decode('utf-8')
-            # parses the xml document into a tree
-            tree = ET.fromstring(xml_file)
-            # gets the branch/store ID of current xml file
-            branch_id = self.get_branch_id(tree.getchildren())
-            # gets child containing item information
-            items = tree.getchildren()[-1]
-            self.extract_information(items, branch_id)
+            try:
+                request = requests.get(zip_link)
+                content = request.content
+            except ConnectionError:
+                continue
+            else:
+                xml_file = gzip.decompress(content).decode('utf-8')
+                # parses the xml document into a tree
+                tree = ET.fromstring(xml_file)
+                # gets child containing item information
+                items = tree.getchildren()[-1]
+                self.extract_information(items)
 
-    def extract_information(self, items, current_branch_id):
+    def extract_information(self, items):
         """
         This method iterates over all items in the supermarket and extracts the relevant data
         The data is then committed into the relevant table in the data base
         :param items: The child of the parsed xml tree containing all item information
         :param current_branch_id: id of current branch
         """
-        item = 'Item'
-        bIsWeighted = 'bIsWeighted'
-
-        # different supermarkets use different titles
-        if self.super_name == 'victory':
-            item = 'Product'
-            bIsWeighted = 'BisWeighted'
+        item = self.current_super['item_attr_name']
+        bIsWeighted = self.current_super['is_weighted_attr_name']
 
         for item in items.findall(item):
             item_code = int(item.find('ItemCode').text)
@@ -142,16 +153,6 @@ class InfoExtractor:
             db.session.add(current_branch_price)
             db.session.commit()
 
-    def get_branch_id(self, tree_children_list):
-        """
-        Gets branch id from a parsed xml tree
-        :param tree_children_list: list of the children of the root
-        :return: the branch id
-        """
-        for child in tree_children_list:
-            if child.tag == 'StoreId':
-                return child.text
-
     def convert_unit_name(self, unit_in_hebrew):
         """
         This method standardizes the unit of measurement
@@ -164,7 +165,7 @@ class InfoExtractor:
             'גרם': ['גרם', 'גרמים'],
             'ליטר': ['ליטר', 'ליטרים', 'ליטר    '],
             'מ"ל': ['מיליליטרים', 'מ"ל', 'מיליליטר']
-            }
+        }
 
         for unit in unit_dict.keys():
             if unit_in_hebrew in unit:
@@ -181,24 +182,43 @@ class InfoExtractor:
         """
         # remove time from date
         date = date[:10]
-        # set the format according to the supermarket
-        shuf_mega_format = '%Y-%m-%d'
-        victory_format = '%Y/%m/%d'
-        date_format = shuf_mega_format
-        if self.super_name == 'victory':
-            date_format = victory_format
-
+        date_format = self.current_super['item_date_format']
         new_date = datetime.strptime(date, date_format).date()
         return new_date.__str__()
 
-    def update_super_name(self, url):
+    def get_all_super_links(self):
         """
-        This method updates the super name according to the link
-        :param url: url of the current supermarket
+        builds a list of urls for the supermarket
+        :return: a list of links according to th amount of pages
         """
-        if 'mega' in url:
-            self.super_name = 'mega'
-        elif 'shufersal' in url:
-            self.super_name = 'shufersal'
-        elif 'matrix' in url:
-            self.super_name = 'victory'
+        num_of_pages = self.get_num_of_pages()
+        general_url = self.current_super['url']
+        general_url = general_url[:len(general_url)-1]
+        url_list = []
+
+        for i in range(1, num_of_pages + 1):
+            url_list.append(general_url + str(i))
+
+        return url_list
+
+    def get_num_of_pages(self):
+        """
+        gets the number of pages for a certain supermarket
+        In case the number of pages increases or decreases the code will always check if it is a single, double, triple digit
+        :return: number of pages
+        """
+        page = requests.get(self.current_super['url'])
+        web_scrapper = BeautifulSoup(page.content, 'html.parser')
+        num_of_pages = '1'
+
+        if self.current_super['store_name'] == 'shufersal':
+            links = web_scrapper.find_all(name='a', text='>>')
+            wanted_link = links[0]
+            for i in range(1, 4):
+                try:
+                    num_of_pages = int(wanted_link.attrs['href'][-i::])
+                except ValueError:
+                    break
+
+        return num_of_pages
+
