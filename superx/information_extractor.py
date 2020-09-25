@@ -122,7 +122,7 @@ class InfoExtractor:
         item_code = self.current_super['item_attr_name']
         bIsWeighted = self.current_super['is_weighted_attr_name']
 
-        for item in items.findall(item):
+        for item in items.findall(item_code):
             item_code = int(item.find('ItemCode').text)
             name = item.find('ItemName').text
             # exclude unwanted names from DB
