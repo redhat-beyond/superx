@@ -54,12 +54,10 @@ class InfoExtractor:
         """
         for key in self.super_specific_information:
             self.current_super = self.super_specific_information[key]
-            url_list = []
+            url_list = [self.current_super['url']]
 
-            if not self.current_super['multiple_pages']:
-                url_list.append(self.current_super['url'])
-            else:
-                url_list = self.get_all_super_links(self.current_super['store_name'])
+            if self.current_super['multiple_pages']:
+                url_list = self.get_all_super_links()
 
             self.get_zip_file_links(url_list)
 
@@ -98,7 +96,7 @@ class InfoExtractor:
         """
         for zip_link in zip_links:
             # fix zip link url if neccessary
-            if not self.current_super['zip_link_prefix']:
+            if not self.current_super['zip_link_prefix'] is None:
                 zip_link = self.current_super['zip_link_prefix'] + zip_link
 
             try:
@@ -121,7 +119,7 @@ class InfoExtractor:
         :param items: The child of the parsed xml tree containing all item information
         :param current_branch_id: id of current branch
         """
-        item = self.current_super['item_attr_name']
+        item_code = self.current_super['item_attr_name']
         bIsWeighted = self.current_super['is_weighted_attr_name']
 
         for item in items.findall(item):
