@@ -1,7 +1,5 @@
 
 import unittest
-from pathlib import Path
-
 import pkg_resources
 
 
@@ -18,5 +16,5 @@ class TestRequirements(unittest.TestCase):
         for pkg in pckgs:
             with self.subTest(pkg=pkg):
                 pkg_resources.require(pkg)
-
+ 
                 

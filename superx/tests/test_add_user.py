@@ -13,4 +13,5 @@ def test_add_user():
     assert validate_user.name == 'admin'
     assert validate_user.email == 'admin@example.com'
     User.query.filter(User.id == validate_user.id).delete()
+    db.session.commit()
 
