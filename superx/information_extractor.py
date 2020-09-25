@@ -7,7 +7,7 @@ from superx.models.__init__ import Product, BranchPrice
 from superx.app import db
 
 
-class info_extractor:
+class InfoExtractor:
     """
     This class executes the following task:
         1. web scrapes the url's from the url list and retrieves the relevant gzip file links
@@ -51,8 +51,6 @@ class info_extractor:
                          ]
         # current supermarket name
         self.super_name = ''
-        db.create_all()
-        db.session.commit()
 
     def get_zip_file_links(self):
         """
@@ -119,7 +117,7 @@ class info_extractor:
             code = int(item.find('ItemCode').text)
             name = item.find('ItemName').text
             quantity = item.find('Quantity').text
-            price = item.find('ItemPrice').text
+            price = float(item.find('ItemPrice').text)
             update_date = self.standardize_date(item.find('PriceUpdateDate').text)
             is_weighted = False
             if item.find(bIsWeighted).text == 1:
@@ -128,7 +126,6 @@ class info_extractor:
             unit_of_measure = 'none'
             if is_weighted:
                 unit_of_measure = self.convert_unit_name(item.find('UnitQty').text)
-
             products_list.append(Product(id=code, name=name, quantity=quantity, is_weighted=is_weighted, unit_of_measure=unit_of_measure))
             branch_price_list.append(BranchPrice(item_code=code, branch_id=current_branch_id, price=price, update_date=update_date))
 
@@ -182,7 +179,7 @@ class info_extractor:
         shuf_mega_format = '%Y-%m-%d'
         victory_format = '%Y/%m/%d'
         date_format = shuf_mega_format
-        if self.super_name is 'victory':
+        if self.super_name == 'victory':
             date_format = victory_format
 
         new_date = datetime.strptime(date, date_format).date()
