@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import gzip
 import xml.etree.ElementTree as ET
-from superx.models.__init__ import Product, BranchPrice
-from superx.app import db
+from models import Product, BranchPrice
+from app import db
 
 
 class InfoExtractor:
@@ -51,6 +51,8 @@ class InfoExtractor:
                          ]
         # current supermarket name
         self.super_name = ''
+        # list of unwanted names to be filter out
+        self.exclude_names = ['משלוחים', 'ריק', 'פיקדון', 'תיבה', 'משלוח']
 
     def get_zip_file_links(self):
         """
@@ -103,8 +105,6 @@ class InfoExtractor:
         :param items: The child of the parsed xml tree containing all item information
         :param current_branch_id: id of current branch
         """
-        products_list = []
-        branch_price_list = []
         item = 'Item'
         bIsWeighted = 'bIsWeighted'
 
@@ -114,28 +114,33 @@ class InfoExtractor:
             bIsWeighted = 'BisWeighted'
 
         for item in items.findall(item):
-            code = int(item.find('ItemCode').text)
+            item_code = int(item.find('ItemCode').text)
             name = item.find('ItemName').text
-            quantity = item.find('Quantity').text
+            # exclude unwanted names from DB
+            for exclude in self.exclude_names:
+                if exclude in name:
+                    continue
+
+            quantity = float(item.find('Quantity').text)
             price = float(item.find('ItemPrice').text)
             update_date = self.standardize_date(item.find('PriceUpdateDate').text)
             is_weighted = False
-            if item.find(bIsWeighted).text == 1:
+            if int(item.find(bIsWeighted).text) == 1:
                 is_weighted = True
 
-            unit_of_measure = 'none'
-            if is_weighted:
-                unit_of_measure = self.convert_unit_name(item.find('UnitQty').text)
-            products_list.append(Product(id=code, name=name, quantity=quantity, is_weighted=is_weighted, unit_of_measure=unit_of_measure))
-            branch_price_list.append(BranchPrice(item_code=code, branch_id=current_branch_id, price=price, update_date=update_date))
-
-        # add all the product info to the db and commit
-        db.session.add_all(products_list)
-        db.session.commit()
-
-        # add all the branch price info to the db and commit
-        db.session.add_all(branch_price_list)
-        db.session.commit()
+            unit_of_measure = self.convert_unit_name(item.find('UnitQty').text)
+            # if item already in db then continue to next item
+            if Product.query.get(item_code):
+                continue
+            # adding current_product to the db and commit
+            current_product = Product(id=item_code, name=name, quantity=quantity, is_weighted=is_weighted,
+                                      unit_of_measure=unit_of_measure)
+            db.session.add(current_product)
+            db.session.commit()
+            # adding current_branch_price to the db and commit
+            current_branch_price = BranchPrice(item_code=current_product.id, price=price, update_date=update_date)
+            db.session.add(current_branch_price)
+            db.session.commit()
 
     def get_branch_id(self, tree_children_list):
         """
@@ -165,7 +170,8 @@ class InfoExtractor:
             if unit_in_hebrew in unit:
                 return unit
 
-        return 'unknown'
+        # as a default return the original unit
+        return unit_in_hebrew
 
     def standardize_date(self, date):
         """
