@@ -4,10 +4,15 @@ from models import *
 
 
 def home():
+
+    products = Product.query.all()
+    return render_template('home.html', products=products)
+
+
+def logged_in():
+   
     basket = db.session.query(Basket).get(1)
-    return render_template('home.html', basket=basket)
 
+    return render_template('home-signedin.jinja2', basket=basket)
 
-def login():
-    return render_template('login.html')
-
+    

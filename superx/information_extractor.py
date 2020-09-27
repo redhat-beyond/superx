@@ -119,10 +119,10 @@ class InfoExtractor:
         :param items: The child of the parsed xml tree containing all item information
         :param current_branch_id: id of current branch
         """
-        item_code = self.current_super['item_attr_name']
+        item_attr_name = self.current_super['item_attr_name']
         bIsWeighted = self.current_super['is_weighted_attr_name']
 
-        for item in items.findall(item_code):
+        for item in items.findall(item_attr_name):
             item_code = int(item.find('ItemCode').text)
             name = item.find('ItemName').text
             # exclude unwanted names from DB
@@ -139,15 +139,20 @@ class InfoExtractor:
 
             unit_of_measure = self.convert_unit_name(item.find('UnitQty').text)
             # if item already in db then continue to next item
-            if Product.query.get(item_code):
+            if bool(Product.query.filter_by(id=item_code).first()):
+                # adding current_branch_price to the db and commit
+                current_branch_price = BranchPrice(item_code=item_code, price=price, update_date=update_date)
+                db.session.add(current_branch_price)
+                db.session.commit()
                 continue
+
             # adding current_product to the db and commit
             current_product = Product(id=item_code, name=name, quantity=quantity, is_weighted=is_weighted,
                                       unit_of_measure=unit_of_measure)
             db.session.add(current_product)
             db.session.commit()
             # adding current_branch_price to the db and commit
-            current_branch_price = BranchPrice(item_code=current_product.id, price=price, update_date=update_date)
+            current_branch_price = BranchPrice(item_code=item_code, price=price, update_date=update_date)
             db.session.add(current_branch_price)
             db.session.commit()
 
@@ -162,11 +167,12 @@ class InfoExtractor:
             'ק"ג': ['קילו', 'ק"ג', 'קילו', 'קילוגרמים'],
             'גרם': ['גרם', 'גרמים'],
             'ליטר': ['ליטר', 'ליטרים', 'ליטר    '],
-            'מ"ל': ['מיליליטרים', 'מ"ל', 'מיליליטר']
+            'מ"ל': ['מיליליטרים', 'מ"ל', 'מיליליטר'],
+            'אין': ['יחידה', 'לא ידוע']
         }
 
         for unit in unit_dict.keys():
-            if unit_in_hebrew in unit:
+            if unit_in_hebrew in unit_dict[unit]:
                 return unit
 
         # as a default return the original unit
