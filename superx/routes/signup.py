@@ -4,22 +4,26 @@ from wtforms.validators import InputRequired, Length, Email
 from flask import render_template, redirect, url_for, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import *
-import email_validator
 
 
 class LoginForm(FlaskForm):
-    email = StringField('אימייל', validators=[InputRequired(), Length(min=3, max=50), Email("*בבקשה הכנס כתובת אימייל חוקית*")])
-    password = PasswordField('סיסמה', validators=[InputRequired(), Length(min=6,message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
+    email = StringField('אימייל', render_kw={"placeholder": "username@domain.com"},
+                        validators=[InputRequired(), Length(min=3, max=50), Email("*בבקשה הכנס כתובת אימייל חוקית*")])
+    password = PasswordField('סיסמה', render_kw={"placeholder": "******"}, validators=[InputRequired(),
+                                                  Length(min=6, message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
 
 
 class RegisterForm(FlaskForm):
-    email = StringField('אימייל', validators=[InputRequired(), Length(min=3, max=50), Email("*בבקשה הכנס כתובת אימייל חוקית*")])
+    email = StringField('אימייל', render_kw={"placeholder": "username@domain.com"},
+                        validators=[InputRequired(), Length(min=3, max=50), Email("*בבקשה הכנס כתובת אימייל חוקית*")])
     username = StringField('שם משתמש', validators=[InputRequired(), Length(min=3, max=10)])
-    password = PasswordField('סיסמא', validators=[InputRequired(), Length(min=6,message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
+    password = PasswordField('סיסמא', render_kw={"placeholder": "******"}, validators=[InputRequired(),
+                                                  Length(min=6, message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
 
 
 def login():
     form = LoginForm()
+
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
