@@ -8,7 +8,7 @@ from app import db
 import logging
 
 
-logging.basicConfig(filename='test.log', level=logging.ERROR,
+logging.basicConfig(filename='test.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
 
 
@@ -141,7 +141,7 @@ class InfoExtractor:
             price = float(item.find('ItemPrice').text)
             update_date = self.standardize_date(item.find('PriceUpdateDate').text)
             is_weighted = False
-            if int(item.find(bIsWeighted).text) == 1:
+            if item.find(bIsWeighted).text == '1':
                 is_weighted = True
 
             unit_of_measure = self.convert_unit_name(item.find('UnitQty').text)
@@ -182,7 +182,8 @@ class InfoExtractor:
             if unit_in_hebrew in unit_dict[unit]:
                 return unit
 
-        # as a default return the original unit
+        # as a default return the original unit and log it
+        logging.info(f'New item weight name encoded to UTF-8: {unit_in_hebrew.encode("UTF-8")}')
         return unit_in_hebrew
 
     def standardize_date(self, date):
