@@ -5,6 +5,11 @@ import gzip
 import xml.etree.ElementTree as ET
 from models import Product, BranchPrice
 from app import db
+import logging
+
+
+logging.basicConfig(filename='test.log', level=logging.ERROR,
+                    format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
 
 
 class InfoExtractor:
@@ -57,7 +62,10 @@ class InfoExtractor:
             url_list = [self.current_super['url']]
 
             if self.current_super['multiple_pages']:
-                url_list = self.get_all_super_links()
+                try:
+                    url_list = self.get_all_super_links()
+                except ConnectionError as ce:
+                    logging.error(str(ce))
 
             self.get_zip_file_links(url_list)
 
@@ -73,8 +81,8 @@ class InfoExtractor:
             try:
                 page = requests.get(url)
                 web_scrapper = BeautifulSoup(page.content, 'html.parser')
-            except ConnectionError:
-                continue
+            except Exception:
+                logging.error(f'Unable to connect to url:\n{url}')
             else:
                 links_list = web_scrapper.find_all('a')
                 zip_links = set()
@@ -102,8 +110,8 @@ class InfoExtractor:
             try:
                 request = requests.get(zip_link)
                 content = request.content
-            except ConnectionError:
-                continue
+            except Exception:
+                logging.error(f'Unable to extract from zip file with url: {zip_link}')
             else:
                 xml_file = gzip.decompress(content).decode('utf-8')
                 # parses the xml document into a tree
@@ -117,7 +125,6 @@ class InfoExtractor:
         This method iterates over all items in the supermarket and extracts the relevant data
         The data is then committed into the relevant table in the data base
         :param items: The child of the parsed xml tree containing all item information
-        :param current_branch_id: id of current branch
         """
         item_attr_name = self.current_super['item_attr_name']
         bIsWeighted = self.current_super['is_weighted_attr_name']
@@ -188,6 +195,7 @@ class InfoExtractor:
         date = date[:10]
         date_format = self.current_super['item_date_format']
         new_date = datetime.strptime(date, date_format).date()
+
         return new_date.__str__()
 
     def get_all_super_links(self):
@@ -196,6 +204,9 @@ class InfoExtractor:
         :return: a list of links according to th amount of pages
         """
         num_of_pages = self.get_num_of_pages()
+        if num_of_pages == -1:
+            raise ConnectionError(f'Unable to connect to url to find number of pages for {self.current_super["store_name"]}')
+
         general_url = self.current_super['url']
         general_url = general_url[:len(general_url)-1]
         url_list = []
@@ -211,18 +222,21 @@ class InfoExtractor:
         In case the number of pages increases or decreases the code will always check if it is a single, double, triple digit
         :return: number of pages
         """
-        page = requests.get(self.current_super['url'])
-        web_scrapper = BeautifulSoup(page.content, 'html.parser')
         num_of_pages = '1'
+        try:
+            page = requests.get(self.current_super['url'])
+            web_scrapper = BeautifulSoup(page.content, 'html.parser')
+        except Exception:
+            num_of_pages = -1
+        else:
+            if self.current_super['store_name'] == 'shufersal':
+                links = web_scrapper.find_all(name='a', text='>>')
+                wanted_link = links[0]
 
-        if self.current_super['store_name'] == 'shufersal':
-            links = web_scrapper.find_all(name='a', text='>>')
-            wanted_link = links[0]
-            for i in range(1, 4):
-                try:
-                    num_of_pages = int(wanted_link.attrs['href'][-i::])
-                except ValueError:
-                    break
+                for i in range(1, 4):
+                    try:
+                        num_of_pages = int(wanted_link.attrs['href'][-i::])
+                    except ValueError:
+                        break
 
         return num_of_pages
-
