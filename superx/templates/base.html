@@ -29,9 +29,14 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
+    {% if current_user.is_authenticated %}
+    <h5>שלום  {{ current_user.name }}! </h5>
+    {% endif %}
+
 
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
+
       <li class="nav-item active">
         <a class="nav-link" href="{{ url_for('login')}}">כניסה/הרשמה</a>
       </li>

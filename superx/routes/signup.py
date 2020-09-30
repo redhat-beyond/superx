@@ -18,6 +18,13 @@ class RegisterForm(FlaskForm):
     password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=80)])
 
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 def login():
@@ -28,8 +35,8 @@ def login():
        user = User.query.filter_by(email=form.email.data).first()
        if user:
            if check_password_hash(user.password, form.password.data):
-               return  redirect(url_for('logged_in', name=request.args.get('form.username.data')))
-
+               login_user(user)
+               return redirect(url_for('index'))
 
     return render_template('login.jinja2', form=form)
 
@@ -43,6 +50,11 @@ def register():
         db.session.commit()
         
     return render_template('register.jinja2', form=form)
+
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
 
 

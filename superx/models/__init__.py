@@ -1,5 +1,5 @@
 from sqlalchemy import Integer, Column, Text, Boolean, Float
-from flask_login import LoginManager, UserMixin
+from flask_login import UserMixin
 from app import db
 
 

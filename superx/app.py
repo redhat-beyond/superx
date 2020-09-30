@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from os import environ, path
+# from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
 
 
 app = Flask(__name__)
@@ -19,6 +20,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 db = SQLAlchemy(app)
 db.init_app(app)
+
 
 from routing import *
 
