@@ -18,7 +18,7 @@ jobs:
     
     - name: Bootstrap
       run: |
-        sudo ./bootstrap.sh
+         ./bootstrap.sh
  
     - name: Analysing the code with pylint
       run: |
