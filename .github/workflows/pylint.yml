@@ -18,12 +18,16 @@ jobs:
     
     - name: Dependencies
       run: |
-        pip install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest email-validator pylint
+        pip install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest email-validator pylint flake8
    
     - name: Analysing the code with pylint
       run: |
         pylint superx
-      
+    
+    - name: Analysing the code with flake8
+        run: |
+          flake8 superx
+        
       
         
         
