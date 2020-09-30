@@ -20,3 +20,8 @@ def register():
 @app.route('/inhome', methods=['GET', 'POST'])
 def logged_in():
     return home.logged_in()
+
+
+@app.route('/cart', methods=['GET', 'POST'])
+def cart():
+    return home.cart()

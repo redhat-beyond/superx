@@ -10,3 +10,7 @@ def home():
 
 def logged_in():
     return render_template('home-signedin.jinja2')
+
+
+def cart():
+    return render_template('cart.html')
