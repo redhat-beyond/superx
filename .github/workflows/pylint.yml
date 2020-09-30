@@ -16,22 +16,19 @@ jobs:
       with:
         python-version: 3.8
     
-    - name: Bootstrap
+    - name: Dependencies
       run: |
-        sudo ./bootstrap.sh
- 
-    - name: Analysing the code with pylint
-      run: |
-        sudo pip3 install pylint
-        pylint `ls -R|grep .py$|xargs`
+        pip install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest email-validator pylint
     
-    
-          
     - name: Test pytest 
       run: |
-        sudo pip3 install pytest
         pytest
-
+    
+    - name: Analysing the code with pylint
+      run: |
+        pylint `ls -R|grep .py$|xargs`
+      
+      
         
         
     
