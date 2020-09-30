@@ -13,10 +13,6 @@ class LoginForm(FlaskForm):
                                                   Length(min=6, message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 57ec9f999179fddfb94bd25032a1b987d93dca68
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -31,10 +27,6 @@ class RegisterForm(FlaskForm):
     username = StringField('שם משתמש', validators=[InputRequired(), Length(min=3, max=10)])
     password = PasswordField('סיסמא', render_kw={"placeholder": "******"}, validators=[InputRequired(),
                                                   Length(min=6, message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
-<<<<<<< HEAD
-=======
-
->>>>>>> 57ec9f999179fddfb94bd25032a1b987d93dca68
 
 
 def login():
