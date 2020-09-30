@@ -24,7 +24,6 @@ function search() {
 
 // adding Items from "myTable" table to "mycart" table
 function addItem(product_id, product_name){
-  console.log("someone click");
   const tableBody = $('#cartbody');
   tableBody.append($(`<tr id="${product_id}">
       <td scope="col" colspan="2">${product_id}</td>
