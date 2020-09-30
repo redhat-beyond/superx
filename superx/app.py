@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from os import environ, path
-# from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
+
 
 
 app = Flask(__name__)
