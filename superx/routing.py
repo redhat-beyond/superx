@@ -21,6 +21,12 @@ def register():
 def logged_in():
     return home.logged_in()
 
+
+@app.route('/cart', methods=['GET', 'POST'])
+def cart():
+    return home.cart()
+
+  
 @app.route("/logout")
 def logout():
     return signup.logout()
