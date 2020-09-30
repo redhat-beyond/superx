@@ -30,4 +30,3 @@ def cart():
 @app.route("/logout")
 def logout():
     return signup.logout()
-  
