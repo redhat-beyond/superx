@@ -4,6 +4,5 @@ from models import *
 
 
 def home():
-
-    products = Product.query.all()
+    products = Product.query.order_by(Product.name).all()
     return render_template('home.html', products=products)

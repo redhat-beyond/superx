@@ -8,11 +8,10 @@
     <div class="container">
       <h1 id="header" class="display-3 text-center">superX</h1>
       <p></p>
-      <p style="font-size: large">הכנס שם מוצר בתיבת החיפוש</p>
+      <p style="font-size: large" >הכנס שם מוצר בתיבת החיפוש</p>
       <form id="searchbutton" class="form-inline mt-2 mt-md-0">
           <input id="myInput" onkeyup="search()" class="form-control mr-sm-2 text-center" type="text" placeholder="הכנס שם מוצר" aria-label="Search">
           <p></p>
-          <!-- this button is corrently disabled -->
           <button id="comperbutton" type="button" class="btn btn-outline-success btn-lg" disabled><strong>השווה מחירים</strong></button>
       </form>
     </div>
@@ -36,7 +35,7 @@
   <tbody id="tbody">
     {% for product in products %}
     <tr>
-       <td> {{ product.name }} </td>
+       <td> {{ product.name|replace('\'', '') }} </td>
         {% if product.unit_of_measure == 'לא ידוע' %}
             <td>1 יחידה </td>
         {% elif product.unit_of_measure == 'יחידה   '%}
@@ -44,7 +43,7 @@
         {% else %}
             <td>{{ product.quantity|int }} {{ product.unit_of_measure }}</td>
         {% endif %}
-       <td> <button onclick="addItem({{ product.id }}, '{{product.name |replace('\'', '\"')}}')" type="button" class="btn btn-outline-success">הוסף לעגלה</button> </td>
+       <td> <button onclick="addItem({{ product.id }}, '{{product.name |replace('\'', '')}}')" type="button" class="btn btn-outline-success">הוסף לעגלה</button> </td>
     </tr>
     {% endfor %}
   </tbody>
