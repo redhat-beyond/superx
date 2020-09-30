@@ -15,17 +15,23 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.8
-    - name: Install dependencies
+    
+    - name: Bootstrap
       run: |
-        python -m pip install --upgrade pip
-        pip install pylint
-        pip install -r requirments.txt
+        sudo ./bootstrap.sh
+ 
     - name: Analysing the code with pylint
       run: |
+        sudo pip3 install pylint
         pylint `ls -R|grep .py$|xargs`
     
+    
+          
     - name: Test pytest 
       run: |
+        sudo pip3 install pytest
         pytest
+
+        
         
     

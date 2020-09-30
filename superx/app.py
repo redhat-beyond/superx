@@ -4,11 +4,13 @@ from flask_bootstrap import Bootstrap
 from os import environ, path
 
 
+
 app = Flask(__name__)
 Bootstrap(app)
 
 app.config.from_object('config.BaseConfig')
 app.config['SECRET_KEY'] = 'aefguhw49t23465'
+app.config['TESTING'] = False
 FLASK_APP = environ.get('FLASK_APP')
 FLASK_ENV = environ.get('FLASK_ENV')
 
@@ -19,6 +21,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 db = SQLAlchemy(app)
 db.init_app(app)
+
 
 from routing import *
 

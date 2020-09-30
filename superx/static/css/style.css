@@ -156,3 +156,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+input {
+    text-align: center;
+}
