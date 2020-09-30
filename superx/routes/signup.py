@@ -1,6 +1,7 @@
+from app import app
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
-from wtforms.validators import InputRequired, Length, Email
+from wtforms.validators import InputRequired, Length, ValidationError
 from flask import render_template, redirect, url_for, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import *
@@ -8,7 +9,7 @@ from models import *
 
 class LoginForm(FlaskForm):
     email = StringField('אימייל', render_kw={"placeholder": "username@domain.com"},
-                        validators=[InputRequired(), Length(min=3, max=50), Email("*בבקשה הכנס כתובת אימייל חוקית*")])
+                        validators=[InputRequired(), Length(min=3, max=50)])
     password = PasswordField('סיסמה', render_kw={"placeholder": "******"}, validators=[InputRequired(),
                                                   Length(min=6, message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
 
@@ -23,10 +24,27 @@ def load_user(user_id):
 
 class RegisterForm(FlaskForm):
     email = StringField('אימייל', render_kw={"placeholder": "username@domain.com"},
-                        validators=[InputRequired(), Length(min=3, max=50), Email("*בבקשה הכנס כתובת אימייל חוקית*")])
+                        validators=[InputRequired(), Length(min=3, max=50)])
     username = StringField('שם משתמש', validators=[InputRequired(), Length(min=3, max=10)])
     password = PasswordField('סיסמא', render_kw={"placeholder": "******"}, validators=[InputRequired(),
                                                   Length(min=6, message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
+
+
+    def validate_email(self, email):
+        user_object = User.query.filter_by(email=email.data).first()
+
+        if user_object:
+            raise ValidationError("email already exists, please login")
+
+        import requests
+
+        response = requests.get(
+        "https://isitarealemail.com/api/email/validate",
+        params = {'email': email.data})
+
+        status = response.json()['status']
+        if status != "valid":
+            raise ValidationError("*בבקשה הכנס כתובת אימייל חוקית*")
 
 
 def login():
