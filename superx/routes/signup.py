@@ -3,7 +3,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask import render_template, redirect, url_for, request
+from flask_login import LoginManager, login_required, logout_user, login_user
 from werkzeug.security import generate_password_hash, check_password_hash
+
 from models import *
 
 
@@ -71,4 +73,8 @@ def register():
 
     return render_template('register.jinja2', form=form)
 
-  
+
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))

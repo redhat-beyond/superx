@@ -10,6 +10,7 @@ Bootstrap(app)
 
 app.config.from_object('config.BaseConfig')
 app.config['SECRET_KEY'] = 'aefguhw49t23465'
+app.config['TESTING'] = False
 FLASK_APP = environ.get('FLASK_APP')
 FLASK_ENV = environ.get('FLASK_ENV')
 

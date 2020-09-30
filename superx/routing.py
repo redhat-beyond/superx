@@ -20,3 +20,7 @@ def register():
 @app.route('/inhome', methods=['GET', 'POST'])
 def logged_in():
     return home.logged_in()
+
+@app.route("/logout")
+def logout():
+    return signup.logout()
