@@ -19,11 +19,7 @@ jobs:
     - name: Dependencies
       run: |
         pip install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest email-validator pylint
-    
-    - name: Test pytest 
-      run: |
-        pytest
-    
+   
     - name: Analysing the code with pylint
       run: |
         pylint `ls -R|grep .py$|xargs`
