@@ -1,5 +1,6 @@
-from sqlalchemy import Integer, Column, Text, Boolean, Float
-from flask_login import UserMixin
+from sqlalchemy import Integer, Column, Text, Boolean, BigInteger, DECIMAL
+from flask_login import LoginManager, UserMixin
+
 from app import db
 
 
@@ -11,12 +12,11 @@ class User(UserMixin, db.Model):
     email = Column(db.String(50), unique=True)
     password = Column(db.String(80))
 
+
 class Test(db.Model):
     __tablename__ = 'test'
 
     id = Column(Integer, primary_key=True)
-    
-
 
 
 class Chain(db.Model):
@@ -39,9 +39,9 @@ class Branch(db.Model):
 class Product(db.Model):
     __tablename__ = 'product'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
     name = Column(Text)
-    quantity = Column(Integer)
+    quantity = Column(DECIMAL)
     is_weighted = Column(Boolean)
     unit_of_measure = Column(Text)
 
@@ -52,7 +52,7 @@ class BranchPrice(db.Model):
     branch_price_id = Column(Integer, primary_key=True, autoincrement=True)
     item_code = Column(db.ForeignKey('product.id'))
     branch_id = Column(db.ForeignKey('branch.id'))
-    price = Column(Integer)
+    price = Column(DECIMAL)
     update_date = Column(Text)
 
 
