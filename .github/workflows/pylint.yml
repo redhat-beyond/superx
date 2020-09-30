@@ -16,15 +16,16 @@ jobs:
       with:
         python-version: 3.8
     
+    - name: Bootstrap
+      run: |
+        sudo ./bootstrap.sh
+ 
     - name: Analysing the code with pylint
       run: |
         sudo pip3 install pylint
         pylint `ls -R|grep .py$|xargs`
     
-    - name: Bootstrap
-        run: |
-          sudo ./bootstrap.sh
-
+    
           
     - name: Test pytest 
       run: |
