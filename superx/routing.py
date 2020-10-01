@@ -1,5 +1,6 @@
 from app import app
 from routes import home, signup
+from flask import request
 
 
 @app.route('/')
@@ -24,3 +25,10 @@ def logged_in():
 @app.route("/logout")
 def logout():
     return signup.logout()
+
+
+#background process happening without any refreshing
+@app.route('/addToCart', methods=['POST'])
+def addItem():
+    product_id = request.form.get('product_id')
+    return home.add(product_id)
