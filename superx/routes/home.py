@@ -13,3 +13,5 @@ def add(product_id):
     session['cart'].append(product_id)
 
     return "Nada"
+def cart():
+    return render_template('cart.html')

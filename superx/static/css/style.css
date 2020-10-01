@@ -39,7 +39,7 @@ footer {
 .table {
     text-align: right;
 }
-#myTable tr:hover {
+#tbody tr:hover, #cartbody tr:hover {
     -webkit-transform: scale(1.05);
     -ms-transform: scale(1.05);
     transform: scale(1.05);
@@ -156,7 +156,6 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-
 input {
-    text-align: center;
+    text-align:center;
 }

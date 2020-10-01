@@ -22,13 +22,19 @@ def register():
 def logged_in():
     return home.logged_in()
 
+
+@app.route('/cart', methods=['GET', 'POST'])
+def cart():
+    return home.cart()
+
+  
 @app.route("/logout")
 def logout():
     return signup.logout()
 
 
-#background process happening without any refreshing
 @app.route('/addToCart', methods=['POST'])
 def addItem():
     product_id = request.form.get('product_id')
     return home.add(product_id)
+
