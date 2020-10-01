@@ -1,9 +1,9 @@
 from flask import render_template, request, redirect, url_for
-
 from models import *
 
 
 def home():
+
     products = Product.query.order_by(Product.name).all()
     if request.method == "POST":
         # list of items code that the customer wants to compare
