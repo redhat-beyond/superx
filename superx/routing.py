@@ -2,7 +2,7 @@ from app import app
 from routes import home, signup
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
     return home.home()
 
@@ -22,9 +22,9 @@ def logged_in():
     return home.logged_in()
 
 
-@app.route('/cart', methods=['GET', 'POST'])
-def cart():
-    return home.cart()
+@app.route('/cart/<items_list>', methods=['GET', 'POST'])
+def cart(items_list):
+    return home.cart(items_list)
 
   
 @app.route("/logout")
