@@ -3,17 +3,16 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import gzip
 import xml.etree.ElementTree as ET
-from models import Product, BranchPrice
-from app import db
+from superx.models import Product, BranchPrice
+from superx.app import db
 import logging
 
-
-logging.basicConfig(filename='test.log', level=logging.INFO,
+logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
 
 
 class InfoExtractor:
-    """
+    """ 
     This class executes the following task:
         1. web scrapes the url's from the url list and retrieves the relevant gzip file links
         2. extracts the xml file from the gzip file and parses it into an xml tree
@@ -35,6 +34,7 @@ class InfoExtractor:
                                                     'multiple_pages': False,
                                                     'zip_link_prefix': f'http://publishprice.mega.co.il/{str(datetime.today().strftime("%Y%m%d"))}/',
                                                     'item_attr_name': 'Item',
+                                                    'price_full': 'PriceFull',
                                                     'is_weighted_attr_name': 'bIsWeighted',
                                                     'item_date_format': '%Y-%m-%d'},
                                            'shufersal': {'store_name': 'shufersal',
@@ -42,18 +42,20 @@ class InfoExtractor:
                                                          'multiple_pages': True,
                                                          'zip_link_prefix': None,
                                                          'item_attr_name': 'Item',
+                                                         'price_full': 'PriceFull',
                                                          'is_weighted_attr_name': 'bIsWeighted',
                                                          'item_date_format': '%Y-%m-%d'},
-                                           'matrix': {'store_name': 'victory',
-                                                      'url': 'http://matrixcatalog.co.il/NBCompetitionRegulations.aspx',
-                                                      'multiple_pages': False,
-                                                      'zip_link_prefix': 'http://matrixcatalog.co.il/',
-                                                      'item_attr_name': 'Product',
-                                                      'is_weighted_attr_name': 'BisWeighted',
-                                                      'item_date_format': '%Y-%m-%d'}
+                                           'victory': {'store_name': 'victory',
+                                                       'url': 'http://matrixcatalog.co.il/NBCompetitionRegulations.aspx',
+                                                       'multiple_pages': False,
+                                                       'zip_link_prefix': 'http://matrixcatalog.co.il/',
+                                                       'item_attr_name': 'Product',
+                                                       'price_full': 'PriceFull7290696200003',
+                                                       'is_weighted_attr_name': 'BisWeighted',
+                                                       'item_date_format': '%Y-%m-%d'}
                                            }
 
-    def run_extractor(self):
+    def run_info_extractor(self):
         """
         This method starts the extraction process
         """
@@ -67,7 +69,8 @@ class InfoExtractor:
                 except ConnectionError as ce:
                     logging.error(str(ce))
 
-            self.get_zip_file_links(url_list)
+            zip_links = self.get_zip_file_links(url_list)
+            self.info_parser(zip_links)
 
     def get_zip_file_links(self, url_list):
         """
@@ -90,10 +93,10 @@ class InfoExtractor:
                 for link in links_list:
                     if link.has_attr('href'):
                         https = str(link.attrs['href'])
-                        if 'PriceFull' in https:
+                        if self.current_super['price_full'] in https:
                             zip_links.add(https)
 
-                self.info_parser(zip_links)
+                return zip_links
 
     def info_parser(self, zip_links):
         """
@@ -206,10 +209,11 @@ class InfoExtractor:
         """
         num_of_pages = self.get_num_of_pages()
         if num_of_pages == -1:
-            raise ConnectionError(f'Unable to connect to url to find number of pages for {self.current_super["store_name"]}')
+            raise ConnectionError(
+                f'Unable to connect to url to find number of pages for {self.current_super["store_name"]}')
 
         general_url = self.current_super['url']
-        general_url = general_url[:len(general_url)-1]
+        general_url = general_url[:len(general_url) - 1]
         url_list = []
 
         for i in range(1, num_of_pages + 1):
