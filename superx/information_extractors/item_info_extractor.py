@@ -6,13 +6,14 @@ import xml.etree.ElementTree as ET
 from superx.models import Product, BranchPrice
 from superx.app import db
 import logging
+from decimal import *
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
 
 
 class InfoExtractor:
-    """ 
+    """
     This class executes the following task:
         1. web scrapes the url's from the url list and retrieves the relevant gzip file links
         2. extracts the xml file from the gzip file and parses it into an xml tree
@@ -140,8 +141,8 @@ class InfoExtractor:
                 if exclude in name:
                     continue
 
-            quantity = float(item.find('Quantity').text)
-            price = float(item.find('ItemPrice').text)
+            quantity = Decimal(item.find('Quantity').text)
+            price = Decimal(item.find('ItemPrice').text)
             update_date = self.standardize_date(item.find('PriceUpdateDate').text)
             is_weighted = False
             if item.find(bIsWeighted).text == '1':
