@@ -12,12 +12,6 @@ class User(UserMixin, db.Model):
     password = Column(db.String(80))
 
 
-class Test(db.Model):
-    __tablename__ = 'test'
-
-    id = Column(Integer, primary_key=True)
-
-
 class Chain(db.Model):
     __tablename__ = 'chain'
 
