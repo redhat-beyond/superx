@@ -3,7 +3,6 @@
 {% extends "base.html" %}
 {%block content%}
 <main role="main">
-  <!-- Main jumbotron for a primary marketing message or call to action -->
   <div class="jumbotron">
     <div class="container">
       <h1 id="header" class="display-3 text-center">superX</h1>
@@ -16,7 +15,6 @@
       </form>
     </div>
     </div>
-
 
   <div class="container">
   <div class="row mb-3">
@@ -33,19 +31,7 @@
     </tr>
   </thead>
   <tbody id="tbody">
-    {% for product in products %}
-    <tr>
-       <td> {{ product.name|replace('\'', '') }} </td>
-        {% if product.unit_of_measure == 'לא ידוע' %}
-            <td>1 יחידה </td>
-        {% elif product.unit_of_measure == 'יחידה   '%}
-            <td> 1 יחידה </td>
-        {% else %}
-            <td>{{ product.quantity|int }} {{ product.unit_of_measure }}</td>
-        {% endif %}
-       <td> <button onclick="addItem({{ product.id }}, '{{product.name |replace('\'', '')}}')" type="button" class="btn btn-outline-success">הוסף לעגלה</button> </td>
-    </tr>
-    {% endfor %}
+
   </tbody>
 </table>
 </div> <!-- col  -->
