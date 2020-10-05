@@ -25,3 +25,24 @@ def cart(items_list):
     #  names & prices)
 
     return render_template('cart.html')
+
+
+def livesearch():
+
+    json_list_of_items = []
+
+    # if search_res is empty string, return empty json
+    search_res = request.form.get("input")
+    if not search_res:
+        return render_template('products_table.html', products=json_list_of_items)
+
+    products_list = db.session.query(Product).filter(Product.name.contains(search_res)).all()
+
+    for item in products_list:
+        json_list_of_items.append({
+            "id": item.id,
+            "name": item.name,
+            "quantity": float(item.quantity),
+            "unit_of_measure": item.unit_of_measure
+        })
+    return render_template('products_table.html', products=json_list_of_items)
