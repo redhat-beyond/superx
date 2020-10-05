@@ -13,24 +13,27 @@ class LoginForm(FlaskForm):
     email = StringField('אימייל', render_kw={"placeholder": "username@domain.com"},
                         validators=[InputRequired(), Length(min=3, max=50)])
     password = PasswordField('סיסמה', render_kw={"placeholder": "******"}, validators=[InputRequired(),
-                                                  Length(min=6, message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
+                                                                                       Length(min=6,
+                                                                                              message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
 
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 class RegisterForm(FlaskForm):
     email = StringField('אימייל', render_kw={"placeholder": "username@domain.com"},
                         validators=[InputRequired(), Length(min=3, max=50)])
     username = StringField('שם משתמש', validators=[InputRequired(), Length(min=3, max=10)])
     password = PasswordField('סיסמא', render_kw={"placeholder": "******"}, validators=[InputRequired(),
-                                                  Length(min=6, message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
-
+                                                                                       Length(min=6,
+                                                                                              message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
 
     def validate_email(self, email):
         user_object = User.query.filter_by(email=email.data).first()
@@ -41,8 +44,8 @@ class RegisterForm(FlaskForm):
         import requests
 
         response = requests.get(
-        "https://isitarealemail.com/api/email/validate",
-        params = {'email': email.data})
+            "https://isitarealemail.com/api/email/validate",
+            params={'email': email.data})
 
         status = response.json()['status']
         if status != "valid":
@@ -53,11 +56,11 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-       user = User.query.filter_by(email=form.email.data).first()
-       if user:
-           if check_password_hash(user.password, form.password.data):
-               login_user(user)
-               return redirect(url_for('index'))
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            if check_password_hash(user.password, form.password.data):
+                login_user(user)
+                return redirect(url_for('index'))
 
     return render_template('login.jinja2', form=form)
 
