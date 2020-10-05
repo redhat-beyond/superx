@@ -1,7 +1,8 @@
 from app import app
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
-from wtforms.validators import InputRequired, Length, ValidationError
+from wtforms.validators import InputRequired, Length, ValidationError, Email
+from wtforms.fields.html5 import EmailField
 from flask import render_template, redirect, url_for, request
 from flask_login import LoginManager, login_required, logout_user, login_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -28,7 +29,7 @@ def load_user(user_id):
 
 
 class RegisterForm(FlaskForm):
-    email = StringField('אימייל', render_kw={"placeholder": "username@domain.com"},
+    email = EmailField('אימייל', render_kw={"placeholder": "username@domain.com"},
                         validators=[InputRequired(), Length(min=3, max=50)])
     username = StringField('שם משתמש', validators=[InputRequired(), Length(min=3, max=10)])
     password = PasswordField('סיסמא', render_kw={"placeholder": "******"}, validators=[InputRequired(),
@@ -39,7 +40,7 @@ class RegisterForm(FlaskForm):
         user_object = User.query.filter_by(email=email.data).first()
 
         if user_object:
-            raise ValidationError("email already exists, please login")
+            raise ValidationError("*המשתמש כבר רשום על מייל זה*")
 
         import requests
 
