@@ -16,9 +16,6 @@ def home():
         return render_template('home.html', products=products)
 
 
-def add(product_id):
-    session['cart'].append(product_id)
-
 def cart(items_list):
     # TODO: add the db query for the products and send the info of each item and price to cart.html (three lists of products
     #  names & prices)

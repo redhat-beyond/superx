@@ -32,9 +32,3 @@ def cart(items_list):
 def logout():
     return signup.logout()
 
-
-@app.route('/addToCart', methods=['POST'])
-def addItem():
-    product_id = request.form.get('product_id')
-    return home.add(product_id)
-
