@@ -1,6 +1,6 @@
 from app import app
 from routes import home, signup
-from flask import request
+
 
 
 @app.route('/', methods=['GET', 'POST'])
