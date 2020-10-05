@@ -7,6 +7,11 @@ def index():
     return home.home()
 
 
+@app.route("/livesearch", methods=["POST", "GET"])
+def livesearch():
+    return home.livesearch()
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     return signup.login()
@@ -26,7 +31,7 @@ def logged_in():
 def cart(items_list):
     return home.cart(items_list)
 
-  
+
 @app.route("/logout")
 def logout():
     return signup.logout()
