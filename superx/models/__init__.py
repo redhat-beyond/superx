@@ -15,7 +15,7 @@ class User(UserMixin, db.Model):
 class Chain(db.Model):
     __tablename__ = 'chain'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
     name = Column(Text)
 
 
@@ -26,7 +26,7 @@ class Branch(db.Model):
     name = Column(Text)
     address = Column(Text)
     sub_chain_id = Column(Integer)
-    chain_id = Column(db.ForeignKey('chain.id'))
+    chain_id = Column(db.ForeignKey('chain.id'), primary_key=True)
 
 
 class Product(db.Model):
@@ -68,4 +68,3 @@ class BasketProduct(db.Model):
 
     product = db.relationship('Product', primaryjoin='BasketProduct.product_id == Product.id', uselist=False)
     basket = db.relationship('Basket', primaryjoin='BasketProduct.basket_id == Basket.id', uselist=False)
-
