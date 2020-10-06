@@ -1,0 +1,22 @@
+{#LOGIN HTML#}
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{{ form.csrf_token }} 
+
+{%block content%}
+<div class="login-page">
+    <h1 style="font-size: 400%;" id="header" class="display-3 text-center">superX</h1>
+    <p></p>
+     <div class="form">
+        <form class="form-signin" method="POST" action="/login">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.email) }}
+        {{ wtf.form_field(form.password) }}
+        <button type="submit">התחבר</button>
+        <p class="message">לא רשום?<a  href="{{ url_for('register')}}">צור משתמש חדש</a></p>
+    </form>
+  </div>
+</div>
+{%endblock%}
+

@@ -1,0 +1,32 @@
+name: Pylint
+
+on: 
+  pull_request:
+    branches: [ master ]
+    
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    
+    - name: Dependencies
+      run: |
+        pip install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest email-validator pylint flake8
+   
+    - name: Analysing the code with pylint
+      run: |
+        pylint superx
+    
+  
+        
+      
+        
+        
+    
