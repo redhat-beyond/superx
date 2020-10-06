@@ -71,7 +71,7 @@ class InfoExtractor:
                     logging.error(str(ce))
 
             zip_links = self.get_zip_file_links(url_list)
-            self.info_parser(zip_links)
+            self.extract_xml_from_zip_and_parse(zip_links)
 
     def get_zip_file_links(self, url_list):
         """
@@ -99,7 +99,7 @@ class InfoExtractor:
 
                 return zip_links
 
-    def info_parser(self, zip_links):
+    def extract_xml_from_zip_and_parse(self, zip_links):
         """
         This method retrieves the xml file in the gzip file and parses it into an xml tree
         The branch_id is retrieved from the xml file and then it is sent for retrieval of the item information
@@ -121,34 +121,34 @@ class InfoExtractor:
                 # parses the xml document into a tree
                 tree = ET.fromstring(xml_file)
                 # gets child containing item information
-                items = tree.getchildren()[-1]
-                self.extract_information(items)
+                info_child_node = tree.getchildren()[-1]
+                self.extract_information_from_parsed_xml(info_child_node)
 
-    def extract_information(self, items):
+    def extract_information_from_parsed_xml(self, xml_info_child_node):
         """
         This method iterates over all items in the supermarket and extracts the relevant data
         The data is then committed into the relevant table in the data base
         :param items: The child of the parsed xml tree containing all item information
         """
         item_attr_name = self.current_super['item_attr_name']
-        bIsWeighted = self.current_super['is_weighted_attr_name']
+        is_weighted_attr = self.current_super['is_weighted_attr_name']
 
-        for item in items.findall(item_attr_name):
+        for item in xml_info_child_node.findall(item_attr_name):
             item_code = int(item.find('ItemCode').text)
-            name = item.find('ItemName').text
+            item_name = item.find('ItemName').text
             # exclude unwanted names from DB
-            for exclude in self.exclude_names:
-                if exclude in name:
+            for name in self.exclude_names:
+                if name in item_name:
                     continue
 
             quantity = Decimal(item.find('Quantity').text)
             price = Decimal(item.find('ItemPrice').text)
             update_date = self.standardize_date(item.find('PriceUpdateDate').text)
             is_weighted = False
-            if item.find(bIsWeighted).text == '1':
+            if item.find(is_weighted_attr).text == '1':
                 is_weighted = True
 
-            unit_of_measure = self.convert_unit_name(item.find('UnitQty').text)
+            unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text)
             # if item already in db then continue to next item
             if bool(Product.query.filter_by(id=item_code).first()):
                 # adding current_branch_price to the db and commit
@@ -158,7 +158,7 @@ class InfoExtractor:
                 continue
 
             # adding current_product to the db and commit
-            current_product = Product(id=item_code, name=name, quantity=quantity, is_weighted=is_weighted,
+            current_product = Product(id=item_code, name=item_name, quantity=quantity, is_weighted=is_weighted,
                                       unit_of_measure=unit_of_measure)
             db.session.add(current_product)
             db.session.commit()
@@ -167,7 +167,7 @@ class InfoExtractor:
             db.session.add(current_branch_price)
             db.session.commit()
 
-    def convert_unit_name(self, unit_in_hebrew):
+    def standardize_weight_name(self, unit_in_hebrew):
         """
         This method standardizes the unit of measurement
         if the unit of measurement is not know, returns unknown
@@ -225,7 +225,8 @@ class InfoExtractor:
     def get_num_of_pages(self):
         """
         gets the number of pages for a certain supermarket
-        In case the number of pages increases or decreases the code will always check if it is a single, double, triple digit
+        In case the number of pages increases or decreases
+        the code will always check if it is a single, double, triple digit
         :return: number of pages
         """
         num_of_pages = '1'
