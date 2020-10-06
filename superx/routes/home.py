@@ -1,9 +1,9 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, session
 from models import *
 
 
 def home():
-
+    session['cart'] = []
     products = Product.query.order_by(Product.name).all()
     if request.method == "POST":
         # list of items code that the customer wants to compare
@@ -24,7 +24,7 @@ def cart(items_list):
 
 
 def livesearch():
-
+    
     json_list_of_items = []
 
     # if search_res is empty string, return empty json
@@ -42,3 +42,10 @@ def livesearch():
             "unit_of_measure": item.unit_of_measure
         })
     return render_template('products_table.html', products=json_list_of_items)
+
+
+def addItem():
+    item = {'id' : request.form.get('product_id'), 'name' : request.form.get('product_name')}
+    session['cart'].append(item)
+    return render_template('cart_items.html', item=item)
+

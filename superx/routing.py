@@ -32,6 +32,9 @@ def logged_in():
 def cart(items_list):
     return home.cart(items_list)
 
+@app.route("/addItem", methods=["POST", "GET"])
+def addItem():
+    return home.addItem()
 
 @app.route("/logout")
 def logout():
