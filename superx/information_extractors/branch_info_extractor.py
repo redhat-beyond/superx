@@ -2,63 +2,25 @@ import requests
 import gzip
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from superx.app import supermarket_info_dictionary
 
 
 class BranchExtractor:
 
     def __init__(self):
         self.current_super = ''
-        self.link_formatted_date = str(datetime.today().strftime("%Y%m%d"))
-        self.super_specific_info = {'mega': {'store_name': 'mega',
-                                             'url': f'http://publishprice.mega.co.il/{self.link_formatted_date}/Stores7290055700007-{self.link_formatted_date}0001.xml',
-                                             'needs_web_scraping': False,
-                                             'need_zip_prefix': False,
-                                             'encoding': 'UTF-16',
-                                             'link_attrs_name': None,
-                                             'attr_path': 'SubChains/SubChain/Stores',
-                                             'chain_id': 7290055700007,
-                                             'attrs': {'store': 'Store', 'store_id': 'StoreId',
-                                                       'store_name': 'StoreName',
-                                                       'address': 'Address', 'city': 'City'}
-                                             },
-                                    'shufersal': {'store_name': 'shufersal',
-                                                  'url': 'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=5&storeId=0&page=1',
-                                                  'needs_web_scraping': True,
-                                                  'need_zip_prefix': False,
-                                                  'encoding': 'UTF-8',
-                                                  'link_attrs_name': 'Stores7290027600007',
-                                                  'attr_path': '{http://www.sap.com/abapxml}values/STORES',
-                                                  'chain_id': 7290027600007,
-                                                  'attrs': {'store': 'STORE', 'store_id': 'STOREID',
-                                                            'store_name': 'STORENAME',
-                                                            'address': 'ADDRESS', 'city': 'CITY'}
-                                                  },
-                                    'victory': {'store_name': 'victory',
-                                                'url': 'http://matrixcatalog.co.il/',
-                                                'needs_web_scraping': True,
-                                                'need_zip_prefix': True,
-                                                'encoding': 'UTF-8',
-                                                'link_attrs_name': 'StoresFull7290696200003',
-                                                'attr_path': 'Branches',
-                                                'chain_id': 7290696200003,
-                                                'attrs': {'store': 'Branch', 'store_id': 'StoreID',
-                                                          'store_name': 'StoreName',
-                                                          'address': 'Address', 'city': 'City'}
-                                                }
-                                    }
 
     def run_branch_extractor(self):
-        for keys in self.super_specific_info:
-            self.current_super = self.super_specific_info[keys]
+        for keys in supermarket_info_dictionary:
+            self.current_super = supermarket_info_dictionary[keys]
 
             try:
                 if self.current_super['needs_web_scraping']:
                     zip_link = self.get_zip_file_link()
                     if self.current_super['need_zip_prefix']:
-                        self.current_super['url'] = self.current_super['url'] + zip_link
+                        self.current_super['branch_url'] = self.current_super['branch_url'] + zip_link
                     else:
-                        self.current_super['url'] = zip_link
+                        self.current_super['branch_url'] = zip_link
 
                 xml_file = self.get_xml_file()
             except ConnectionError as ce:
@@ -76,7 +38,7 @@ class BranchExtractor:
 
         """
         try:
-            page = requests.get(self.current_super['url'])
+            page = requests.get(self.current_super['branch_url'])
             web_scrapper = BeautifulSoup(page.content, 'html.parser')
         except Exception:
             raise ConnectionError(f'Unable to retrieve zip file link for {self.current_super["store_name"]}')
@@ -96,7 +58,7 @@ class BranchExtractor:
     def get_xml_file(self):
         try:
             xml_file = ''
-            request = requests.get(self.current_super['url'])
+            request = requests.get(self.current_super['branch_url'])
             content = request.content
         except Exception:
             raise ConnectionError(f'Unable to retrieve xml file for super {self.current_super["store_name"]}')
@@ -134,9 +96,3 @@ class BranchExtractor:
         # # Add to DB
         # db.session.add_all(branches_list)
         # db.session.commit()
-
-
-if __name__ == '__main__':
-    print(datetime.today().date())
-    p = BranchExtractor()
-    p.run_branch_extractor()
