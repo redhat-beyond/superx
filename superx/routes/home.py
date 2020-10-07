@@ -4,15 +4,15 @@ from models import *
 
 def home():
     products = Product.query.order_by(Product.name).all()
-    if request.method == "POST":
-        # list of items code that the customer wants to compare
-        items_list = []
-        for item in request.form.keys():
-            items_list.append(item)
-        # TODO: Query the price of the items in items_list and send all the data to cart()
-        return redirect(url_for("cart", items_list=items_list))
-    else:
-        return render_template('home.html', products=products)
+    # if request.method == "POST":
+    #     # list of items code that the customer wants to compare
+    #     items_list = []
+    #     for item in request.form.keys():
+    #         items_list.append(item)
+    #     # TODO: Query the price of the items in items_list and send all the data to cart()
+    #     return redirect(url_for("cart", items_list=items_list))
+    # else:
+    return render_template('home.html', products=products)
 
 
 def cart(items_list):
@@ -44,13 +44,13 @@ def livesearch():
 
 
 def addItem():
-    item = {'id' : request.form.get('product_id'), 'name' : request.form.get('product_name')}
-    if session['cart'] == None:
-         session['cart'] = []
+    item = {'id' : request.form.get('id'), 'name' : request.form.get('name')}
+    if 'cart' not in session:
+        session['cart'] = [] 
     
-    session['cart'].append(item)
+    cart_list = session['cart']
+    cart_list.append(item)
+    session['cart'] = cart_list  
     
-    print(session['cart']['id'])
-    return 'nada'
-    return render_template('cart_items.html', item=item)
+    return ''
 

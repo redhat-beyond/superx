@@ -37,6 +37,7 @@
 </div> <!-- col  -->
 
 <div class="col-6 themed-grid-col">
+
 <table id="myCart" class="table text-center" dir="rtl" name="myCart">
 <thead>
     <tr>
@@ -50,15 +51,15 @@
 </thead>
 <tbody id="cartbody">
   {% for item in session['cart'] %}
-  <tr id="{{ item.id }}">
+  <tr>
     <td colspan="2">{{ item['id'] }}</td>
     <td colspan="2">{{ item['name'] }}</td>
-    <td><button onclick="removeItem({{ item.id }})" type="button" class="btn btn-outline-danger">הסר מהעגלה</button></td>
-    <td colspan="0"><input type="hidden" name="${product_id}"></td>
- </tr>
+    <td><button onclick="removeItem(${product_id})" type="button" class="btn btn-outline-danger">הסר מהעגלה</button></td>
+</tr>
   {% endfor %}
 </tbody>
 </table>
+</form>
 </div><!-- row -->
 </div> <!-- col -->
 </div> <!-- container -->

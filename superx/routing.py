@@ -28,11 +28,11 @@ def logged_in():
     return home.logged_in()
 
 
-@app.route('/cart/<items_list>', methods=['GET', 'POST'])
-def cart(items_list):
-    return home.cart(items_list)
+# @app.route('/cart/<items_list>', methods=['GET', 'POST'])
+# def cart(items_list):
+#     return home.cart(items_list)
 
-@app.route("/addItem", methods=["POST", "GET"])
+@app.route("/addItem", methods=['GET', 'POST'])
 def addItem():
     return home.addItem()
 

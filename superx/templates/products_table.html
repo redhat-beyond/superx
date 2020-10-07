@@ -8,6 +8,11 @@
         {% else %}
             <td>{{ product.quantity|int }} {{ product.unit_of_measure }}</td>
         {% endif %}
-       <td><button onclick="addItem({{ product.id }}, '{{product.name |replace('\'', '')}}')" type="button" class="btn btn-outline-success">הוסף לעגלה</button></td>
+       <td>
+           
+           <input type="hidden" id="product_id" value="{{ product.id }}">
+           <input type="hidden" id="pruduct_name" value="{{ product.name }}">
+        <button onclick="addItem({{ product.id }}, '{{product.name |replace('\'', '')}}')" type="button" class="btn btn-outline-success">הוסף לעגלה</button></td>
+    
     </tr>
     {% endfor %}

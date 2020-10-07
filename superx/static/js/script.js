@@ -5,9 +5,16 @@ function addItem(product_id, product_name){
   $.ajax({
     url: "/addItem",
     method: "POST",
-    data: {input: $("#myInput").val()},
+    data: {id: product_id, name: product_name},
     success: function (res) {
-      $('#cartbody').html(decodeURI(res));
+      const tableBody = $('#cartbody');
+      tableBody.append($(`<tr id="${product_id}">
+          <td colspan="2">${product_id}</td>
+          <td colspan="2">${product_name}</td>
+          <td><button onclick="removeItem(${product_id})" type="button" class="btn btn-outline-danger">הסר מהעגלה</button></td>
+          <td colspan="0"><input type="hidden" name="${product_id}"></td>
+            </tr>`));
+      $("#comperbutton").removeAttr('disabled');
     }
   })
 }
