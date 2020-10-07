@@ -4,14 +4,7 @@ from models import *
 
 def home():
     products = Product.query.order_by(Product.name).all()
-    # if request.method == "POST":
-    #     # list of items code that the customer wants to compare
-    #     items_list = []
-    #     for item in request.form.keys():
-    #         items_list.append(item)
-    #     # TODO: Query the price of the items in items_list and send all the data to cart()
-    #     return redirect(url_for("cart", items_list=items_list))
-    # else:
+   
     return render_template('home.html', products=products)
 
 
