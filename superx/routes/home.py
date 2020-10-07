@@ -3,7 +3,6 @@ from models import *
 
 
 def home():
-    session['cart'] = []
     products = Product.query.order_by(Product.name).all()
     if request.method == "POST":
         # list of items code that the customer wants to compare
@@ -46,6 +45,12 @@ def livesearch():
 
 def addItem():
     item = {'id' : request.form.get('product_id'), 'name' : request.form.get('product_name')}
+    if session['cart'] == None:
+         session['cart'] = []
+    
     session['cart'].append(item)
+    
+    print(session['cart']['id'])
+    return 'nada'
     return render_template('cart_items.html', item=item)
 
