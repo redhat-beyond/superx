@@ -54,3 +54,17 @@ def addItem():
     
     return ''
 
+def removeItem():
+    id_to_erase = request.form.get('id')
+    if 'cart' not in session:
+        return ''
+    
+    cart_list = session['cart']
+    for i in range(len(cart_list)): 
+        if cart_list[i]['id'] == id_to_erase: 
+            del cart_list[i] 
+            break
+    
+    session['cart'] = cart_list  
+    
+    return ''

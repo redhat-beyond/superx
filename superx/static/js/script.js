@@ -21,10 +21,17 @@ function addItem(product_id, product_name){
 
 // function that removes table row and if there are no items in cart - disabled 'comparebutton' button
 function removeItem(product_id) {
-  $('#' + product_id).remove();
+  $.ajax({
+    url: "/removeItem",
+    method: "POST",
+    data: {id: product_id},
+    success: function (res) {
+      $('#' + product_id).remove();
   if ($('#cartbody tr').length === 0) {
     $("#comperbutton").attr('disabled', '');
   }
+}
+})
 }
 
 // live search
