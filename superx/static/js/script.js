@@ -14,10 +14,11 @@ function addItem(product_id, product_name){
           <td><button onclick="removeItem(${product_id})" type="button" class="btn btn-outline-danger">הסר מהעגלה</button></td>
           <td colspan="0"><input type="hidden" name="${product_id}"></td>
             </tr>`));
-      $("#comperbutton").removeAttr('disabled');
+      $('#comperbutton').removeAttr('disabled');
     }
   })
 }
+
 
 // function that removes table row and if there are no items in cart - disabled 'comparebutton' button
 function removeItem(product_id) {
