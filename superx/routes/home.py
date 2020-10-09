@@ -16,10 +16,6 @@ def home():
         return render_template('home.html', products=products)
 
 
-def logged_in():
-    return render_template('home-signedin.jinja2')
-
-
 def cart(items_list):
     # TODO: add the db query for the products and send the info of each item and price to cart.html (three lists of products
     #  names & prices)
