@@ -2,7 +2,12 @@ import requests
 import gzip
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
-from superx.app import supermarket_info_dictionary
+from superx.app import supermarket_info_dictionary, db
+from superx.models import Chain, Branch
+import logging
+
+logging.basicConfig(filename='branch-extractor.log', level=logging.INFO,
+                    format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
 
 
 class BranchExtractor:
@@ -24,7 +29,7 @@ class BranchExtractor:
 
                 xml_file = self.get_xml_file()
             except ConnectionError as ce:
-                # logging.error(f'Unable to extract from zip file with url: {zip_link}')
+                logging.error(str(ce))
                 continue
             else:
                 self.extract_info(xml_file)
@@ -78,7 +83,6 @@ class BranchExtractor:
         for store in stores.findall(attrs_dict['store']):
             branch_id = store.find(attrs_dict['store_id']).text
             branch_name = store.find(attrs_dict['store_name']).text
-            # subChainID = store.find('SUBCHAINID').text
             city = store.find(attrs_dict['city']).text
             address = store.find(attrs_dict['address']).text
             if address is None or address == ' ':
@@ -88,11 +92,14 @@ class BranchExtractor:
             elif city is not None:
                 address = address + ' ' + city
 
-            print(branch_id + " " + branch_name + " " + address)
+            sub_chain_id = attrs_dict['sub_chain_id']
+            if type(attrs_dict['sub_chain_id']) is str:
+                sub_chain_id = store.find(attrs_dict['sub_chain_id']).text
 
-        #     branches_list.append(Branch(id=branchID, name=branchName, address=city + ", " + address,
-        #                                 sub_chin_id=subChainID, sub_chin_name=subChain, chain_id=chainID))
-        #
-        # # Add to DB
-        # db.session.add_all(branches_list)
-        # db.session.commit()
+            b = Branch(id=branch_id, name=branch_name, address=address, sub_chain_id=sub_chain_id,
+                       chain_id=self.current_super['chain_id'])
+            db.session.add(b)
+
+        # Add to DB
+        db.session.commit()
+

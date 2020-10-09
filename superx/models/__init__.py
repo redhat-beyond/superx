@@ -1,6 +1,6 @@
 from sqlalchemy import Integer, Column, Text, Boolean, BigInteger, DECIMAL
 from flask_login import LoginManager, UserMixin
-from app import db
+from superx.app import db
 
 
 class User(UserMixin, db.Model):
@@ -21,6 +21,7 @@ class Chain(db.Model):
 
 class Branch(db.Model):
     __tablename__ = 'branch'
+
 
     id = Column(Integer, primary_key=True)
     name = Column(Text)
