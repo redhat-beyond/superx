@@ -124,23 +124,16 @@ class InfoExtractor:
                 is_weighted = True
 
             unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text)
-            # if item already in db then continue to next item
-            if bool(Product.query.filter_by(id=item_code).first()):
-                # adding current_branch_price to the db and commit
-                current_branch_price = BranchPrice(item_code=item_code, price=price, update_date=update_date)
-                db.session.add(current_branch_price)
-                db.session.commit()
-                continue
+            # if item is not in db then add it
+            if not bool(Product.query.filter_by(id=item_code).first()):
+                current_product = Product(id=item_code, name=item_name, quantity=quantity, is_weighted=is_weighted,
+                                          unit_of_measure=unit_of_measure)
+                db.session.add(current_product)
 
-            # adding current_product to the db and commit
-            current_product = Product(id=item_code, name=item_name, quantity=quantity, is_weighted=is_weighted,
-                                      unit_of_measure=unit_of_measure)
-            db.session.add(current_product)
-            db.session.commit()
-            # adding current_branch_price to the db and commit
-            current_branch_price = BranchPrice(item_code=item_code, price=price, update_date=update_date)
+            current_branch_price = BranchPrice(branch_id='', item_code=item_code, price=price, update_date=update_date)
             db.session.add(current_branch_price)
-            db.session.commit()
+
+        db.session.commit()
 
     def standardize_weight_name(self, unit_in_hebrew):
         """
