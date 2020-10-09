@@ -1,26 +1,56 @@
 from flask import render_template, request, redirect, url_for
 from models import *
+from app import supermarket_info_dictionary as sd
 
 
 def home():
-
-    products = Product.query.order_by(Product.name).all()
     if request.method == "POST":
-        # list of items code that the customer wants to compare
-        items_list = []
+        # Generate string of items_code separate by '$' sign.
+        items_code_string = ''
         for item in request.form.keys():
-            items_list.append(item)
-        # TODO: Query the price of the items in items_list and send all the data to cart()
-        return redirect(url_for("cart", items_list=items_list))
+            items_code_string += item
+            items_code_string += '$'
+        return redirect(url_for("cart", items_code_string=items_code_string))
     else:
-        return render_template('home.html', products=products)
+        return render_template('home.html')
 
 
-def cart(items_list):
-    # TODO: add the db query for the products and send the info of each item and price to cart.html (three lists of products
-    #  names & prices)
+def cart(items_code_list):
+    total_mega = 0
+    total_shufersal = 0
+    total_victory = 0
+    mega_list = []
+    shufersal_list = []
+    victory_list = []
 
-    return render_template('cart.html')
+    for item_code in items_code_list:
+        item_name = Product.query.filter_by(id=item_code).first()
+        same_items_list = BranchPrice.query.filter_by(item_code=item_code).all()
+
+        for same_item in same_items_list:
+            if same_item.chain_id == sd['mega']['chain_id']:
+                mega_list.append({
+                    "name": item_name.name,
+                    "price": same_item.price
+                })
+                total_mega += same_item.price
+
+            elif same_item.chain_id == sd['shufersal']['chain_id']:
+                shufersal_list.append({
+                    "name": item_name.name,
+                    "price": same_item.price
+                })
+                total_shufersal += same_item.price
+
+            elif same_item.chain_id == sd['victory']['chain_id']:
+                victory_list.append({
+                    "name": item_name.name,
+                    "price": same_item.price
+                })
+                total_victory += same_item.price
+
+    return render_template('cart.html', total_mega=total_mega, total_shufersal=total_shufersal, total_victory=total_victory,
+                           mega_list=mega_list, shufersal_list=shufersal_list, victory_list=victory_list)
 
 
 def livesearch():
