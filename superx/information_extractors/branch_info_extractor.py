@@ -1,7 +1,7 @@
 import requests
 import gzip
 from bs4 import BeautifulSoup
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as et
 from superx.app import supermarket_info_dictionary, db
 from superx.models import Chain, Branch
 import logging
@@ -76,7 +76,7 @@ class BranchExtractor:
         return xml_file
 
     def extract_info(self, xml_file):
-        tree = ET.fromstring(xml_file)
+        tree = et.fromstring(xml_file)
         stores = tree.find(self.current_super['attr_path'])
         attrs_dict = self.current_super['attrs']
 
@@ -102,4 +102,3 @@ class BranchExtractor:
 
         # Add to DB
         db.session.commit()
-
