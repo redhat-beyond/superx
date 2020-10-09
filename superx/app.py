@@ -41,7 +41,8 @@ supermarket_info_dictionary = {'mega': {'store_name': 'mega',
                                                   'store_id': 'StoreId',
                                                   'store_name': 'StoreName',
                                                   'address': 'Address',
-                                                  'city': 'City'}
+                                                  'city': 'City',
+                                                  'sub_chain_id': 1}
                                         },
                                'shufersal': {'store_name': 'shufersal',
                                              'url': 'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=1',
@@ -62,7 +63,8 @@ supermarket_info_dictionary = {'mega': {'store_name': 'mega',
                                                        'store_id': 'STOREID',
                                                        'store_name': 'STORENAME',
                                                        'address': 'ADDRESS',
-                                                       'city': 'CITY'}
+                                                       'city': 'CITY',
+                                                       'sub_chain_id': 'SUBCHAINID'}
                                              },
                                'victory': {'store_name': 'victory',
                                            'url': 'http://matrixcatalog.co.il/NBCompetitionRegulations.aspx',
@@ -83,7 +85,8 @@ supermarket_info_dictionary = {'mega': {'store_name': 'mega',
                                                      'store_id': 'StoreID',
                                                      'store_name': 'StoreName',
                                                      'address': 'Address',
-                                                     'city': 'City'}
+                                                     'city': 'City',
+                                                     'sub_chain_id': 1}
                                            }
                                }
 

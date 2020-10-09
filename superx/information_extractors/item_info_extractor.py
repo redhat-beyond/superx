@@ -7,6 +7,7 @@ from superx.models import Product, BranchPrice
 from superx.app import db
 import logging
 from decimal import *
+from superx.app import supermarket_info_dictionary
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
@@ -30,38 +31,13 @@ class InfoExtractor:
         self.current_super = ''
         # list of unwanted names to be filter out
         self.exclude_names = ['משלוחים', 'ריק', 'פיקדון', 'תיבה', 'משלוח']
-        self.super_specific_information = {'mega': {'store_name': 'mega',
-                                                    'url': f'http://publishprice.mega.co.il/{str(datetime.today().strftime("%Y%m%d"))}',
-                                                    'multiple_pages': False,
-                                                    'zip_link_prefix': f'http://publishprice.mega.co.il/{str(datetime.today().strftime("%Y%m%d"))}/',
-                                                    'item_attr_name': 'Item',
-                                                    'price_full': 'PriceFull',
-                                                    'is_weighted_attr_name': 'bIsWeighted',
-                                                    'item_date_format': '%Y-%m-%d'},
-                                           'shufersal': {'store_name': 'shufersal',
-                                                         'url': 'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=1',
-                                                         'multiple_pages': True,
-                                                         'zip_link_prefix': None,
-                                                         'item_attr_name': 'Item',
-                                                         'price_full': 'PriceFull',
-                                                         'is_weighted_attr_name': 'bIsWeighted',
-                                                         'item_date_format': '%Y-%m-%d'},
-                                           'victory': {'store_name': 'victory',
-                                                       'url': 'http://matrixcatalog.co.il/NBCompetitionRegulations.aspx',
-                                                       'multiple_pages': False,
-                                                       'zip_link_prefix': 'http://matrixcatalog.co.il/',
-                                                       'item_attr_name': 'Product',
-                                                       'price_full': 'PriceFull7290696200003',
-                                                       'is_weighted_attr_name': 'BisWeighted',
-                                                       'item_date_format': '%Y-%m-%d'}
-                                           }
 
     def run_info_extractor(self):
         """
         This method starts the extraction process
         """
-        for key in self.super_specific_information:
-            self.current_super = self.super_specific_information[key]
+        for key in supermarket_info_dictionary:
+            self.current_super = supermarket_info_dictionary[key]
             url_list = [self.current_super['url']]
 
             if self.current_super['multiple_pages']:
