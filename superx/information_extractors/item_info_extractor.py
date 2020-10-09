@@ -4,10 +4,9 @@ from datetime import datetime
 import gzip
 import xml.etree.ElementTree as ET
 from superx.models import Product, BranchPrice
-from superx.app import db
+from superx.app import supermarket_info_dictionary, db
 import logging
 from decimal import *
-from superx.app import supermarket_info_dictionary
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
