@@ -39,8 +39,9 @@ class RegisterForm(FlaskForm):
     def validate_email(self, email):
         user_object = User.query.filter_by(email=email.data).first()
 
+        error_message = "*המשתמש כבר רשום על מייל זה*"
         if user_object:
-            raise ValidationError("*המשתמש כבר רשום על מייל זה*")
+            raise ValidationError(error_message)
 
         import requests
 
