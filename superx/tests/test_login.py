@@ -23,3 +23,4 @@ def user3():
 def test_register():
     validate_email(self, user3()[0])
     assert validate_email(self,user3()[0]) == error_message
+    
