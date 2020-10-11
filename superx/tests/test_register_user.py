@@ -21,3 +21,4 @@ def test_register_user(client):
     db.session.commit()
     User.query.filter(User.id == validate_user.id).delete()
     db.session.commit()
+
