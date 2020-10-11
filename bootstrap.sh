@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-sudo apt-get update 
-sudo apt-get install python3 python3-pip -y
+apt update 
+apt install python3.8 python3-pip python3.8-ven -y 
 pip3 install virtualenv  
-virtualenv superx
+virtualenv superx --python=python3.8
 source superx/bin/activate
-pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest 
+pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest requests
+
 
 export FLASK_APP=/vagrant/superx/app.py
 
