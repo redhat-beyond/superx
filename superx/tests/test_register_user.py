@@ -9,7 +9,6 @@ def test_register_user(client):
         'username': 'Admin',
         'email': 'aryehlevklein@gmail.com',
         'password' : '12345678',
-        'submit': 'צור משתמש חדש'
     }
     # Register new user
     client.post('/register', data=test_user, follow_redirects=True)
