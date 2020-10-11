@@ -28,10 +28,18 @@ def logged_in():
     return home.logged_in()
 
 
-@app.route('/cart/<items_list>', methods=['GET', 'POST'])
-def cart(items_list):
-    return home.cart(items_list)
+@app.route('/cart', methods=['GET', 'POST'])
+def cart():
+    return home.cart()
 
+@app.route("/addItem", methods=['GET', 'POST'])
+def addItem():
+    return home.addItem()
+
+
+@app.route("/removeItem", methods=['GET', 'POST'])
+def removeItem():
+    return home.removeItem()
 
 @app.route("/logout")
 def logout():
