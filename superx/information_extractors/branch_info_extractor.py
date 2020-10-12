@@ -102,3 +102,4 @@ class BranchExtractor:
 
         # Add to DB
         db.session.commit()
+

@@ -130,7 +130,7 @@ class InfoExtractor:
             if item.find(is_weighted_attr).text == '1':
                 is_weighted = True
 
-            unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text)
+            unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text.strip())
             # if item is not in db then add it
             if not bool(Product.query.filter_by(id=item_code).first()):
                 current_product = Product(id=item_code, name=item_name, quantity=quantity, is_weighted=is_weighted,
@@ -156,7 +156,7 @@ class InfoExtractor:
             'גרם': ['גרם', 'גרמים'],
             'ליטר': ['ליטר', 'ליטרים', 'ליטר    '],
             'מ"ל': ['מיליליטרים', 'מ"ל', 'מיליליטר'],
-            'אין': ['יחידה', 'לא ידוע']
+            'אין': ['יחידה', 'לא ידוע', "יח'"]
         }
 
         for unit in unit_dict.keys():
