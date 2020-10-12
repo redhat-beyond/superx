@@ -18,9 +18,17 @@ jobs:
       with:
         python-version: 3.8
     
-    - name: Install Dependencies
+    - name: Install Environment & Dependencies
       run: |
-        pip install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest email-validator pylint flake8
+        apt update
+        apt install python3.8 python3-pip python3.8-ven -y
+        pip3 install virtualenv
+        virtualenv superx --python=python3.8
+        source superx/bin/activate
+        pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest requests pylint
+        export FLASK_APP=superx/app.py
+        export FLASK_ENV=development
+        flask run -h 0.0.0.0 -p 5000
 
     - name: Run tests
       run: |
@@ -29,10 +37,3 @@ jobs:
     - name: Analyse the code with pylint
       run: |
         pylint superx
-
-  
-        
-      
-        
-        
-    

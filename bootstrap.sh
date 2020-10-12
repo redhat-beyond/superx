@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
 # Update ubuntu
-sudo apt-get update
+apt update
+
 # Install virtualenv
-sudo apt-get install python-virtualenv
+apt install python3.8 python3-pip python3.8-ven -y 
+pip3 install virtualenv  
 
 # Create virtualenv
-virtualenv superx
+virtualenv superx --python=python3.8
 
 # Create base working directory
 source superx/bin/activate
