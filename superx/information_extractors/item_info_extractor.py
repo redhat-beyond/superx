@@ -93,13 +93,17 @@ class InfoExtractor:
                 logging.error(f'Unable to extract from zip file with url: {zip_link}')
             else:
                 xml_file = gzip.decompress(content).decode('utf-8')
+                store_id = 'StoreId'
+                if self.current_super['store_name'] == 'victory':
+                    store_id = 'StoreID'
                 # parses the xml document into a tree
                 tree = ET.fromstring(xml_file)
+                branch_id = tree.find(store_id).text
                 # gets child containing item information
                 info_child_node = tree.getchildren()[-1]
-                self.extract_information_from_parsed_xml(info_child_node)
+                self.extract_information_from_parsed_xml(info_child_node, branch_id)
 
-    def extract_information_from_parsed_xml(self, xml_info_child_node):
+    def extract_information_from_parsed_xml(self, xml_info_child_node, branch_id):
         """
         This method iterates over all items in the supermarket and extracts the relevant data
         The data is then committed into the relevant table in the data base
@@ -130,7 +134,7 @@ class InfoExtractor:
                                           unit_of_measure=unit_of_measure)
                 db.session.add(current_product)
 
-            current_branch_price = BranchPrice(branch_id='', item_code=item_code, price=price, update_date=update_date)
+            current_branch_price = BranchPrice(branch_id=branch_id, item_code=item_code, price=price, update_date=update_date)
             db.session.add(current_branch_price)
 
         db.session.commit()
