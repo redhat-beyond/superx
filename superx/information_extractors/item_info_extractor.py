@@ -1,12 +1,13 @@
-import requests
-from bs4 import BeautifulSoup
 from datetime import datetime
 import gzip
+import logging
 import xml.etree.ElementTree as ET
+from decimal import Decimal
+from bs4 import BeautifulSoup
+import requests
 from superx.models import Product, BranchPrice
 from superx.app import supermarket_info_dictionary, db
-import logging
-from decimal import *
+
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
@@ -60,7 +61,7 @@ class InfoExtractor:
             try:
                 page = requests.get(url)
                 web_scrapper = BeautifulSoup(page.content, 'html.parser')
-            except Exception:
+            except requests.ConnectionError:
                 logging.error(f'Unable to connect to url:\n{url}')
             else:
                 links_list = web_scrapper.find_all('a')
@@ -89,7 +90,7 @@ class InfoExtractor:
             try:
                 request = requests.get(zip_link)
                 content = request.content
-            except Exception:
+            except requests.ConnectionError:
                 logging.error(f'Unable to extract from zip file with url: {zip_link}')
             else:
                 xml_file = gzip.decompress(content).decode('utf-8')
@@ -98,7 +99,7 @@ class InfoExtractor:
                     store_id = 'StoreID'
                 # parses the xml document into a tree
                 tree = ET.fromstring(xml_file)
-                branch_id = tree.find(store_id).text
+                branch_id = tree.find(store_id).text.lstrip('0')
                 # gets child containing item information
                 info_child_node = tree.getchildren()[-1]
                 self.extract_information_from_parsed_xml(info_child_node, branch_id)
@@ -107,10 +108,12 @@ class InfoExtractor:
         """
         This method iterates over all items in the supermarket and extracts the relevant data
         The data is then committed into the relevant table in the data base
-        :param items: The child of the parsed xml tree containing all item information
+        :param xml_info_child_node: The child of the parsed xml tree containing all item information
+        :param branch_id: curretn branch id
         """
         item_attr_name = self.current_super['item_attr_name']
         is_weighted_attr = self.current_super['is_weighted_attr_name']
+        branch_price_list = []
 
         for item in xml_info_child_node.findall(item_attr_name):
             item_code = int(item.find('ItemCode').text)
@@ -134,9 +137,11 @@ class InfoExtractor:
                                           unit_of_measure=unit_of_measure)
                 db.session.add(current_product)
 
-            current_branch_price = BranchPrice(branch_id=branch_id, item_code=item_code, price=price, update_date=update_date)
-            db.session.add(current_branch_price)
+            branch_price_list.append(BranchPrice(branch_id=branch_id, item_code=item_code, price=price,
+                                                 update_date=update_date))
 
+        db.session.commit()
+        db.session.add_all(branch_price_list)
         db.session.commit()
 
     def standardize_weight_name(self, unit_in_hebrew):
@@ -205,7 +210,7 @@ class InfoExtractor:
         try:
             page = requests.get(self.current_super['url'])
             web_scrapper = BeautifulSoup(page.content, 'html.parser')
-        except Exception:
+        except requests.ConnectionError:
             num_of_pages = -1
         else:
             if self.current_super['store_name'] == 'shufersal':

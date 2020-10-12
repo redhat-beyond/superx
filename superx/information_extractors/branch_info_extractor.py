@@ -1,10 +1,10 @@
-import requests
 import gzip
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as et
 from superx.app import supermarket_info_dictionary, db
-from superx.models import Chain, Branch
+from superx.models import Branch
 import logging
+import requests
 
 logging.basicConfig(filename='branch-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
@@ -45,7 +45,7 @@ class BranchExtractor:
         try:
             page = requests.get(self.current_super['branch_url'])
             web_scrapper = BeautifulSoup(page.content, 'html.parser')
-        except Exception:
+        except requests.ConnectionError:
             raise ConnectionError(f'Unable to retrieve zip file link for {self.current_super["store_name"]}')
         else:
             links_list = web_scrapper.find_all('a')
@@ -65,7 +65,7 @@ class BranchExtractor:
             xml_file = ''
             request = requests.get(self.current_super['branch_url'])
             content = request.content
-        except Exception:
+        except requests.ConnectionError:
             raise ConnectionError(f'Unable to retrieve xml file for super {self.current_super["store_name"]}')
         else:
             if self.current_super['needs_web_scraping']:
