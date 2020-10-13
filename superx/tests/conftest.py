@@ -1,6 +1,7 @@
 import pytest
 from app import app
-
+from app import db
+from models import User
 
 @pytest.fixture
 def client():
@@ -8,3 +9,5 @@ def client():
     app.config['TESTING'] = True
     return app.test_client()
 
+
+    

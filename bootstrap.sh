@@ -5,7 +5,7 @@ apt install python3.8 python3-pip python3.8-ven -y
 pip3 install virtualenv  
 virtualenv superx --python=python3.8
 source superx/bin/activate
-pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest requests
+pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest pytest-ordering requests
 
 
 export FLASK_APP=/vagrant/superx/app.py
