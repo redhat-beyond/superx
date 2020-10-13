@@ -24,12 +24,7 @@ class LoginForm(FlaskForm):
         if not user:
             raise ValidationError("*Email does not exist*")
 
-    # def validate_password(self, password):
-    #     user = User.query.filter_by(email=self.email.data).first()
-        
-    #     if  not check_password_hash(user.password, password):
-    #         raise ValidationError("*Wrong password*")
-        
+   
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -55,7 +50,9 @@ class RegisterForm(FlaskForm):
     def validate_email(self, email):
         user_object = User.query.filter_by(email=email.data).first()
 
+      
         if user_object:
+
             raise ValidationError("*Email already exists*")
 
         import requests
