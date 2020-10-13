@@ -11,9 +11,9 @@
         {{ wtf.form_field(form.username) }}
         {{ wtf.form_field(form.password) }}
         {{ wtf.form_field(form.email) }}
-        {{ form.submit(class="btn btn-light") }}
 
-        <p class="message">כבר רשום? <a href="{{ url_for('login')}}">לחץ כאן לכניסה</a></p>
+        <button type="submit">צור משתמש חדש</button>
+        <p class="message">כבר רשום? <a href="{{ url_for('login') }}">לחץ כאן לכניסה</a></p>
     </form>
   </div>
 </div>
