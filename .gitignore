@@ -1,6 +1,5 @@
 .vagrant/
 .idea/
-*.pyc.*
 *.pyc
 .vscode/
-*.log
+
