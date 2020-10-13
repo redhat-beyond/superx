@@ -137,7 +137,7 @@ class InfoExtractor:
                                           unit_of_measure=unit_of_measure)
                 db.session.add(current_product)
 
-            branch_price_list.append(BranchPrice(branch_id=branch_id, item_code=item_code, price=price,
+            branch_price_list.append(BranchPrice(chain_id=self.current_super['chain_id'], branch_id=branch_id, item_code=item_code, price=price,
                                                  update_date=update_date))
 
         db.session.commit()
