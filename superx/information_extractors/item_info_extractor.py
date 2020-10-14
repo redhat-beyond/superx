@@ -1,12 +1,13 @@
-import requests
-from bs4 import BeautifulSoup
 from datetime import datetime
 import gzip
-import xml.etree.ElementTree as ET
-from superx.models import Product, BranchPrice
-from superx.app import db
 import logging
-from decimal import *
+import xml.etree.ElementTree as ET
+from decimal import Decimal
+from bs4 import BeautifulSoup
+import requests
+from superx.models import Product, BranchPrice
+from superx.app import supermarket_info_dictionary, db
+
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
@@ -30,38 +31,13 @@ class InfoExtractor:
         self.current_super = ''
         # list of unwanted names to be filter out
         self.exclude_names = ['משלוחים', 'ריק', 'פיקדון', 'תיבה', 'משלוח']
-        self.super_specific_information = {'mega': {'store_name': 'mega',
-                                                    'url': f'http://publishprice.mega.co.il/{str(datetime.today().strftime("%Y%m%d"))}',
-                                                    'multiple_pages': False,
-                                                    'zip_link_prefix': f'http://publishprice.mega.co.il/{str(datetime.today().strftime("%Y%m%d"))}/',
-                                                    'item_attr_name': 'Item',
-                                                    'price_full': 'PriceFull',
-                                                    'is_weighted_attr_name': 'bIsWeighted',
-                                                    'item_date_format': '%Y-%m-%d'},
-                                           'shufersal': {'store_name': 'shufersal',
-                                                         'url': 'http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=1',
-                                                         'multiple_pages': True,
-                                                         'zip_link_prefix': None,
-                                                         'item_attr_name': 'Item',
-                                                         'price_full': 'PriceFull',
-                                                         'is_weighted_attr_name': 'bIsWeighted',
-                                                         'item_date_format': '%Y-%m-%d'},
-                                           'victory': {'store_name': 'victory',
-                                                       'url': 'http://matrixcatalog.co.il/NBCompetitionRegulations.aspx',
-                                                       'multiple_pages': False,
-                                                       'zip_link_prefix': 'http://matrixcatalog.co.il/',
-                                                       'item_attr_name': 'Product',
-                                                       'price_full': 'PriceFull7290696200003',
-                                                       'is_weighted_attr_name': 'BisWeighted',
-                                                       'item_date_format': '%Y-%m-%d'}
-                                           }
 
     def run_info_extractor(self):
         """
         This method starts the extraction process
         """
-        for key in self.super_specific_information:
-            self.current_super = self.super_specific_information[key]
+        for key in supermarket_info_dictionary:
+            self.current_super = supermarket_info_dictionary[key]
             url_list = [self.current_super['url']]
 
             if self.current_super['multiple_pages']:
@@ -85,7 +61,7 @@ class InfoExtractor:
             try:
                 page = requests.get(url)
                 web_scrapper = BeautifulSoup(page.content, 'html.parser')
-            except Exception:
+            except requests.ConnectionError:
                 logging.error(f'Unable to connect to url:\n{url}')
             else:
                 links_list = web_scrapper.find_all('a')
@@ -114,27 +90,36 @@ class InfoExtractor:
             try:
                 request = requests.get(zip_link)
                 content = request.content
-            except Exception:
+            except requests.ConnectionError:
                 logging.error(f'Unable to extract from zip file with url: {zip_link}')
             else:
                 xml_file = gzip.decompress(content).decode('utf-8')
+                store_id = 'StoreId'
+                if self.current_super['store_name'] == 'victory':
+                    store_id = 'StoreID'
                 # parses the xml document into a tree
                 tree = ET.fromstring(xml_file)
+                branch_id = tree.find(store_id).text.lstrip('0')
                 # gets child containing item information
                 info_child_node = tree.getchildren()[-1]
-                self.extract_information_from_parsed_xml(info_child_node)
+                self.extract_information_from_parsed_xml(info_child_node, branch_id)
 
-    def extract_information_from_parsed_xml(self, xml_info_child_node):
+    def extract_information_from_parsed_xml(self, xml_info_child_node, branch_id):
         """
         This method iterates over all items in the supermarket and extracts the relevant data
         The data is then committed into the relevant table in the data base
-        :param items: The child of the parsed xml tree containing all item information
+        :param xml_info_child_node: The child of the parsed xml tree containing all item information
+        :param branch_id: curretn branch id
         """
         item_attr_name = self.current_super['item_attr_name']
         is_weighted_attr = self.current_super['is_weighted_attr_name']
+        branch_price_list = []
 
         for item in xml_info_child_node.findall(item_attr_name):
             item_code = int(item.find('ItemCode').text)
+            if item_code == 0:
+                continue
+
             item_name = item.find('ItemName').text
             # exclude unwanted names from DB
             for name in self.exclude_names:
@@ -148,24 +133,19 @@ class InfoExtractor:
             if item.find(is_weighted_attr).text == '1':
                 is_weighted = True
 
-            unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text)
-            # if item already in db then continue to next item
-            if bool(Product.query.filter_by(id=item_code).first()):
-                # adding current_branch_price to the db and commit
-                current_branch_price = BranchPrice(item_code=item_code, price=price, update_date=update_date)
-                db.session.add(current_branch_price)
-                db.session.commit()
-                continue
+            unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text.strip())
+            # if item is not in db then add it
+            if not bool(Product.query.filter_by(id=item_code).first()):
+                current_product = Product(id=item_code, name=item_name, quantity=quantity, is_weighted=is_weighted,
+                                          unit_of_measure=unit_of_measure)
+                db.session.add(current_product)
 
-            # adding current_product to the db and commit
-            current_product = Product(id=item_code, name=item_name, quantity=quantity, is_weighted=is_weighted,
-                                      unit_of_measure=unit_of_measure)
-            db.session.add(current_product)
-            db.session.commit()
-            # adding current_branch_price to the db and commit
-            current_branch_price = BranchPrice(item_code=item_code, price=price, update_date=update_date)
-            db.session.add(current_branch_price)
-            db.session.commit()
+            branch_price_list.append(BranchPrice(chain_id=self.current_super['chain_id'], branch_id=branch_id, item_code=item_code, price=price,
+                                                 update_date=update_date))
+
+        db.session.commit()
+        db.session.add_all(branch_price_list)
+        db.session.commit()
 
     def standardize_weight_name(self, unit_in_hebrew):
         """
@@ -179,7 +159,7 @@ class InfoExtractor:
             'גרם': ['גרם', 'גרמים'],
             'ליטר': ['ליטר', 'ליטרים', 'ליטר    '],
             'מ"ל': ['מיליליטרים', 'מ"ל', 'מיליליטר'],
-            'אין': ['יחידה', 'לא ידוע']
+            'אין': ['יחידה', 'לא ידוע', "יח'", "'יח"]
         }
 
         for unit in unit_dict.keys():
@@ -233,7 +213,7 @@ class InfoExtractor:
         try:
             page = requests.get(self.current_super['url'])
             web_scrapper = BeautifulSoup(page.content, 'html.parser')
-        except Exception:
+        except requests.ConnectionError:
             num_of_pages = -1
         else:
             if self.current_super['store_name'] == 'shufersal':
