@@ -117,6 +117,9 @@ class InfoExtractor:
 
         for item in xml_info_child_node.findall(item_attr_name):
             item_code = int(item.find('ItemCode').text)
+            if item_code == 0:
+                continue
+
             item_name = item.find('ItemName').text
             # exclude unwanted names from DB
             for name in self.exclude_names:
