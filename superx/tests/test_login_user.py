@@ -28,4 +28,4 @@ def test_login_user(client):
     assert user.is_authenticated == True
 
 
-    
+  
