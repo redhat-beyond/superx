@@ -10,3 +10,6 @@ def test_erase_user():
     db.session.commit()
 
     assert  User.query.filter(User.email == 'aryehlevklein@gmail.com').first() == None
+
+
+

@@ -10,4 +10,4 @@ def test_logout_user(client):
     user = User.query.filter(User.email == 'aryehlevklein@gmail.com').first()
     
     assert  user.is_authenticated == False
-    
+

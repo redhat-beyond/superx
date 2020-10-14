@@ -31,6 +31,5 @@ def test_register_user(client):
 
     add_fake_user = client.post('/register', data=fake_user, follow_redirects=True)
     assert b"*Please enter a valid email address*" in add_fake_user.data
-    
-    
+
 

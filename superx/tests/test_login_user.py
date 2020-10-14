@@ -26,5 +26,6 @@ def test_login_user(client):
     client.post('/login', data=test_user, follow_redirects=True)
     
     assert user.is_authenticated == True
-    
+
+
     
