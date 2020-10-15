@@ -17,13 +17,6 @@ class LoginForm(FlaskForm):
                                                                                        Length(min=6,
                                                                                               message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
 
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        
-        if not user:
-            raise ValidationError("*Email does not exist*")
-
-   
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -48,10 +41,9 @@ class RegisterForm(FlaskForm):
     def validate_email(self, email):
         user_object = User.query.filter_by(email=email.data).first()
 
-      
+        error_message = "*המשתמש כבר רשום על מייל זה*"
         if user_object:
-
-            raise ValidationError("*Email already exists*")
+            raise ValidationError(error_message)
 
         import requests
 

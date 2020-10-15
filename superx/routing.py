@@ -41,7 +41,7 @@ def addItem():
 def removeItem():
     return home.removeItem()
 
-@app.route("/logout", methods=['GET', 'POST'])
+@app.route("/logout")
 def logout():
     return signup.logout()
 
