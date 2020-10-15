@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column, Text, Boolean, BigInteger, DECIMAL
+from sqlalchemy import Integer, Column, Text, Boolean, BigInteger, DECIMAL, UniqueConstraint
 from flask_login import LoginManager, UserMixin
 from app import db
 
@@ -15,18 +15,20 @@ class User(UserMixin, db.Model):
 class Chain(db.Model):
     __tablename__ = 'chain'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
     name = Column(Text)
 
 
 class Branch(db.Model):
     __tablename__ = 'branch'
 
-    id = Column(Integer, primary_key=True)
+    row_number = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer)
     name = Column(Text)
     address = Column(Text)
     sub_chain_id = Column(Integer)
     chain_id = Column(db.ForeignKey('chain.id'))
+    UniqueConstraint(id, chain_id)
 
 
 class Product(db.Model):
@@ -43,6 +45,7 @@ class BranchPrice(db.Model):
     __tablename__ = 'branch_price'
 
     branch_price_id = Column(Integer, primary_key=True, autoincrement=True)
+    chain_id = Column(db.ForeignKey('chain.id'))
     item_code = Column(db.ForeignKey('product.id'))
     branch_id = Column(db.ForeignKey('branch.id'))
     price = Column(DECIMAL)
@@ -68,4 +71,3 @@ class BasketProduct(db.Model):
 
     product = db.relationship('Product', primaryjoin='BasketProduct.product_id == Product.id', uselist=False)
     basket = db.relationship('Basket', primaryjoin='BasketProduct.basket_id == Basket.id', uselist=False)
-
