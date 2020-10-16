@@ -19,7 +19,7 @@ class LoginForm(FlaskForm):
    
 
     def validate_email(self, email):
-        user = User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter_by(email=email).first()
         if not user:
             raise ValidationError('*Email does not exist*')
 
