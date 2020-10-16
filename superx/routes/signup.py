@@ -1,7 +1,7 @@
 from app import app
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, ValidationError
+from wtforms import StringField, PasswordField
+from wtforms.validators import InputRequired, Length, ValidationError, EqualTo
 from wtforms.fields.html5 import EmailField
 from flask import render_template, redirect, url_for, request
 from flask_login import LoginManager, login_required, logout_user, login_user
@@ -16,6 +16,12 @@ class LoginForm(FlaskForm):
     password = PasswordField('סיסמה', render_kw={"placeholder": "******"}, validators=[InputRequired(),
                                                                                        Length(min=6,
                                                                                               message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
+    confirm = PasswordField('ודא סיסמא' validators=[DataRequired(), EqualTo('password')]) )
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=form.email.data).first()
+        if not user:
+            raise ValidationError('*Email does not exist*')
 
 
 login_manager = LoginManager()
@@ -41,7 +47,7 @@ class RegisterForm(FlaskForm):
     def validate_email(self, email):
         user_object = User.query.filter_by(email=email.data).first()
 
-        error_message = "*המשתמש כבר רשום על מייל זה*"
+        error_message = "*Email already exists*"
         if user_object:
             raise ValidationError(error_message)
 
@@ -53,18 +59,16 @@ class RegisterForm(FlaskForm):
 
         status = response.json()['status']
         if status != "valid":
-            raise ValidationError("*בבקשה הכנס כתובת אימייל חוקית*")
+            raise ValidationError("*Please enter a valid email address*")
 
 
 def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user:
-            if check_password_hash(user.password, form.password.data):
-                login_user(user)
-                return redirect(url_for('index'))
+        if check_password_hash(user.password, form.password.data):
+            login_user(user)
+            return redirect(url_for('index'))
 
     return render_template('login.jinja2', form=form)
 
