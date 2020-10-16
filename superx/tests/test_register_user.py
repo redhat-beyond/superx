@@ -1,3 +1,6 @@
+import pytest
+from models import User
+
 @pytest.mark.run(order=1)
 def test_register_user(client):
     

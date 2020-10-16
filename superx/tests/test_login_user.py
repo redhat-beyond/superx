@@ -1,7 +1,4 @@
-from app import db
 from models import User
-from werkzeug.security import  generate_password_hash
-from flask import url_for, request
 import pytest
 
 @pytest.mark.run(order=2)
