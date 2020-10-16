@@ -20,19 +20,21 @@ jobs:
     
     - name: Install Environment & Dependencies
       run: |
-        apt update
-        apt install python3.8 python3-pip python3.8-ven -y
         pip3 install virtualenv
-        virtualenv superx --python=python3.8
-        source superx/bin/activate
-        pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest requests pylint
+        virtualenv venv --python=python3.8
+        source venv/bin/activate
+        pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest pytest-ordering requests pylint
         export FLASK_APP=superx/app.py
         export FLASK_ENV=development
-        flask run -h 0.0.0.0 -p 5000
 
     - name: Run tests
       run: |
-        pytest superx
+        ls 
+        source venv/bin/activate
+        cd superx
+        echo 'second ls'
+        ls
+        python -m pytest
 
     - name: Analyse the code with pylint
       run: |
