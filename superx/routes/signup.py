@@ -42,7 +42,7 @@ class RegisterForm(FlaskForm):
                                                                                        Length(min=6,
                                                                                               message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
     
-    confirm = PasswordField('ודא סיסמא' validators=[DataRequired(), EqualTo('password')]) )
+    confirm = PasswordField('ודא סיסמא', validators=[DataRequired(), EqualTo('password')]) )
 
     def validate_email(self, email):
         user_object = User.query.filter_by(email=email.data).first()
