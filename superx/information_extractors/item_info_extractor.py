@@ -47,7 +47,13 @@ class InfoExtractor:
                     logging.error(str(ce))
 
             zip_links = self.get_zip_file_links(url_list)
-            self.extract_xml_from_zip_and_parse(zip_links)
+            node_info_list = self.extract_xml_from_zip_and_parse(zip_links)
+
+            for info_child_node, branch_id in node_info_list:
+                info_tuple_list = self.extract_information_from_parsed_xml(info_child_node)
+                db.session.commit()
+                self.fill_branch_price_table(info_tuple_list, branch_id)
+                db.session.commit()
 
     def get_zip_file_links(self, url_list):
         """
@@ -82,6 +88,8 @@ class InfoExtractor:
         If connection failed, moves on to next link
         :param zip_links: list of zip file links from the website
         """
+        node_info_list = []
+
         for zip_link in zip_links:
             # fix zip link url if neccessary
             if not self.current_super['zip_link_prefix'] is None:
@@ -102,9 +110,11 @@ class InfoExtractor:
                 branch_id = tree.find(store_id).text.lstrip('0')
                 # gets child containing item information
                 info_child_node = tree.getchildren()[-1]
-                self.extract_information_from_parsed_xml(info_child_node, branch_id)
+                node_info_list.append((info_child_node, branch_id))
 
-    def extract_information_from_parsed_xml(self, xml_info_child_node, branch_id):
+        return node_info_list
+
+    def extract_information_from_parsed_xml(self, xml_info_child_node):
         """
         This method iterates over all items in the supermarket and extracts the relevant data
         The data is then committed into the relevant table in the data base
@@ -113,6 +123,8 @@ class InfoExtractor:
         """
         item_attr_name = self.current_super['item_attr_name']
         is_weighted_attr = self.current_super['is_weighted_attr_name']
+        branch_info_list = []
+
         for item in xml_info_child_node.findall(item_attr_name):
             item_code = int(item.find('ItemCode').text)
             if item_code == 0:
@@ -133,18 +145,21 @@ class InfoExtractor:
 
             unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text.strip())
             # if item is not in db then add it
-            if not item_code in self.item_id_set:
+            if item_code not in self.item_id_set:
                 current_product = Product(id=item_code, name=item_name, quantity=quantity, is_weighted=is_weighted,
                                           unit_of_measure=unit_of_measure)
                 db.session.add(current_product)
                 self.item_id_set.add(item_code)
-                db.session.flush()
 
+                branch_info_list.append((item_code, price, update_date))
+
+        return branch_info_list
+
+    def fill_branch_price_table(self, information_list, branch_id):
+        for item_code, price, update_date in information_list:
             branch_price = BranchPrice(chain_id=self.current_super['chain_id'], branch_id=branch_id,
                                        item_code=item_code, price=price, update_date=update_date)
             db.session.add(branch_price)
-
-        db.session.commit()
 
     def standardize_weight_name(self, unit_in_hebrew):
         """
