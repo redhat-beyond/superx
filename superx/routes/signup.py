@@ -1,6 +1,6 @@
 from app import app
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField
 from wtforms.validators import InputRequired, Length, ValidationError
 from wtforms.fields.html5 import EmailField
 from flask import render_template, redirect, url_for, request
@@ -36,7 +36,7 @@ class RegisterForm(FlaskForm):
                                                                                        Length(min=6,
                                                                                               message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
     
-    submit = SubmitField('צור משתמש חדש')
+    
 
     def validate_email(self, email):
         user_object = User.query.filter_by(email=email.data).first()
