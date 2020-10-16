@@ -5,9 +5,8 @@ import xml.etree.ElementTree as ET
 from decimal import Decimal
 from bs4 import BeautifulSoup
 import requests
-from superx.models import Product, BranchPrice
-from superx.app import supermarket_info_dictionary, db
-
+from models import Product, BranchPrice
+from app import supermarket_info_dictionary, db
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
@@ -31,6 +30,7 @@ class InfoExtractor:
         self.current_super = ''
         # list of unwanted names to be filter out
         self.exclude_names = ['משלוחים', 'ריק', 'פיקדון', 'תיבה', 'משלוח']
+        self.item_id_set = set()
 
     def run_info_extractor(self):
         """
@@ -113,8 +113,6 @@ class InfoExtractor:
         """
         item_attr_name = self.current_super['item_attr_name']
         is_weighted_attr = self.current_super['is_weighted_attr_name']
-        branch_price_list = []
-
         for item in xml_info_child_node.findall(item_attr_name):
             item_code = int(item.find('ItemCode').text)
             if item_code == 0:
@@ -135,16 +133,17 @@ class InfoExtractor:
 
             unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text.strip())
             # if item is not in db then add it
-            if not bool(Product.query.filter_by(id=item_code).first()):
+            if not item_code in self.item_id_set:
                 current_product = Product(id=item_code, name=item_name, quantity=quantity, is_weighted=is_weighted,
                                           unit_of_measure=unit_of_measure)
                 db.session.add(current_product)
+                self.item_id_set.add(item_code)
+                db.session.flush()
 
-            branch_price_list.append(BranchPrice(chain_id=self.current_super['chain_id'], branch_id=branch_id, item_code=item_code, price=price,
-                                                 update_date=update_date))
+            branch_price = BranchPrice(chain_id=self.current_super['chain_id'], branch_id=branch_id,
+                                       item_code=item_code, price=price, update_date=update_date)
+            db.session.add(branch_price)
 
-        db.session.commit()
-        db.session.add_all(branch_price_list)
         db.session.commit()
 
     def standardize_weight_name(self, unit_in_hebrew):
