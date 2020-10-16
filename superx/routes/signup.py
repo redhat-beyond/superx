@@ -66,7 +66,7 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = User.query.filter_by(email=email.data).first()
+        user = User.query.filter_by(email=form.email.data).first()
         if check_password_hash(user.password, form.password.data):
             login_user(user)
             return redirect(url_for('index'))
