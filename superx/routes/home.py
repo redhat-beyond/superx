@@ -4,7 +4,6 @@ from app import supermarket_info_dictionary as sd
 
 
 def home():
-    # products = Product.query.order_by(Product.name).all()
    
     return render_template('home.html')
 
