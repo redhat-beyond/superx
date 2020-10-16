@@ -1,7 +1,7 @@
-
 from models import User
 from werkzeug.security import check_password_hash
 import pytest
+
 @pytest.mark.run(order=1)
 def test_register_user(client):
     
