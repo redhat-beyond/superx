@@ -15,7 +15,7 @@ class Item(object):
 
 
 def cart():
-    total_prices = {'mega' : { 'price' : 0, 'list' : []}, 'shufersal' : { 'price' : 0, 'list' : []}, 'victory': { 'price' : 0, 'list' : []}s}
+    total_prices = {'mega' : { 'price' : 0, 'list' : []}, 'shufersal' : { 'price' : 0, 'list' : []}, 'victory': { 'price' : 0, 'list' : []}}
     for item in session['cart']:
         price_list_of_item = BranchPrice.query.filter_by(item_code=item['id']).all()
 
