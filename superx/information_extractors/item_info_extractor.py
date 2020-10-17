@@ -6,7 +6,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 import requests
 from models import Product, BranchPrice
-from app import supermarket_info_dictionary, db
+from app import supermarket_info_dictionary, session
+
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
@@ -51,9 +52,11 @@ class InfoExtractor:
 
             for info_child_node, branch_id in node_info_list:
                 info_tuple_list = self.extract_information_from_parsed_xml(info_child_node)
-                db.session.commit()
+                if branch_id == '86' and self.current_super['store_name'] == 'victory':
+                    continue
+
                 self.fill_branch_price_table(info_tuple_list, branch_id)
-                db.session.commit()
+                session.commit()
 
     def get_zip_file_links(self, url_list):
         """
@@ -124,6 +127,7 @@ class InfoExtractor:
         item_attr_name = self.current_super['item_attr_name']
         is_weighted_attr = self.current_super['is_weighted_attr_name']
         branch_info_list = []
+        product_info_list = []
 
         for item in xml_info_child_node.findall(item_attr_name):
             item_code = int(item.find('ItemCode').text)
@@ -146,20 +150,23 @@ class InfoExtractor:
             unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text.strip())
             # if item is not in db then add it
             if item_code not in self.item_id_set:
-                current_product = Product(id=item_code, name=item_name, quantity=quantity, is_weighted=is_weighted,
-                                          unit_of_measure=unit_of_measure)
-                db.session.add(current_product)
+                product_info_list.append(Product(id=item_code, name=item_name, quantity=quantity,
+                                                 is_weighted=is_weighted, unit_of_measure=unit_of_measure))
                 self.item_id_set.add(item_code)
-
                 branch_info_list.append((item_code, price, update_date))
+
+        session.bulk_save_objects(product_info_list)
 
         return branch_info_list
 
     def fill_branch_price_table(self, information_list, branch_id):
+        branch_price_list = []
+
         for item_code, price, update_date in information_list:
-            branch_price = BranchPrice(chain_id=self.current_super['chain_id'], branch_id=branch_id,
-                                       item_code=item_code, price=price, update_date=update_date)
-            db.session.add(branch_price)
+            branch_price_list.append(BranchPrice(chain_id=self.current_super['chain_id'], branch_id=branch_id,
+                                                 item_code=item_code, price=price, update_date=update_date))
+
+        session.bulk_save_objects(branch_price_list)
 
     def standardize_weight_name(self, unit_in_hebrew):
         """
@@ -173,7 +180,7 @@ class InfoExtractor:
             'גרם': ['גרם', 'גרמים'],
             'ליטר': ['ליטר', 'ליטרים', 'ליטר    '],
             'מ"ל': ['מיליליטרים', 'מ"ל', 'מיליליטר'],
-            'אין': ['יחידה', 'לא ידוע', "יח'", "'יח", "יח`", "מטרים"]
+            'אין': ['יחידה', 'לא ידוע', "יח'", "'יח", "יח`", "מטרים", "מארז"]
         }
 
         for unit in unit_dict.keys():
