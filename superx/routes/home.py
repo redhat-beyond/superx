@@ -19,26 +19,20 @@ def cart():
         price_list_of_item = BranchPrice.query.filter_by(item_code=item['id']).all()
 
         for same_item in price_list_of_item:
-            if same_item.chain_id == sd['mega']['chain_id']:
-                total_prices['mega']['list'].append({
-                    "name": item['name'],
-                    "price": same_item.price
-                })
-                total_prices['mega']['price'] += same_item.price
+            super_name = ''
             
+            if same_item.chain_id == sd['mega']['chain_id']:
+                super_name = 'mega'
             elif same_item.chain_id == sd['shufersal']['chain_id']:
-                total_prices['shufersal']['list'].append({
-                    "name": item['name'],
-                    "price": same_item.price
-                })
-                total_prices['shufersal']['price'] += same_item.price
-
+                super_name = 'shufersal'
             elif same_item.chain_id == sd['victory']['chain_id']:
-                total_prices['victory']['list'].append({
-                    "name": item['name'],
-                    "price": same_item.price
-                })
-                total_prices['victory']['price'] += same_item.price
+                super_name = 'victory'
+
+            total_prices[super_name]['list'].append({
+                "name": item['name'],
+                "price": same_item.price
+            })
+            total_prices[super_name]['price'] += same_item.price
 
     return render_template('cart.html', total_prices=total_prices)
 
