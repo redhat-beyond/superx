@@ -5,8 +5,8 @@ import xml.etree.ElementTree as ET
 from decimal import Decimal
 from bs4 import BeautifulSoup
 import requests
-from models import Product, BranchPrice
-from app import supermarket_info_dictionary, session
+from superx.models import Product, BranchPrice
+from superx.app import supermarket_info_dictionary, session, db
 
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
@@ -57,6 +57,7 @@ class InfoExtractor:
 
                 self.fill_branch_price_table(info_tuple_list, branch_id)
                 session.commit()
+                print(branch_id)
 
     def get_zip_file_links(self, url_list):
         """
@@ -180,12 +181,15 @@ class InfoExtractor:
             'גרם': ['גרם', 'גרמים'],
             'ליטר': ['ליטר', 'ליטרים', 'ליטר    '],
             'מ"ל': ['מיליליטרים', 'מ"ל', 'מיליליטר'],
-            'אין': ['יחידה', 'לא ידוע', "יח'", "'יח", "יח`", "מטרים", "מארז"]
+            'אין': ['יחידה', 'לא ידוע', "יח'", "'יח", "יח`", "מטרים", "מארז", "קרטון"]
         }
 
         for unit in unit_dict.keys():
             if unit_in_hebrew in unit_dict[unit]:
                 return unit
+
+        if "יח'" in unit_in_hebrew:
+            return 'אין'
 
         # as a default return the original unit and log it
         logging.info(f'New item weight name encoded to UTF-8: {unit_in_hebrew.encode("UTF-8")}')
@@ -248,3 +252,13 @@ class InfoExtractor:
                         break
 
         return num_of_pages
+
+
+if __name__ == "__main__":
+    # Branch.query.delete()
+    BranchPrice.query.delete()
+    Product.query.delete()
+    db.session.commit()
+
+    p = InfoExtractor()
+    p.run_info_extractor()

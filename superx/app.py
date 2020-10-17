@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from os import environ, path
 from datetime import datetime
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -20,6 +22,9 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 db = SQLAlchemy(app)
 db.init_app(app)
+engine = create_engine("mysql+pymysql://Super_User:SuperX1234@mysql-13101-0.cloudclusters.net:13101/SuperX",
+                       echo=False)
+session = Session(bind=engine)
 
 # dictionary for information extractors
 supermarket_info_dictionary = {'mega': {'store_name': 'mega',
