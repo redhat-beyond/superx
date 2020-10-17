@@ -5,8 +5,8 @@ import xml.etree.ElementTree as ET
 from decimal import Decimal
 from bs4 import BeautifulSoup
 import requests
-from superx.models import Product, BranchPrice
-from superx.app import supermarket_info_dictionary, session, db
+from models import Product, BranchPrice
+from app import supermarket_info_dictionary, session, db
 
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
@@ -177,7 +177,7 @@ class InfoExtractor:
         :return: standardized version of the unit or unknown if the unit is not known
         """
         unit_dict = {
-            'ק"ג': ['קילו', 'ק"ג', 'קילו', 'קילוגרמים'],
+            'ק"ג': ['קילו', 'ק"ג', 'קילו', 'קילוגרמים', '1 ק"ג'],
             'גרם': ['גרם', 'גרמים'],
             'ליטר': ['ליטר', 'ליטרים', 'ליטר    '],
             'מ"ל': ['מיליליטרים', 'מ"ל', 'מיליליטר'],
@@ -252,13 +252,3 @@ class InfoExtractor:
                         break
 
         return num_of_pages
-
-
-if __name__ == "__main__":
-    # Branch.query.delete()
-    BranchPrice.query.delete()
-    Product.query.delete()
-    db.session.commit()
-
-    p = InfoExtractor()
-    p.run_info_extractor()
