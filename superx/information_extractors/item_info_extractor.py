@@ -35,7 +35,12 @@ class InfoExtractor:
 
     def run_info_extractor(self):
         """
-        This method starts the extraction process
+        This method is incharge of the whole extraction process.
+        It works in the following way:
+        1. retreives all zip file links from the relevant website
+        2. retreives all branch id's and child node objects that hold the wanted information
+        3. creates 2 lists one containing all Product info and the other all BranchPrice info
+        4. commits to the db
         """
         for key in supermarket_info_dictionary:
             self.current_super = supermarket_info_dictionary[key]
@@ -51,13 +56,15 @@ class InfoExtractor:
             node_info_list = self.extract_xml_from_zip_and_parse(zip_links)
 
             for info_child_node, branch_id in node_info_list:
-                info_tuple_list = self.extract_information_from_parsed_xml(info_child_node)
+                xml_info_list = self.extract_information_from_parsed_xml(info_child_node)
                 if branch_id == '86' and self.current_super['store_name'] == 'victory':
                     continue
 
-                self.fill_branch_price_table(info_tuple_list, branch_id)
+                product_info_list, branch_price_list = self.fill_product_and_branch_price_tables(xml_info_list,
+                                                                                                 branch_id)
+                session.bulk_save_objects(product_info_list)
+                session.bulk_save_objects(branch_price_list)
                 session.commit()
-                print(branch_id)
 
     def get_zip_file_links(self, url_list):
         """
@@ -65,6 +72,7 @@ class InfoExtractor:
         The method then sends the set to parsing
         If connection to the url failed, moves on to next url
         :param url_list: list of urls to extract zip files from
+        :return: a set of zip file links
 
         """
         for url in url_list:
@@ -88,9 +96,11 @@ class InfoExtractor:
     def extract_xml_from_zip_and_parse(self, zip_links):
         """
         This method retrieves the xml file in the gzip file and parses it into an xml tree
-        The branch_id is retrieved from the xml file and then it is sent for retrieval of the item information
+        The child node containg the item information is found and The branch_id is retrieved from the xml file.
+        This information is packed into a tuple and placed in a list
         If connection failed, moves on to next link
         :param zip_links: list of zip file links from the website
+        :return: a list of tuples containing all branch id's and child node object's
         """
         node_info_list = []
 
@@ -109,6 +119,7 @@ class InfoExtractor:
                 store_id = 'StoreId'
                 if self.current_super['store_name'] == 'victory':
                     store_id = 'StoreID'
+
                 # parses the xml document into a tree
                 tree = ET.fromstring(xml_file)
                 branch_id = tree.find(store_id).text.lstrip('0')
@@ -121,14 +132,13 @@ class InfoExtractor:
     def extract_information_from_parsed_xml(self, xml_info_child_node):
         """
         This method iterates over all items in the supermarket and extracts the relevant data
-        The data is then committed into the relevant table in the data base
+        The data is then committed packed into a tuple and placed in a list of all the info tuples
         :param xml_info_child_node: The child of the parsed xml tree containing all item information
-        :param branch_id: curretn branch id
+        :return: a list of tuples containing the information
         """
         item_attr_name = self.current_super['item_attr_name']
         is_weighted_attr = self.current_super['is_weighted_attr_name']
-        branch_info_list = []
-        product_info_list = []
+        xml_info_list = []
 
         for item in xml_info_child_node.findall(item_attr_name):
             item_code = int(item.find('ItemCode').text)
@@ -148,26 +158,36 @@ class InfoExtractor:
             if item.find(is_weighted_attr).text == '1':
                 is_weighted = True
 
-            unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text.strip())
-            # if item is not in db then add it
+            unit_of_measure = 'אין'
+            if is_weighted:
+                unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text.strip())
+
+            xml_info_list.append((item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date))
+
+        return xml_info_list
+
+    def fill_product_and_branch_price_tables(self, information_list, branch_id):
+        """
+        This method receives a list containing a tuple of all the xml info
+        and places it into the correct table
+        :param information_list: list of tuples containing all the xml info
+        :param branch_id: the id of the current branch
+        :return: two lists, one containing Product obj the other BranchPrice objects
+        """
+        branch_price_list = []
+        product_info_list = []
+
+        for item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date in information_list:
+            # If the item is in the db , skip it
             if item_code not in self.item_id_set:
                 product_info_list.append(Product(id=item_code, name=item_name, quantity=quantity,
                                                  is_weighted=is_weighted, unit_of_measure=unit_of_measure))
                 self.item_id_set.add(item_code)
-                branch_info_list.append((item_code, price, update_date))
 
-        session.bulk_save_objects(product_info_list)
-
-        return branch_info_list
-
-    def fill_branch_price_table(self, information_list, branch_id):
-        branch_price_list = []
-
-        for item_code, price, update_date in information_list:
             branch_price_list.append(BranchPrice(chain_id=self.current_super['chain_id'], branch_id=branch_id,
                                                  item_code=item_code, price=price, update_date=update_date))
 
-        session.bulk_save_objects(branch_price_list)
+        return product_info_list, branch_price_list
 
     def standardize_weight_name(self, unit_in_hebrew):
         """
@@ -193,6 +213,7 @@ class InfoExtractor:
 
         # as a default return the original unit and log it
         logging.info(f'New item weight name encoded to UTF-8: {unit_in_hebrew.encode("UTF-8")}')
+
         return unit_in_hebrew
 
     def standardize_date(self, date):
