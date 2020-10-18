@@ -32,6 +32,7 @@ def cart():
                 "name": item['name'],
                 "price": same_item.price
             })
+            
             total_prices[super_name]['price'] += same_item.price
 
     return render_template('cart.html', total_prices=total_prices)
