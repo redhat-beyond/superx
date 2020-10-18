@@ -1,7 +1,7 @@
     {% for product in products %}
     <tr>
        <td> {{ product.name|replace('\'', '') }} </td>
-        {% if product.unit_of_measure == 'יחידה' %}
+        {% if product.unit_of_measure == 'אין' %}
             <td> יחידה </td>
         {% else %}
             <td>{{ product.quantity|int }} {{ product.unit_of_measure }}</td>
