@@ -40,6 +40,12 @@ $(document).ready(function(e) {
     var timeout;
     var delay = 500;   // 0.5 seconds
 
+    if ($('#cartbody tr').length === 0) {
+        $("#comperbutton").attr('disabled', '');
+    } else {
+        $('#comperbutton').removeAttr('disabled');
+    }
+
     $("#myInput").keypress(function(e) {
         console.log("User started typing");
         if(timeout) {
