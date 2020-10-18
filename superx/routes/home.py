@@ -9,14 +9,11 @@ def home():
 
 
 def cart():
-    # TODO: add the db query for the products and send the info of each item and price to cart.html (three lists of products
-    #  names & prices)
-
     return render_template('cart.html')
 
 
 def livesearch():
-    
+
     json_list_of_items = []
 
     # if search_res is empty string, return empty json
@@ -39,25 +36,25 @@ def livesearch():
 def addItem():
     item = {'id' : request.form.get('id'), 'name' : request.form.get('name')}
     if 'cart' not in session:
-        session['cart'] = [] 
-    
+        session['cart'] = []
+
     cart_list = session['cart']
     cart_list.append(item)
-    session['cart'] = cart_list  
-    
+    session['cart'] = cart_list
+
     return ''
 
 def removeItem():
     id_to_erase = request.form.get('id')
     if 'cart' not in session:
         return ''
-    
+
     cart_list = session['cart']
-    for i in range(len(cart_list)): 
-        if cart_list[i]['id'] == id_to_erase: 
-            del cart_list[i] 
+    for i in range(len(cart_list)):
+        if cart_list[i]['id'] == id_to_erase:
+            del cart_list[i]
             break
-    
-    session['cart'] = cart_list  
-    
+
+    session['cart'] = cart_list
+
     return ''
