@@ -50,14 +50,14 @@ def add_item():
     '''
     add an item route that does not reroute using jquery+ajax
     '''
-    return home.addItem()
+    return home.add_item()
 
 @app.route("/removeItem", methods=['GET', 'POST'])
 def remove_item():
     '''
     remove an item route that does not reroute using jquery+ajax
     '''
-    return home.removeItem()
+    return home.remove_item()
 
 
 @app.route("/logout")

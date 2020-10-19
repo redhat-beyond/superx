@@ -13,15 +13,14 @@ from flask_bootstrap import Bootstrap
 app = Flask(__name__)
 Bootstrap(app)
 
-# app.config.from_object('config.BaseConfig')
+app.config.from_object('config.BaseConfig')
 app.config['SECRET_KEY'] = 'aefguhw49t23465'
 app.config['TESTING'] = False
 FLASK_APP = environ.get('FLASK_APP')
 FLASK_ENV = environ.get('FLASK_ENV')
 
 # Database
-SQLALCHEMY_DATABASE_URI = """mysql+pymysql://
-Super_User:SuperX1234@mysql-13101-0.cloudclusters.net:13101/SuperX"""
+SQLALCHEMY_DATABASE_URI = environ.get("SQLALCHEMY_DATABASE_URI")
 SQLALCHEMY_ECHO = False
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
