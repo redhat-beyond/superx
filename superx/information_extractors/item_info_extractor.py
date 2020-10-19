@@ -15,7 +15,6 @@ from app import supermarket_info_dictionary, session, db
 from models import Product, BranchPrice
 
 
-
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
 
