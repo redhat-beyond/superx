@@ -1,8 +1,8 @@
 import gzip
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as et
-from superx.app import supermarket_info_dictionary, db
-from superx.models import Branch
+from app import supermarket_info_dictionary, session, db
+from models import Branch
 import logging
 import requests
 
@@ -16,6 +16,14 @@ class BranchExtractor:
         self.current_super = ''
 
     def run_branch_extractor(self):
+        """
+        This method is in charge of running the branch information extractor
+        It works as such:
+        1. retrieves the xml file, either from link or from the zip file
+        2. parses the xml file and extracts the relevant information from it
+        3. creates a list of Branch objects to be committed into the db
+        4. commits all the Branch objects to the db (per supermarket)
+        """
         for keys in supermarket_info_dictionary:
             self.current_super = supermarket_info_dictionary[keys]
 
@@ -32,15 +40,16 @@ class BranchExtractor:
                 logging.error(str(ce))
                 continue
             else:
-                self.extract_info(xml_file)
+                xml_info_list = self.extract_info_from_xml(xml_file)
+                branch_list = self.fill_branch_table(xml_info_list)
+                session.bulk_save_objects(branch_list)
+                session.commit()
 
     def get_zip_file_link(self):
         """
         This method web scrapes the urls in url_list and creates a set of the gzip file links.
-        The method then sends the set to parsing
-        If connection to the url failed, moves on to next url
-        :param url_list: list of urls to extract zip files from
-
+        If connection to the url failed, raises connection error
+        :return: the link for the zip file
         """
         try:
             page = requests.get(self.current_super['branch_url'])
@@ -61,6 +70,11 @@ class BranchExtractor:
             return zip_link
 
     def get_xml_file(self):
+        """
+        This method gets the xml file from the zipfile link
+        If connection to the url failed, raises connection error
+        :return: the unparsed xml file
+        """
         try:
             xml_file = ''
             request = requests.get(self.current_super['branch_url'])
@@ -75,10 +89,17 @@ class BranchExtractor:
 
         return xml_file
 
-    def extract_info(self, xml_file):
+    def extract_info_from_xml(self, xml_file):
+        """
+        This method parses the xml file and then extracts info from the xml and packs it into a tuple.
+        The tuple is then placed into a list
+        :param xml_file: the parsed xml file
+        :return: a list of tuples containing all the relevant information
+        """
         tree = et.fromstring(xml_file)
         stores = tree.find(self.current_super['attr_path'])
         attrs_dict = self.current_super['attrs']
+        xml_info_list = []
 
         for store in stores.findall(attrs_dict['store']):
             branch_id = store.find(attrs_dict['store_id']).text
@@ -96,10 +117,20 @@ class BranchExtractor:
             if type(attrs_dict['sub_chain_id']) is str:
                 sub_chain_id = store.find(attrs_dict['sub_chain_id']).text
 
-            b = Branch(id=branch_id, name=branch_name, address=address, sub_chain_id=sub_chain_id,
-                       chain_id=self.current_super['chain_id'])
-            db.session.add(b)
+            xml_info_list.append((branch_id, branch_name, address, sub_chain_id))
 
-        # Add to DB
-        db.session.commit()
+        return xml_info_list
 
+    def fill_branch_table(self, xml_info_list):
+        """
+        This method unpacks the tuples in the xml_info_list and creates a list of Branch items
+        :param xml_info_list: a list of tuples containing all relevant information
+        :return: a list of Branch objects
+        """
+        branch_list = []
+
+        for branch_id, branch_name, address, sub_chain_id in xml_info_list:
+            branch_list.append(Branch(id=branch_id, name=branch_name, address=address, sub_chain_id=sub_chain_id,
+                                      chain_id=self.current_super['chain_id']))
+
+        return branch_list
