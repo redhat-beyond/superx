@@ -12,8 +12,9 @@ import sys
 add_to_python_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
 sys.path.append(add_to_python_path)
 
-from models import Product, BranchPrice
 from app import supermarket_info_dictionary, session, db
+from models import Product, BranchPrice
+
 
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
