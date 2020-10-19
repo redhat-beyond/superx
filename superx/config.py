@@ -1,8 +1,13 @@
-import os
+# '''
+# import os
+# '''
+# import os
+# from dataclasses import dataclass
 
-
-class BaseConfig:
-    # the second argument is default DBURI and can be removed
-    SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI",
-                                             "mysql+pymysql://Super_User:SuperX1234@mysql-13101-0.cloudclusters.net:13101/SuperX")
-
+# @dataclass
+# class BaseConfig:
+#     '''
+#     configuring database to remote mySQL database
+#     '''
+#     SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI",         #pylint: disable=wrong-import-position
+#         "mysql+pymysql://Super_User:SuperX1234@mysql-13101-0.cloudclusters.net:13101/SuperX")
