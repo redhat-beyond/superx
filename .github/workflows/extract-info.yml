@@ -1,0 +1,39 @@
+# This workflow will install Python dependencies, run extractors
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python application
+
+on:
+  schedule:
+    # runs at 13:00 UTC  or 10:00 Israel time every day
+    - cron: '0 11 * * *'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE,
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip3 install virtualenv
+        virtualenv venv --python=python3.8
+        source venv/bin/activate
+        pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest pytest-ordering requests pylint
+        export FLASK_APP=superx/app.py
+        export FLASK_ENV=development 
+
+    - name: Execute extractor scripts
+      run: |
+        python ./superx/information_extractors/branch_info_extractor.py
+        python ./superx/information_extractors/item_info_extractor.py
+
