@@ -1,18 +1,41 @@
 from flask import render_template, request, redirect, url_for, session
 from models import *
+from app import supermarket_info_dictionary as sd
 
 
 def home():
-    products = Product.query.order_by(Product.name).all()
    
-    return render_template('home.html', products=products)
+    return render_template('home.html')
+
+
+class Item(object):
+    def __init__(self, item_code, item_name, chain_id, branch_id, price):
+        pass
 
 
 def cart():
-    # TODO: add the db query for the products and send the info of each item and price to cart.html (three lists of products
-    #  names & prices)
+    total_prices = {'mega' : { 'price' : 0, 'list' : []}, 'shufersal' : { 'price' : 0, 'list' : []}, 'victory': { 'price' : 0, 'list' : []}}
+    for item in session['cart']:
+        price_list_of_item = BranchPrice.query.filter_by(item_code=item['id']).all()
 
-    return render_template('cart.html')
+        for same_item in price_list_of_item:
+            super_name = ''
+            
+            if same_item.chain_id == sd['mega']['chain_id']:
+                super_name = 'mega'
+            elif same_item.chain_id == sd['shufersal']['chain_id']:
+                super_name = 'shufersal'
+            elif same_item.chain_id == sd['victory']['chain_id']:
+                super_name = 'victory'
+
+            total_prices[super_name]['list'].append({
+                "name": item['name'],
+                "price": same_item.price
+            })
+            
+            total_prices[super_name]['price'] += same_item.price
+
+    return render_template('cart.html', total_prices=total_prices)
 
 
 def livesearch():
