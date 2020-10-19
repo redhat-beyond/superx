@@ -25,7 +25,15 @@
         </tr>
     </thead>
     <tbody id="megaBody">
-
+      {% for product in total_prices['mega']['list'] %}
+            <tr>
+                <td> {{ product.name|replace('\'', '') }} </td>
+                <td> {{ product.price }} ש''ח</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="2"><strong>מחיר הסל: {{ total_prices['mega']['price'] }} ש''ח </strong></td>
+        </tr>
     </tbody>
   </table>
   </div> <!-- Mega -->
@@ -39,7 +47,15 @@
         </tr>
     </thead>
     <tbody id="shufersalBody">
-
+      {% for product in total_prices['shufersal']['list'] %}
+            <tr>
+                <td> {{ product.name|replace('\'', '') }} </td>
+                <td> {{ product.price }} ש''ח</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="2"><strong>מחיר הסל: {{ total_prices['shufersal']['price'] }} ש''ח </strong></td>
+        </tr>
     </tbody>
   </table>
   </div> <!-- Shufersal -->
@@ -53,7 +69,15 @@
         </tr>
     </thead>
     <tbody id="victoryBody">
-
+      {% for product in total_prices['victory']['list'] %}
+            <tr>
+                <td> {{ product.name|replace('\'', '') }} </td>
+                <td> {{ product.price }} ש''ח</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="2"><strong>מחיר הסל: {{ total_prices['victory']['price'] }} ש''ח </strong></td>
+        </tr>
     </tbody>
   </table>
   </div> <!-- victory -->
