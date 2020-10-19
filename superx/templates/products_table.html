@@ -1,3 +1,5 @@
+<!--  This script uses addItem function from static/js/script.js -->
+
     {% for product in products %}
     <tr>
        <td> {{ product.name|replace('\'', '') }} </td>
@@ -10,7 +12,7 @@
         {% endif %}
        <td>
         
-        <button onclick="addItem({{ product.id }}, '{{product.name |replace('\'', '')}}')" type="button" class="btn btn-outline-success">הוסף לעגלה</button></td>
+        <button onclick="addItemIfInCart({{ product.id }}, '{{product.name |replace('\'', '')}}')" type="button" class="btn btn-outline-success">הוסף לעגלה</button></td>
     
     </tr>
     {% endfor %}
