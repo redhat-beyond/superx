@@ -4,7 +4,7 @@
 name: Extract Info
 on:
   schedule:
-    # * is a special character in YAML so you have to quote this string
+    # runs at 6 AM UTC
     - cron:  '0 6 * * *'
 
 
