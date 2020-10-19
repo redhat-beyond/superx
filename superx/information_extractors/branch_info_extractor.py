@@ -63,7 +63,7 @@ class BranchExtractor:
             page = requests.get(self.current_super['branch_url'])
             web_scrapper = BeautifulSoup(page.content, 'html.parser')
         except requests.ConnectionError:
-            raise ConnectionError(f'''Unable to retrieve zip file link
+            raise ConnectionError(f'''Unable to retrieve zip file link          #pylint: disable=raise-missing-form
                                 for {self.current_super["store_name"]}''')
         else:
             links_list = web_scrapper.find_all('a')
@@ -89,7 +89,7 @@ class BranchExtractor:
             request = requests.get(self.current_super['branch_url'])
             content = request.content
         except requests.ConnectionError:
-            raise ConnectionError(f'''Unable to retrieve xml
+            raise ConnectionError(f'''Unable to retrieve xml        #pylint: disable=raise-missing-form
             file for super {self.current_super["store_name"]}''')
         else:
             if self.current_super['needs_web_scraping']:
@@ -125,7 +125,7 @@ class BranchExtractor:
                 address = address + ' ' + city
 
             sub_chain_id = attrs_dict['sub_chain_id']
-            if type(attrs_dict['sub_chain_id']) is str:
+            if isinstance(attrs_dict['sub_chain_id'], str):
                 sub_chain_id = store.find(attrs_dict['sub_chain_id']).text
 
             xml_info_list.append((branch_id, branch_name, address, sub_chain_id))

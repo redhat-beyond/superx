@@ -128,7 +128,7 @@ class InfoExtractor:
                 tree = ET.fromstring(xml_file)
                 branch_id = tree.find(store_id).text.lstrip('0')
                 # gets child containing item information
-                info_child_node = tree.getchildren()[-1]
+                info_child_node = tree.getchildren()[-1]  #pylint: disable=unidiomatic-typecheck
                 node_info_list.append((info_child_node, branch_id))
 
         return node_info_list
