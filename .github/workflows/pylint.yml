@@ -24,7 +24,12 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest superx
+        ls
+        source venv/bin/activate  
+        cd superx 
+        echo 'second ls'  
+        ls  
+        python -m pytest
 
     - name: Analyse the code with pylint
       run: |
