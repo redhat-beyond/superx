@@ -158,7 +158,7 @@ class InfoExtractor:
             if item.find(is_weighted_attr).text == '1':
                 is_weighted = True
 
-            unit_of_measure = 'אין'
+            unit_of_measure = 'יחידה'
             if is_weighted:
                 unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text.strip())
 
