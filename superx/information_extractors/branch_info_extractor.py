@@ -1,10 +1,16 @@
 import gzip
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as et
-from app import supermarket_info_dictionary, session, db
-from models import Branch
+import os
+import sys
 import logging
 import requests
+
+add_to_python_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+sys.path.append(add_to_python_path)
+
+from app import supermarket_info_dictionary, session, db
+from models import Branch
 
 logging.basicConfig(filename='branch-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
