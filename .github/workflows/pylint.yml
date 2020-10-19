@@ -6,7 +6,7 @@ on:
     
 jobs:
   # Purpose of the process
-  build_app_and_run_tests:
+  build:
 
     runs-on: ubuntu-latest
 
@@ -20,21 +20,11 @@ jobs:
     
     - name: Install Environment & Dependencies
       run: |
-        pip3 install virtualenv
-        virtualenv venv --python=python3.8
-        source venv/bin/activate
-        pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest pytest-ordering requests pylint
-        export FLASK_APP=superx/app.py
-        export FLASK_ENV=development
+        ./bootstrap.sh
 
     - name: Run tests
       run: |
-        ls 
-        source venv/bin/activate
-        cd superx
-        echo 'second ls'
-        ls
-        python -m pytest
+        pytest superx
 
     - name: Analyse the code with pylint
       run: |

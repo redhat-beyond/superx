@@ -14,8 +14,13 @@ virtualenv superx --python=python3.8
 source superx/bin/activate
 
 # Install all dependencies
-pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest pytest-ordering requests
+pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest requests
 
 export FLASK_APP=/vagrant/superx/app.py
 export FLASK_ENV=development
-flask run -h 0.0.0.0 -p 5000
+
+# No need to run the app on CI
+if [ ! "$CI" ]
+then
+  flask run -h 0.0.0.0 -p 5000
+fi
