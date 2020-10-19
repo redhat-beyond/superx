@@ -120,7 +120,7 @@ class BranchExtractor:
                 address = address + ' ' + city
 
             sub_chain_id = attrs_dict['sub_chain_id']
-            if type(attrs_dict['sub_chain_id']) is str:
+            if isinstance(attrs_dict['sub_chain_id'], str):
                 sub_chain_id = store.find(attrs_dict['sub_chain_id']).text
 
             xml_info_list.append((branch_id, branch_name, address, sub_chain_id))
