@@ -63,8 +63,10 @@ class BranchExtractor:
             page = requests.get(self.current_super['branch_url'])
             web_scrapper = BeautifulSoup(page.content, 'html.parser')
         except requests.ConnectionError:
-            raise ConnectionError(f'''Unable to retrieve zip file link          #pylint: disable=raise-missing-form
+            #pylint: disable=raise-missing-from
+            raise ConnectionError(f'''Unable to retrieve zip file link
                                 for {self.current_super["store_name"]}''')
+            #pylint: enable=raise-missing-from
         else:
             links_list = web_scrapper.find_all('a')
             zip_link = ''
@@ -88,9 +90,13 @@ class BranchExtractor:
             xml_file = ''
             request = requests.get(self.current_super['branch_url'])
             content = request.content
+
         except requests.ConnectionError:
+            #pylint: disable=raise-missing-from
             raise ConnectionError(f'''Unable to retrieve xml        #pylint: disable=raise-missing-form
             file for super {self.current_super["store_name"]}''')
+            #pylint: enable=raise-missing-from
+
         else:
             if self.current_super['needs_web_scraping']:
                 xml_file = gzip.decompress(content).decode(self.current_super['encoding'])
