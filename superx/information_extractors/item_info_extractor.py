@@ -8,7 +8,6 @@ import requests
 import os
 import sys
 
-
 add_to_python_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
 sys.path.append(add_to_python_path)
 
