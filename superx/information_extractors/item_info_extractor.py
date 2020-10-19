@@ -209,7 +209,7 @@ class InfoExtractor:
                 return unit
 
         if "יח'" in unit_in_hebrew:
-            return 'אין'
+            return 'יחידה'
 
         # as a default return the original unit and log it
         logging.info(f'New item weight name encoded to UTF-8: {unit_in_hebrew.encode("UTF-8")}')
