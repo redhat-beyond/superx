@@ -8,6 +8,7 @@ Explain clearly what you intend on contributing and an owner will review nd comm
 [Before you get started](#Before-you-get-started)
   * [Git Flow](#Git-flow)
   * [Issues](#issues)
+  * [Coding guidlines](#Coding-guidlines)
 
 [How to contibute](#How-to-contibute)
   * [Adding a super market](#Adding-a-super-market) 
@@ -28,6 +29,15 @@ Explain clearly what you intend on contributing and an owner will review nd comm
 * Always search issues to find if it has already been raised.
 * Explain clearly the behaviour of your suggested change, or bug that you have found.
 * When reporting a bug, try to include a description of the source of the bug, and if possible a pr with a failing test case
+
+### Coding guidlines
+**All code submitted for review must be:**
+* Tested - All code submitted must be tested by the coder, and if need be submitted with tests.
+* Clean and well written - Code submitted must have comments where neccesary and must be **Readable**.
+* All python code should conform to the [PEP8](https://www.python.org/dev/peps/pep-0008/) standard
+* Third party code **must** adhere to the Superx licensing.
+
+**Any code that violates these guidlines will not be accepted.**
 
 ## How to contibute
 ### Adding a super market
