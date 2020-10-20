@@ -1,14 +1,19 @@
 '''
 imports
 '''
-import gzip
 #pylint: disable=import-error
+import gzip
+import os
+import sys
 import xml.etree.ElementTree as et
 import logging
 import requests
 from bs4 import BeautifulSoup
-from app import supermarket_info_dictionary, session
-from models import Branch
+add_to_python_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+sys.path.append(add_to_python_path)
+from models import Branch #pylint: disable=wrong-import-position
+from app import supermarket_info_dictionary, session  #pylint: disable=wrong-import-position
+
 
 
 
@@ -39,7 +44,8 @@ class BranchExtractor:
                 if self.current_super['needs_web_scraping']:
                     zip_link = self.get_zip_file_link()
                     if self.current_super['need_zip_prefix']:
-                        self.current_super['branch_url'] = self.current_super['branch_url'] + zip_link #pylint: disable=line-too-long
+                        self.current_super['branch_url'] = self.current_super['branch_url'] \
+                        + zip_link
                     else:
                         self.current_super['branch_url'] = zip_link
 
@@ -62,11 +68,9 @@ class BranchExtractor:
         try:
             page = requests.get(self.current_super['branch_url'])
             web_scrapper = BeautifulSoup(page.content, 'html.parser')
-        except requests.ConnectionError:
-            #pylint: disable=raise-missing-from
+        except requests.ConnectionError as c_e:
             raise ConnectionError(f'''Unable to retrieve zip file link
-                                for {self.current_super["store_name"]}''')
-            #pylint: enable=raise-missing-from
+                                for {self.current_super["store_name"]}''') from c_e
         else:
             links_list = web_scrapper.find_all('a')
             zip_link = ''
@@ -91,11 +95,11 @@ class BranchExtractor:
             request = requests.get(self.current_super['branch_url'])
             content = request.content
 
-        except requests.ConnectionError:
-            #pylint: disable=raise-missing-from
-            raise ConnectionError(f'''Unable to retrieve xml        #pylint: disable=raise-missing-form
-            file for super {self.current_super["store_name"]}''')
-            #pylint: enable=raise-missing-from
+        except requests.ConnectionError as c_e:
+
+            raise ConnectionError(f'''Unable to retrieve xml
+            file for super {self.current_super["store_name"]}''') from c_e
+
 
         else:
             if self.current_super['needs_web_scraping']:

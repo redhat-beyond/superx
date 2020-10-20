@@ -1,6 +1,8 @@
 '''
 imports
 '''
+import os
+import sys
 from datetime import datetime
 import gzip
 import logging
@@ -8,8 +10,10 @@ import xml.etree.ElementTree as ET
 from decimal import Decimal
 from bs4 import BeautifulSoup # pylint: disable=import-error
 import requests # pylint: disable=import-error
-from models import Product, BranchPrice # pylint: disable=import-error
-from app import supermarket_info_dictionary, session # pylint: disable=import-error
+add_to_python_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+sys.path.append(add_to_python_path)
+from app import supermarket_info_dictionary, session # pylint: disable=import-error disable=wrong-import-position
+from models import Product, BranchPrice # pylint: disable=import-error disable=wrong-import-position
 
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
@@ -117,7 +121,7 @@ class InfoExtractor:
                 request = requests.get(zip_link)
                 content = request.content
             except requests.ConnectionError:
-                logging.error('Unable to extract from zip file with url:%s', zip_link)
+                logging.error('Unable to extract from zip file with url: %s', zip_link)
             else:
                 xml_file = gzip.decompress(content).decode('utf-8')
                 store_id = 'StoreId'
