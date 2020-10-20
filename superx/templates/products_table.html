@@ -1,10 +1,8 @@
     {% for product in products %}
     <tr>
        <td> {{ product.name|replace('\'', '') }} </td>
-        {% if product.unit_of_measure == 'לא ידוע' %}
-            <td>1 יחידה </td>
-        {% elif product.unit_of_measure == 'יחידה   '%}
-            <td> 1 יחידה </td>
+        {% if product.unit_of_measure == 'יחידה' %}
+            <td> יחידה </td>
         {% else %}
             <td>{{ product.quantity|int }} {{ product.unit_of_measure }}</td>
         {% endif %}
