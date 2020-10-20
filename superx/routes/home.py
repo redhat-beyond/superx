@@ -1,26 +1,30 @@
-from flask import render_template, request, redirect, url_for, session
-from models import *
-from app import supermarket_info_dictionary as sd
+'''
+import from flask and models and db
+'''
+from flask import render_template, request, session
+from models import Product, BranchPrice # pylint: disable=import-error
+from app import db, supermarket_info_dictionary as sd # pylint: disable=import-error disable=no-name-in-module
 
 
 def home():
-   
+    '''
+    returns landing page of application
+    '''
     return render_template('home.html')
 
 
-class Item(object):
-    def __init__(self, item_code, item_name, chain_id, branch_id, price):
-        pass
-
-
 def cart():
-    total_prices = {'mega' : { 'price' : 0, 'list' : []}, 'shufersal' : { 'price' : 0, 'list' : []}, 'victory': { 'price' : 0, 'list' : []}}
+    '''
+    returns price comparison page with the users cart
+    '''
+    total_prices = {'mega' : { 'price' : 0, 'list' : []},
+                'shufersal' : { 'price' : 0, 'list' : []},
+                'victory': { 'price' : 0, 'list' : []}}
     for item in session['cart']:
         price_list_of_item = BranchPrice.query.filter_by(item_code=item['id']).all()
-
         for same_item in price_list_of_item:
             super_name = ''
-            
+
             if same_item.chain_id == sd['mega']['chain_id']:
                 super_name = 'mega'
             elif same_item.chain_id == sd['shufersal']['chain_id']:
@@ -32,13 +36,16 @@ def cart():
                 "name": item['name'],
                 "price": same_item.price
             })
-            
+
             total_prices[super_name]['price'] += same_item.price
 
     return render_template('cart.html', total_prices=total_prices)
 
 
 def livesearch():
+    '''
+    returns search functin using jquery data and ajax so not to redirect
+    '''
 
     json_list_of_items = []
 
@@ -46,7 +53,11 @@ def livesearch():
     search_res = request.form.get("input")
     if not search_res:
         return render_template('products_table.html', products=json_list_of_items)
-    products_list = db.session.query(Product).order_by(Product.name).filter(Product.name.contains(search_res)).all()
+
+    #pylint: disable=no-member
+    products_list = \
+    db.session.query(Product).order_by(Product.name).filter(Product.name.contains(search_res)).all()
+
 
     for item in products_list:
         json_list_of_items.append({
@@ -58,7 +69,10 @@ def livesearch():
     return render_template('products_table.html', products=json_list_of_items)
 
 
-def addItem():
+def add_item():
+    '''
+    adds item to cart using jquery to get the data and ajax so not to redirect
+    '''
     item = {'id' : request.form.get('id'), 'name' : request.form.get('name')}
     if 'cart' not in session:
         session['cart'] = []
@@ -69,13 +83,16 @@ def addItem():
 
     return ''
 
-def removeItem():
+def remove_item():
+    '''
+    removes item to cart using jquery to get the data and ajax so not to redirect
+    '''
     id_to_erase = request.form.get('id')
     if 'cart' not in session:
         return ''
 
     cart_list = session['cart']
-    for i in range(len(cart_list)):
+    for i in enumerate(cart_list):
         if cart_list[i]['id'] == id_to_erase:
             del cart_list[i]
             break
