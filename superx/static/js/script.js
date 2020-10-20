@@ -3,13 +3,13 @@
 // Check if item is already in cart
 function addItemIfInCart(product_id, product_name){
   //test 1- console.log("yes");
-  let b = false;
-  let table = $('#cartbody');
+  var b = false;
+  var table = $('#cartbody');
   //test 2- console.log(table);
   if(table != null){
     //test 3- console.log(table[0].rows.length);
-    for(let i = 0; i < table[0].rows.length; i++) {
-      let id = table[0].rows[i].id;
+    for(var i = 0; i < table[0].rows.length; i++) {
+      var id = table[0].rows[i].id;
       //test 4- console.log(id);
       if(id == product_id)
         b = true;

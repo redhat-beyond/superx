@@ -21,10 +21,10 @@ jobs:
     - name: Install Environment & Dependencies
       run: |
         pip3 install virtualenv
-        virtualenv venv --python=python3.8  
-        source venv/bin/activate  
-        pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest pytest-ordering requests pylint 
-        export FLASK_APP=superx/app.py  
+        virtualenv venv --python=python3.8
+        source venv/bin/activate
+        pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest pytest-ordering requests pylint
+        export FLASK_APP=superx/app.py
         export FLASK_ENV=development
 
     - name: Run tests
