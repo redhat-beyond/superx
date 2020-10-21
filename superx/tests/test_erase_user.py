@@ -5,7 +5,7 @@ import pytest
 from app import db # pylint: disable=import-error
 from models import User # pylint: disable=import-error
 
-@pytest.mark.run(order=4)
+@pytest.mark.run(order=3)
 def test_erase_user():
     '''
     tests erase the user from the database
