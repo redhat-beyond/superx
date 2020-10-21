@@ -56,13 +56,37 @@ function removeItem(product_id) {
 }
 
 // live search
-function search() {
-      $.ajax({
+$(document).ready(function(e) {
+    var timeout;
+    var delay = 500;   // 0.5 seconds
+
+    if ($('#cartbody tr').length === 0) {
+        $("#comperbutton").attr('disabled', '');
+    } else {
+        $('#comperbutton').removeAttr('disabled');
+    }
+
+    $("#myInput").keypress(function(e) {
+        console.log("User started typing");
+        if(timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(function() {
+            search();
+        }, delay);
+    });
+
+    function search() {
+        console.log("Executing search()");
+        $.ajax({
         url: "/livesearch",
         method: "POST",
         data: {input: $("#myInput").val()},
         success: function (res) {
-          $('#tbody').html(decodeURI(res));
+          $('#tbody').empty();
+          $('#tbody').append(res);
         }
       })
-}
+    }
+});
+
