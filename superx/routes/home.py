@@ -54,10 +54,11 @@ def livesearch():
     if not search_res:
         return render_template('products_table.html', products=json_list_of_items)
 
+
+    # Get all products from Product table which contain the user's input
     #pylint: disable=no-member
     products_list = \
     db.session.query(Product).order_by(Product.name).filter(Product.name.contains(search_res)).all()
-
 
     for item in products_list:
         json_list_of_items.append({
@@ -69,11 +70,14 @@ def livesearch():
     return render_template('products_table.html', products=json_list_of_items)
 
 
+# This method is used by addItem function in static/js/script.js
 def add_item():
     '''
     adds item to cart using jquery to get the data and ajax so not to redirect
     '''
+
     item = {'id' : request.form.get('id'), 'name' : request.form.get('name')}
+    # If there are no chosen products yet initiate cart in session object
     if 'cart' not in session:
         session['cart'] = []
 
