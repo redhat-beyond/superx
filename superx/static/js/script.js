@@ -76,7 +76,7 @@ $(document).ready(function(e) {
     var delay = 1000;   // 1 second
 
     $("#cityChoice").keyup(function(e) {
-        console.log("User started seacrching for city");
+        console.log("User started searching for city");
         if(timeout) {
             clearTimeout(timeout);
         }
