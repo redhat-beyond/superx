@@ -1,6 +1,8 @@
 """
 import from flask and models and db
 """
+# pylint: disable=redefined-outer-name, no-member, consider-using-enumerate
+
 from flask import render_template, request, session
 from models import Branch, BranchPrice, Product
 from app import db, supermarket_info_dictionary as sd
