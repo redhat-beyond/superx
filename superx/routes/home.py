@@ -16,15 +16,22 @@ def home():
 
 
 def cart():
-    '''
+    """
     returns price comparison page with the users cart
-    '''
-    total_prices = {'mega' : { 'price' : 0, 'list' : []},
-                'shufersal' : { 'price' : 0, 'list' : []},
-                'victory': { 'price' : 0, 'list' : []}}
+    """
+    total_prices = {'mega': {'price': 0, 'list': []}, 'shufersal': {'price': 0, 'list': []},
+                    'victory': {'price': 0, 'list': []}}
+    city = session['city']
+
     for item in session['cart']:
+
+        already_associate = {'mega': False, 'shufersal': False, 'victory': False}
+
+        # list of all BranchPrice objects that have common id
         price_list_of_item = BranchPrice.query.filter_by(item_code=item['id']).all()
+
         for same_item in price_list_of_item:
+
             super_name = ''
 
             if same_item.chain_id == sd['mega']['chain_id']:
@@ -34,12 +41,32 @@ def cart():
             elif same_item.chain_id == sd['victory']['chain_id']:
                 super_name = 'victory'
 
-            total_prices[super_name]['list'].append({
-                "name": item['name'],
-                "price": same_item.price
-            })
+            if already_associate[super_name]:
+                continue
 
-            total_prices[super_name]['price'] += same_item.price
+            current_item_branch_id = same_item.branch_id
+            branches_list = Branch.query.filter_by(id=current_item_branch_id).all()
+
+            # check if item belong to branch from this 'city' in this 'super_name'
+            for branch in branches_list:
+
+                if branch.city == city and branch.chain_id == sd[super_name]['chain_id'] and not already_associate[super_name]:
+                    total_prices[super_name]['list'].append({
+                        "name": item['name'],
+                        "price": same_item.price,
+                        "associated": True
+                    })
+                    already_associate[super_name] = True
+                    total_prices[super_name]['price'] += same_item.price
+                    break
+
+        for i in already_associate:
+            if not already_associate[i]:
+                total_prices[i]['list'].append({
+                    "name": item['name'],
+                    "price": 0,
+                    "associated": False
+                })
 
     return render_template('cart.html', total_prices=total_prices)
 
