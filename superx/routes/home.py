@@ -79,14 +79,11 @@ def livesearch():
     json_list_of_items = []
 
     # if search_res is empty string, return empty json
-    search_res = request.form.get("input")
+    search_res = request.form.get("input").strip()
     if not search_res:
         return render_template('products_table.html', products=json_list_of_items)
 
-    #pylint: disable=no-member
-    products_list = \
-    db.session.query(Product).order_by(Product.name).filter(Product.name.contains(search_res)).all()
-
+    products_list = db.session.query(Product).order_by(Product.name).filter(Product.name.contains(search_res)).all()
 
     for item in products_list:
         json_list_of_items.append({
