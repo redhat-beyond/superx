@@ -77,3 +77,4 @@ def city():
     city route
     """
     session['city'] = request.form.get("city")
+    return 'OK'
