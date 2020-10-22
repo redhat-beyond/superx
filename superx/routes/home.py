@@ -2,7 +2,7 @@
 import from flask and models and db
 """
 from flask import render_template, request, session
-from models import *
+from models import Branch, BranchPrice, Product
 from app import db, supermarket_info_dictionary as sd
 
 
@@ -50,7 +50,9 @@ def cart():
             # check if item belong to branch from this 'city' in this 'super_name'
             for branch in branches_list:
 
-                if branch.city == city and branch.chain_id == sd[super_name]['chain_id'] and not already_associate[super_name]:
+                if branch.city == city and branch.chain_id == sd[super_name]['chain_id']\
+                        and not already_associate[super_name]:
+
                     total_prices[super_name]['list'].append({
                         "name": item['name'],
                         "price": same_item.price,
@@ -83,7 +85,8 @@ def livesearch():
     if not search_res:
         return render_template('products_table.html', products=json_list_of_items)
 
-    products_list = db.session.query(Product).order_by(Product.name).filter(Product.name.contains(search_res)).all()
+    products_list = db.session.query(Product).order_by(Product.name)\
+        .filter(Product.name.contains(search_res)).all()
 
     for item in products_list:
         json_list_of_items.append({
