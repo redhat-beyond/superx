@@ -132,12 +132,3 @@ def remove_item():
     session['cart'] = cart_list
 
     return ''
-
-
-def city():
-    """
-    get the city that the customer chose from the cities list
-    """
-    city = request.form.get("city")
-    session['city'] = city
-    return ''
