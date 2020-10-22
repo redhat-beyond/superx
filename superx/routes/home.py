@@ -100,11 +100,15 @@ def livesearch():
     return render_template('products_table.html', products=json_list_of_items)
 
 
+# This method is used by addItem function in static/js/script.js
 def add_item():
     """
     adds item to cart using jquery to get the data and ajax so not to redirect
     """
-    item = {'id': request.form.get('id'), 'name': request.form.get('name')}
+
+    item = {'id' : request.form.get('id'), 'name' : request.form.get('name')}
+    # If there are no chosen products yet initiate cart in session object
+
     if 'cart' not in session:
         session['cart'] = []
 
