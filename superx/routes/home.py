@@ -1,16 +1,18 @@
-'''
+"""
 import from flask and models and db
-'''
+"""
 from flask import render_template, request, session
-from models import Product, BranchPrice # pylint: disable=import-error
-from app import db, supermarket_info_dictionary as sd # pylint: disable=import-error disable=no-name-in-module
+from models import *
+from app import db, supermarket_info_dictionary as sd
 
 
 def home():
-    '''
+    """
     returns landing page of application
-    '''
-    return render_template('home.html')
+    """
+
+    city_list = db.session.query(Branch.city).order_by(Branch.city).distinct().all()
+    return render_template('home.html', city_list=city_list)
 
 
 def cart():
@@ -43,9 +45,9 @@ def cart():
 
 
 def livesearch():
-    '''
+    """
     returns search functin using jquery data and ajax so not to redirect
-    '''
+    """
 
     json_list_of_items = []
 
@@ -70,10 +72,10 @@ def livesearch():
 
 
 def add_item():
-    '''
+    """
     adds item to cart using jquery to get the data and ajax so not to redirect
-    '''
-    item = {'id' : request.form.get('id'), 'name' : request.form.get('name')}
+    """
+    item = {'id': request.form.get('id'), 'name': request.form.get('name')}
     if 'cart' not in session:
         session['cart'] = []
 
@@ -83,10 +85,11 @@ def add_item():
 
     return ''
 
+
 def remove_item():
-    '''
+    """
     removes item to cart using jquery to get the data and ajax so not to redirect
-    '''
+    """
     id_to_erase = request.form.get('id')
     if 'cart' not in session:
         return ''
