@@ -122,7 +122,7 @@ def remove_item():
         return ''
 
     cart_list = session['cart']
-    for i in enumerate(cart_list):
+    for i in range(len(cart_list)):
         if cart_list[i]['id'] == id_to_erase:
             del cart_list[i]
             break
