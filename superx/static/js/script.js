@@ -70,7 +70,7 @@ $(document).ready(function(e) {
     }
 });
 
-// City chose
+// Sending cityChoice value to the flask app using Ajax
 $(document).ready(function(e) {
     var timeout;
     var delay = 1000;   // 1 second
