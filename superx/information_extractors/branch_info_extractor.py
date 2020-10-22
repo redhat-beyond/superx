@@ -1,6 +1,7 @@
 """
 imports
 """
+# pylint: disable=import-error
 import gzip
 import os
 import sys
