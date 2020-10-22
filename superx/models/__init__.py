@@ -38,6 +38,7 @@ class Branch(db.Model):
     id = Column(Integer)
     name = Column(Text)
     address = Column(Text)
+    city = Column(Text)
     sub_chain_id = Column(Integer)
     chain_id = Column(db.ForeignKey('chain.id'))
     UniqueConstraint(id, chain_id)
