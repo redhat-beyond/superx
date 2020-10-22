@@ -7,7 +7,7 @@ on:
     
 jobs:
   # Purpose of the process
-  build_app_and_run_tests:
+  build:
 
     runs-on: ubuntu-latest
 
@@ -30,11 +30,11 @@ jobs:
 
     - name: Run tests
       run: |
-        ls 
-        source venv/bin/activate
-        cd superx
-        echo 'second ls'
         ls
+        source venv/bin/activate  
+        cd superx 
+        echo 'second ls'  
+        ls  
         python -m pytest
 
     - name: Analyse the code with pylint

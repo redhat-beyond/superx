@@ -8,7 +8,8 @@
     <div class="container">
       <h1 id="header" class="display-3 text-center">superX</h1>
         <p></p>
-        <p style="font-size: large" >דף זה מציג את מחיר הסל הנבחר במבחר רשתות נבחרות</p>
+        <p style="font-size: x-large; font-weight: bold" > דף זה מציג את מחיר הסל הנבחר במבחר רשתות נבחרות </p>
+        <p style="font-size: x-large; font-weight: bold" > בעיר: {{ session['city'] }} </p>
         <p></p>
     </div>
     </div>
@@ -26,10 +27,21 @@
     </thead>
     <tbody id="megaBody">
       {% for product in total_prices['mega']['list'] %}
+            {% if not product.associated %}
+
             <tr>
-                <td> {{ product.name|replace('\'', '') }} </td>
+                <td> <strong>{{ product.name|replace('\'', '') }}</strong><br> *מוצר זה לא נמצא באף סניף בעיר <br>{{ session.city }} </td>
+                <td> 0 ש''ח</td>
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td> <strong>{{ product.name|replace('\'', '') }} </strong><p><br></p></td>
                 <td> {{ product.price }} ש''ח</td>
             </tr>
+
+            {% endif %}
         {% endfor %}
         <tr>
             <td colspan="2"><strong>מחיר הסל: {{ total_prices['mega']['price'] }} ש''ח </strong></td>
@@ -48,10 +60,21 @@
     </thead>
     <tbody id="shufersalBody">
       {% for product in total_prices['shufersal']['list'] %}
+          {% if not product.associated %}
+
             <tr>
-                <td> {{ product.name|replace('\'', '') }} </td>
+                <td> <strong>{{ product.name|replace('\'', '') }}</strong><br> *מוצר זה לא נמצא באף סניף בעיר <br>{{ session.city }} </td>
+                <td> 0 ש''ח</td>
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td><strong> {{ product.name|replace('\'', '') }}</strong><p><br></p></td>
                 <td> {{ product.price }} ש''ח</td>
             </tr>
+
+          {% endif %}
         {% endfor %}
         <tr>
             <td colspan="2"><strong>מחיר הסל: {{ total_prices['shufersal']['price'] }} ש''ח </strong></td>
@@ -70,10 +93,21 @@
     </thead>
     <tbody id="victoryBody">
       {% for product in total_prices['victory']['list'] %}
+          {% if not product.associated %}
+
             <tr>
-                <td> {{ product.name|replace('\'', '') }} </td>
+                <td> <strong>{{ product.name|replace('\'', '') }}</strong><br> *מוצר זה לא נמצא באף סניף בעיר <br>{{ session.city }} </td>
+                <td> 0 ש''ח</td>
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td><strong> {{ product.name|replace('\'', '') }} </strong><p><br></p></td>
                 <td> {{ product.price }} ש''ח</td>
             </tr>
+
+          {% endif %}
         {% endfor %}
         <tr>
             <td colspan="2"><strong>מחיר הסל: {{ total_prices['victory']['price'] }} ש''ח </strong></td>
