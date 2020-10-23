@@ -70,9 +70,9 @@ supermarket_info_dictionary = {'mega': {'store_name': 'mega',
                                              'price_full': 'PriceFull',
                                              'is_weighted_attr_name': 'bIsWeighted',
                                              'item_date_format': '%Y-%m-%d',
-                                             'branch_url': 'http://prices.shufersal.co.il/FileObject'
-                                                           '/UpdateCategory?catID=5&storeId=0'
-                                                           '&page=1',
+                                             'branch_url': 'http://prices.shufersal.co.il'
+                                                           '/FileObject/UpdateCategory?catID=5'
+                                                           '&storeId=0&page=1',
                                              'needs_web_scraping': True,
                                              'need_zip_prefix': False,
                                              'encoding': 'UTF-8',
@@ -112,10 +112,4 @@ supermarket_info_dictionary = {'mega': {'store_name': 'mega',
                                            }
                                }
 
-
-
-
-import routing #pylint: disable=wrong-import-position  disable=unused-import
-
-if __name__ == '__main__':
-    app.run(debug=True)
+import routing  # pylint: disable=wrong-import-position  disable=unused-import
