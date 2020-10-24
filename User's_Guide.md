@@ -25,8 +25,6 @@ From the terminal / command line, run the virtual machine (where the project is 
 
 ![step2 example](/superx/static/img/step2_example.jpg)
 
-![step2nd example](/superx/static/img/step2nd_example.jpg)
-
 ## <font color="lblue"> **Step 3** </font>
 The app is now on air. <br/>Go to your browser and type localhost:5000 in the url box.
 You've now entered SuperX price comparison system. <br/> You can compare prices of different products based on the city you live in.
