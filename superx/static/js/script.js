@@ -48,8 +48,8 @@ function removeItem(product_id) {
     data: {id: product_id},
     success: function (res) {
       $('#' + product_id).remove();
-  if ($('#cartbody tr').length === 0) {
-    $("#comperbutton").attr('disabled', '');
+      if ($('#cartbody tr').length === 0) {
+          $("#comperbutton").attr('disabled', '');
   }
 }
 })
@@ -90,3 +90,27 @@ $(document).ready(function(e) {
     }
 });
 
+// Sending cityChoice value to the flask app using Ajax
+$(document).ready(function(e) {
+    var timeout;
+    var delay = 1000;   // 1 second
+
+    $("#cityChoice").keyup(function(e) {
+        console.log("User started searching for city");
+        if(timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(function() {
+            citySearch();
+        }, delay);
+    });
+
+    function citySearch() {
+        console.log("Executing search()");
+        $.ajax({
+        url: "/city",
+        method: "POST",
+        data: {city: $("#cityChoice").val()},
+      })
+    }
+});
