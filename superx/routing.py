@@ -81,6 +81,6 @@ def city():
 @app.route('/city_search', methods=['GET', 'POST'])
 def city_search():
     """
-    city route
+    city serch route
     """
     return home.city_search()

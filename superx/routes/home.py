@@ -140,7 +140,7 @@ def remove_item():
 
 def city():
     """
-    adds city of search using jquery to get the data and ajax so not to redirect
+    adds city that was chosen, using jquery to get the data and ajax so not to redirect
     """
     session['city'] = request.form.get('city')
 
@@ -148,7 +148,7 @@ def city():
 
 def city_search():
     """
-    adds city of search using jquery to get the data and ajax so not to redirect
+    renders the city list for the user if it wants to cahnge a city from his city
     """
     city_list = db.session.query(Branch.city).order_by(Branch.city).distinct().all()
     return render_template('city_list.html', city_list=city_list)
