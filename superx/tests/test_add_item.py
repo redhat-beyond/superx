@@ -1,7 +1,6 @@
 '''
 import client session
 '''
-#pylint: disable=duplicate-code
 #pylint: disable=missing-function-docstring
 import pytest
 from flask import session
