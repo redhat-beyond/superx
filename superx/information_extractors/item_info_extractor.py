@@ -166,7 +166,7 @@ class InfoExtractor:
             if item.find(is_weighted_attr).text == '1':
                 is_weighted = True
 
-            unit_of_measure = 'אין'
+            unit_of_measure = 'יחידה'
             if is_weighted:
                 unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text.strip())
 
@@ -221,7 +221,7 @@ class InfoExtractor:
                 return unit
 
         if "יח'" in unit_in_hebrew:
-            return 'אין'
+            return 'יחידה'
 
         # as a default return the original unit and log it
         logging.info('New item weight name encoded to UTF-8: %s', unit_in_hebrew.encode("UTF-8"))
