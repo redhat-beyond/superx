@@ -135,6 +135,7 @@ def remove_item():
 
     session['cart'] = cart_list
 
+
     return ''
 
 
