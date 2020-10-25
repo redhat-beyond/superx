@@ -18,4 +18,5 @@ pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask
 
 export FLASK_APP=/vagrant/superx/app.py
 export FLASK_ENV=development
+
 flask run -h 0.0.0.0 -p 5000
