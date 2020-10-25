@@ -4,7 +4,7 @@ import app and routing modules
 
 from app import app
 from routes import home, signup
-from flask import session, request
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -78,4 +78,3 @@ def city():
     """
     
     return home.city()
-    

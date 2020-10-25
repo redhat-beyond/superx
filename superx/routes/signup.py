@@ -44,13 +44,15 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 def city_list():
-    city_list = db.session.query(Branch.city).order_by(Branch.city).distinct().all()
+    '''
+    returns a city list for the field in the signup form so the user can pick there city
+    '''
+    citys = db.session.query(Branch.city).order_by(Branch.city).distinct().all() #pylint: disable=no-member
     city_list_tuples = []
-    for i, city in enumerate(city_list):
-        if city.city == None or city.city == 'unknown':
+    for i, city in enumerate(citys):
+        if city.city is None or city.city == 'unknown':
             continue
-        else:
-            city_list_tuples.append((i, city.city))
+        city_list_tuples.append((i, city.city))
     return city_list_tuples
 
 
@@ -64,7 +66,6 @@ class RegisterForm(FlaskForm):
     password = PasswordField('סיסמא', render_kw={"placeholder": "******"},
     validators=[InputRequired(),Length(min=6,message="*בבקשה הכנס סיסמה המכילה לפחות 6 תווים*")])
     confirm = PasswordField('ודא סיסמא', validators=[InputRequired(), EqualTo('password')])
-    
     city = SelectField(u'עיר מגורים', choices=city_list(), validators=[InputRequired()])
 
 
@@ -110,7 +111,9 @@ def register():
 
     if form.validate_on_submit():
         hash_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = User(name=form.username.data, email=form.email.data, password=hash_password, city=form.city.data)
+        new_user = User(name=form.username.data,
+        email=form.email.data,
+        password=hash_password, city=form.city.data)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
