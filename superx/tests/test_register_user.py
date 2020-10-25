@@ -15,7 +15,8 @@ def test_register_user(client):
         'username': 'AryehTest',
         'email': 'aryehlevklein@gmail.com',
         'password' : '12345678',
-        'confirm' : '12345678'
+        'confirm' : '12345678',
+        'city' : 'ירושלים'
     }
     client.post('/register', data=test_user, follow_redirects=True)
     validate_user = User.query.filter(User.email == 'aryehlevklein@gmail.com').first()
@@ -29,6 +30,7 @@ def test_register_user(client):
         'email': 'fake_email@fake_email',
         'password' : '12345678',
         'confirm' : '12345678'
+        'city' : 'ירושלים'
     }
 
     add_fake_user = client.post('/register', data=fake_user, follow_redirects=True)
