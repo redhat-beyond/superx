@@ -77,3 +77,4 @@ def city():
     city route
     """
     return home.city()
+
