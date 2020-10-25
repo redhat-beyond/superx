@@ -29,7 +29,7 @@ def test_register_user(client):
         'username': 'AryehTest',
         'email': 'fake_email@fake_email',
         'password' : '12345678',
-        'confirm' : '12345678'
+        'confirm' : '12345678',
         'city' : 'ירושלים'
     }
 
