@@ -14,7 +14,7 @@ virtualenv superx --python=python3.8
 source superx/bin/activate
 
 # Install all dependencies
-pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest pytest-ordering requests pylint cryptography bs4
+pip3 install flask Flask-SQLAlchemy Flask-Bootstrap SQLAlchemy flask_login flask_wtf pymysql pytest pytest-ordering requests pylint cryptography WTForms-SQLAlchemy bs4
 
 export FLASK_APP=/vagrant/superx/app.py
 export FLASK_ENV=development
