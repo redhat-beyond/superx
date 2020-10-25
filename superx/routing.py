@@ -84,4 +84,3 @@ def city_search():
     city route
     """
     return home.city_search()
-    
