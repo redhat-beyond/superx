@@ -77,3 +77,10 @@ def city():
     city route
     """
     return home.city()
+
+@app.route('/city_search', methods=['GET', 'POST'])
+def city_search():
+    """
+    city route
+    """
+    return home.city_search()

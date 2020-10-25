@@ -49,10 +49,10 @@ def city_list():
     '''
     citys = db.session.query(Branch.city).order_by(Branch.city).distinct().all() #pylint: disable=no-member
     city_list_tuples = []
-    for i, city in enumerate(citys):
+    for city in citys:
         if city.city is None or city.city == 'unknown':
             continue
-        city_list_tuples.append((i, city.city))
+        city_list_tuples.append((city.city, city.city))
     return city_list_tuples
 
 
