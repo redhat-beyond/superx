@@ -12,6 +12,9 @@
         {{ wtf.form_field(form.password) }}
         {{ wtf.form_field(form.confirm) }}
         {{ wtf.form_field(form.email) }}
+        {{ wtf.form_field(form.city) }}
+        
+           
 
         <button type="submit">צור משתמש חדש</button>
         <p class="message">כבר רשום? <a href="{{ url_for('login') }}">לחץ כאן לכניסה</a></p>

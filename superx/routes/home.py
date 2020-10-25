@@ -136,3 +136,12 @@ def remove_item():
     session['cart'] = cart_list
 
     return ''
+
+
+def city():
+    """
+    adds city of search using jquery to get the data and ajax so not to redirect
+    """
+    session['city'] = request.form.get('city')
+
+    return ''

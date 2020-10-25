@@ -16,6 +16,7 @@ class User(UserMixin, db.Model):
     name = Column(db.String(15))
     email = Column(db.String(50), unique=True)
     password = Column(db.String(80))
+    city = Column(db.String(80))
 
 
 class Chain(db.Model):
