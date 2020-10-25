@@ -18,7 +18,6 @@ class User(UserMixin, db.Model):
     password = Column(db.String(80))
     city = Column(db.String(80))
 
-
 class Chain(db.Model):
     '''
     Chain model for chain table in database
