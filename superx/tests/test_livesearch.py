@@ -3,10 +3,9 @@ import html parser
 """
 import pytest
 from bs4 import BeautifulSoup
-# pylint: disable=no-else-continue
 
 
-@pytest.mark.run(order=4)
+@pytest.mark.run(order=6)
 def test_livesearch(client):
     """
     tests livesearch functionality
@@ -35,13 +34,11 @@ def do_it(client, item_input):
 
         if not item_list:
             is_inside = False
-            assert is_inside is False
+            assert !is_inside
         else:
             for item in item_list:
                 if item_input.get('input') in item.text:
                     continue
-                else:
-                    is_inside = False
-                    break
-            assert is_inside is True
-        print(is_inside)
+                is_inside = False
+                break
+            assert is_inside
