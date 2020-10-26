@@ -3,8 +3,6 @@ import html parser
 """
 import pytest
 from bs4 import BeautifulSoup
-from app import db
-# pylint: disable=unused-import
 # pylint: disable=no-else-continue
 
 
