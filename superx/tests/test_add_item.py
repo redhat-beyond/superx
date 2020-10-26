@@ -1,16 +1,15 @@
-'''
+"""
 import client session
-'''
-#pylint: disable=missing-function-docstring
+"""
 import pytest
 from flask import session
 
 
 @pytest.mark.run(order=4)
 def test_add_item(client):
-    '''
+    """
     tests adding item to comparing cart
-    '''
+    """
     test_item = {
         'id': '123123123',
         'name': 'ananas',
