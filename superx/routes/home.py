@@ -12,8 +12,8 @@ def home():
     """
     returns landing page of application
     """
-
-    return render_template('home.html')
+    city_list = db.session.query(Branch.city).order_by(Branch.city).distinct().all()
+    return render_template('home.html', city_list=city_list)
 
 
 def cart():
@@ -138,13 +138,6 @@ def remove_item():
     return ''
 
 
-def city():
-    """
-    adds city that was chosen, using jquery to get the data and ajax so not to redirect
-    """
-    session['city'] = request.form.get('city')
-
-    return ''
 
 def city_search():
     """

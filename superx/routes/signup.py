@@ -98,6 +98,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if check_password_hash(user.password, form.password.data):
             login_user(user)
+            session['cart'] = current_user.city
             return redirect(url_for('index'))
 
     return render_template('login.jinja2', form=form)

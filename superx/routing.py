@@ -4,7 +4,7 @@ import app and routing modules
 
 from app import app
 from routes import home, signup
-
+from flask import session, request
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -74,9 +74,11 @@ def logout():
 @app.route('/city', methods=['GET', 'POST'])
 def city():
     """
-    city route
+    adds city that was chosen, using jquery to get the data and ajax so not to redirect
     """
-    return home.city()
+    session['city'] = request.form.get('city')
+
+    return ''
 
 @app.route('/city_search', methods=['GET', 'POST'])
 def city_search():
