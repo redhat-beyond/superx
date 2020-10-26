@@ -34,7 +34,7 @@ def do_it(client, item_input):
 
         if not item_list:
             is_inside = False
-            assert is_inside == False
+            assert is_inside is False
         else:
             for item in item_list:
                 if item_input.get('input') in item.text:
