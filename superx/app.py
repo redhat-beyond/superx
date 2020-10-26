@@ -107,10 +107,7 @@ FileObject/UpdateCategory?catID=2&storeId=0&sort=Category&sortdir=ASC&page=1''',
             }
 }
 
-
-
-
-import routing #pylint: disable=wrong-import-position  disable=unused-import
+from routing import *  # pylint: disable=wrong-import-position  disable=unused-import
 
 
 if __name__ == '__main__':
