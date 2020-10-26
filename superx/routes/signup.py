@@ -7,7 +7,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField
 from wtforms.validators import InputRequired, Length, ValidationError, EqualTo
 from wtforms.fields.html5 import EmailField
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, session
 from flask_login import LoginManager, login_required, logout_user, login_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import app, db # pylint: disable=import-error disable=no-name-in-module
@@ -98,7 +98,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if check_password_hash(user.password, form.password.data):
             login_user(user)
-            session['cart'] = current_user.city
+            session['city'] = user.city
             return redirect(url_for('index'))
 
     return render_template('login.jinja2', form=form)
