@@ -112,8 +112,7 @@ supermarket_info_dictionary = {'mega': {'store_name': 'mega',
                                            }
                                }
 
-
-from routing import *  # pylint: disable=wrong-import-position  disable=unused-import
+from routing import *  # pylint: disable=wrong-import-position  disable=unused-import disable=wildcard-import
 
 
 if __name__ == '__main__':
