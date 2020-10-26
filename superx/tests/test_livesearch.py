@@ -4,6 +4,7 @@ import html parser
 import pytest
 from bs4 import BeautifulSoup
 from app import db
+# pylint: disable=import-error
 
 
 @pytest.mark.run(order=4)
@@ -45,4 +46,3 @@ def do_it(client, item_input):
                     break
             assert is_inside is True
         print(is_inside)
-
