@@ -17,8 +17,10 @@ def test_remove_item(client):
         'is_weighted': 'Flase',
         'unit_of_measure': 'גרם'
     }
-
+    
+    oldcart = session['cart'].copy() 
+    
     with client:
         client.post('/addItem', data=test_item, follow_redirects=True)
         client.post('/removeItem', data=test_item, follow_redirects=True)
-        assert session['cart'] == []
+        assert session['cart'] == oldcart
