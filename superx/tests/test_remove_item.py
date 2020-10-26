@@ -21,12 +21,4 @@ def test_remove_item(client):
     with client:
         client.post('/addItem', data=test_item, follow_redirects=True)
         client.post('/removeItem', data=test_item, follow_redirects=True)
-        old_cart = session['cart'].copy()
-
-        clean_cart = {
-            'id': '123123123',
-            'name': 'ananas',
-        }
-        
-        client.post('/removeItem', data=clean_cart, follow_redirects=True)
         assert session['cart'] == []
