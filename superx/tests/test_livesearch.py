@@ -4,7 +4,8 @@ import html parser
 import pytest
 from bs4 import BeautifulSoup
 from app import db
-# pylint: disable=import-error
+# pylint: disable=unused-import
+# pylint: disable=no-else-continue
 
 
 @pytest.mark.run(order=4)
