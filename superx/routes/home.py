@@ -131,7 +131,6 @@ def remove_item():
         if cart_list[i]['id'] == id_to_erase:
             del cart_list[i]
             break
-
     session['cart'] = cart_list
 
     return ''
