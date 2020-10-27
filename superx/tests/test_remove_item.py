@@ -10,14 +10,10 @@ def test_remove_item(client):
     '''
     tests removing item from comparing cart
     '''
-    test_item = {
-        'id': '123123123',
-        'name': 'ananas',
-        'quantity': '1',
-        'is_weighted': 'True',
-        'unit_of_measure': 'קילו'
+    test_item_to_remove = {
+        'id': '123123123'
     }
 
     with client:
-        client.post('/removeItem', data=test_item, follow_redirects=True)
+        client.post('/removeItem', data=test_item_to_remove, follow_redirects=True)
         assert session['cart'] == []
