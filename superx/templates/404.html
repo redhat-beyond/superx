@@ -1,0 +1,13 @@
+{#404 HTML#}
+
+{% extends "base.html" %}
+{%block content%}
+    <div class="error_handler text-center">
+    <p><br></p>
+    <h1 style="font-size: 400%;" id="header" class="display-3 text-center">superX</h1>
+    <h1 style="font-size: 200%;"  class="display-3 text-center">404</h1>
+    <p></p>
+    <h1 style="font-size: 200%;" class="display-3 text-center">נראה שקרתה תקלה</h1><br>
+    <a style="font-size: 200%;" class="display-3 text-center" href="{{ url_for('index')}}">לחץ כאן כדי לחזור לעמוד הראשי</a>
+</div>
+{% endblock %}
