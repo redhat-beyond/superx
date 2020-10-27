@@ -12,7 +12,7 @@ https://github.com/beyond-io/superx.git
 - Pycharm
 - Visual Studio
 
-![step1 example](superx/static/img/step1_example.jpg)
+![step1 example](superx/static/img/step1_example.JPG)
 
 ## <font color="blue"> **Step 2** </font>
 From the terminal / command line, run the virtual machine (where the project is going to run), to do so:
@@ -22,14 +22,14 @@ From the terminal / command line, run the virtual machine (where the project is 
 - Virtual box (Oracle)
 - Vagrant
 
-![step2 example](superx/static/img/step2_example.jpg)
+![step2 example](superx/static/img/step2_example.JPG)
 
 ## <font color="blue"> **Step 3** </font>
 The app is now on air. <br/>Go to your browser and type localhost:5000 in the url box.
 You've now entered SuperX price comparison system. <br/> You can compare prices of different products based on the city you live in.
 The comparison is between Mega, Shufersal & Victory.
 
-![step3_example](superx/static/img/step3_example.jpg)
+![step3_example](superx/static/img/step3_example.JPG)
 
 ## <font color="blue"> **Step 4** </font>
 Type the products you want to compare in the search line, choose the quantity of each, and hit compare. You can now see the cheapest supermarket near you. Bon appetit! 
