@@ -4,7 +4,7 @@ import app and routing modules
 
 from app import app
 from routes import home, signup
-from flask import session, request
+from flask import session, request, render_template
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -80,9 +80,15 @@ def city():
 
     return ''
 
+
 @app.route('/city_search', methods=['GET', 'POST'])
 def city_search():
     """
     city serch route
     """
     return home.city_search()
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html', title='404'), 404
