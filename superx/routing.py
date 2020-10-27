@@ -74,7 +74,15 @@ def logout():
 @app.route('/city', methods=['GET', 'POST'])
 def city():
     """
-    city route
+    adds city that was chosen, using jquery to get the data and ajax so not to redirect
     """
-    session['city'] = request.form.get("city")
-    return 'OK'
+    session['city'] = request.form.get('city')
+
+    return ''
+
+@app.route('/city_search', methods=['GET', 'POST'])
+def city_search():
+    """
+    city serch route
+    """
+    return home.city_search()

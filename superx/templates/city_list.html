@@ -1,0 +1,10 @@
+<label style="font-size: large; font-weight: bold" for="cityChoice"> אנא בחר מהרשימה את שם העיר בה תרצה להשוות מחירים</label>
+        <input id="cityChoice" list="cityList" class="form-control mr-sm-2 text-center" name="cityChoice" placeholder="בחר את שם העיר"><br>
+        <datalist id="cityList">
+            {% for city in city_list %}
+            {% if city.city == None or city.city == 'unknown' %}
+            {% else %}
+            <option value="{{ city.city }}">
+            {% endif %}
+            {% endfor %}
+        </datalist>

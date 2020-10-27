@@ -114,3 +114,15 @@ $(document).ready(function(e) {
       })
     }
 });
+
+$(document).ready(function(e) {
+  $("#cityCompare").click(function(e) {
+    $.ajax({
+      url: "/city_search",
+      method: "POST",
+      success: function (res) {
+        $( ".inner" ).append(res);
+      }
+    })   
+  });
+});
