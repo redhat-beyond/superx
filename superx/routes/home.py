@@ -12,7 +12,6 @@ def home():
     """
     returns landing page of application
     """
-
     city_list = db.session.query(Branch.city).order_by(Branch.city).distinct().all()
     return render_template('home.html', city_list=city_list)
 
@@ -132,7 +131,15 @@ def remove_item():
         if cart_list[i]['id'] == id_to_erase:
             del cart_list[i]
             break
-
     session['cart'] = cart_list
 
     return ''
+
+
+
+def city_search():
+    """
+    renders the city list for the user if it wants to cahnge a city from his city
+    """
+    city_list = db.session.query(Branch.city).order_by(Branch.city).distinct().all()
+    return render_template('city_list.html', city_list=city_list)
