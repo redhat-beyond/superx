@@ -1,20 +1,25 @@
-'''
-import session for cart
-'''
+"""
+import client session
+"""
 import pytest
 from flask import session
 
 
-
 @pytest.mark.run(order=4)
 def test_add_item(client):
-    '''
-    checks that item is removed from cart in flask sessions
-    '''
+    """
+    tests adding item to comparing cart
+    """
     test_item = {
         'id': '123123123',
-        'name': 'ananas'
+        'name': 'ananas',
+        'quantity': '1',
+        'is_weighted': 'True',
+        'unit_of_measure': 'קילו'
     }
+
     with client:
         client.post('/addItem', data=test_item, follow_redirects=True)
-        assert test_item in session['cart']
+        item = session['cart'][-1]
+        assert item["id"] == test_item["id"]
+        assert item["name"] == test_item["name"]

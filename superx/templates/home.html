@@ -6,9 +6,31 @@
   <div class="jumbotron">
     <div class="container">
       <h1 id="header" class="display-3 text-center">superX</h1>
-      <p></p>
-      <p style="font-size: large" >הכנס שם מוצר בתיבת החיפוש</p>
-      <form id="searchbutton" class="form-inline mt-2 mt-md-0">
+      
+
+        <form id="searchbutton" class="form-inline mt-2 mt-md-0">
+        <!-- City search with datalist -->
+        {% if current_user.is_authenticated %}
+        <p><b>עיר שלך: {{ current_user.city }} </b></p>
+        <input id="cityCompare" class="btn btn-outline-success btn-lg" form="cityForm" type="submit" value="תרצה עיר אחרת?">
+        <div class="inner"></div>
+        {% else %}
+        <label style="font-size: large; font-weight: bold" for="cityChoice"> אנא בחר מהרשימה את שם העיר בה תרצה להשוות מחירים</label>
+        <input id="cityChoice" list="cityList" class="form-control mr-sm-2 text-center" name="cityChoice" placeholder="בחר את שם העיר"><br>
+        <datalist id="cityList">
+            {% for city in city_list %}
+            {% if city.city == None or city.city == 'unknown' %}
+            {% else %}
+            <option value="{{ city.city }}">
+            {% endif %}
+            {% endfor %}
+        </datalist>
+        {% endif %}
+        
+
+      <!-- Product search and Compare button -->
+          <label style="font-size: large; font-weight: bold" for="myInput"> הכנס שם מוצר בתיבת החיפוש </label>
+
           <input id="myInput" class="form-control mr-sm-2 text-center" type="text" placeholder="הכנס שם מוצר" aria-label="Search">
           <p></p>
           <a class="btn" href="{{ url_for('cart') }}"><input id="comperbutton" form="cartForm" type="submit" value="השווה מחירים" class="btn btn-outline-success btn-lg" ></a>

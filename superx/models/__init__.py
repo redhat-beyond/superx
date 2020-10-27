@@ -16,7 +16,7 @@ class User(UserMixin, db.Model):
     name = Column(db.String(15))
     email = Column(db.String(50), unique=True)
     password = Column(db.String(80))
-
+    city = Column(db.String(80))
 
 class Chain(db.Model):
     '''
@@ -38,6 +38,7 @@ class Branch(db.Model):
     id = Column(Integer)
     name = Column(Text)
     address = Column(Text)
+    city = Column(Text)
     sub_chain_id = Column(Integer)
     chain_id = Column(db.ForeignKey('chain.id'))
     UniqueConstraint(id, chain_id)

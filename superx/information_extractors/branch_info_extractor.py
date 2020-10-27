@@ -1,7 +1,7 @@
-'''
+"""
 imports
-'''
-#pylint: disable=import-error
+"""
+# pylint: disable=import-error
 import gzip
 import os
 import sys
@@ -9,22 +9,21 @@ import xml.etree.ElementTree as et
 import logging
 import requests
 from bs4 import BeautifulSoup
+from models import Branch
+from app import supermarket_info_dictionary, session
+
 add_to_python_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
 sys.path.append(add_to_python_path)
-from models import Branch #pylint: disable=wrong-import-position
-from app import supermarket_info_dictionary, session  #pylint: disable=wrong-import-position
-
-
-
 
 logging.basicConfig(filename='branch-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
 
 
 class BranchExtractor:
-    '''
+    """
     extracts the branches
-    '''
+    """
+
     def __init__(self):
         self.current_super = ''
 
@@ -45,7 +44,7 @@ class BranchExtractor:
                     zip_link = self.get_zip_file_link()
                     if self.current_super['need_zip_prefix']:
                         self.current_super['branch_url'] = self.current_super['branch_url'] \
-                        + zip_link
+                                                           + zip_link
                     else:
                         self.current_super['branch_url'] = zip_link
 
@@ -126,19 +125,21 @@ class BranchExtractor:
             branch_id = store.find(attrs_dict['store_id']).text
             branch_name = store.find(attrs_dict['store_name']).text
             city = store.find(attrs_dict['city']).text
+
+            if city is not None and '-' in city:
+                city = city.replace("-", " ")
+
             address = store.find(attrs_dict['address']).text
             if address is None or address == ' ':
                 address = city
                 if city is None:
                     address = 'none'
-            elif city is not None:
-                address = address + ' ' + city
 
             sub_chain_id = attrs_dict['sub_chain_id']
             if isinstance(attrs_dict['sub_chain_id'], str):
                 sub_chain_id = store.find(attrs_dict['sub_chain_id']).text
 
-            xml_info_list.append((branch_id, branch_name, address, sub_chain_id))
+            xml_info_list.append((branch_id, branch_name, address, sub_chain_id, city))
 
         return xml_info_list
 
@@ -150,10 +151,11 @@ class BranchExtractor:
         """
         branch_list = []
 
-        for branch_id, branch_name, address, sub_chain_id in xml_info_list:
+        for branch_id, branch_name, address, sub_chain_id, city in xml_info_list:
             branch_list.append(Branch(id=branch_id,
-                                name=branch_name, address=address,
-                                sub_chain_id=sub_chain_id,
-                                chain_id=self.current_super['chain_id']))
+                                      name=branch_name, address=address,
+                                      sub_chain_id=sub_chain_id,
+                                      city=city,
+                                      chain_id=self.current_super['chain_id']))
 
         return branch_list
