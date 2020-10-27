@@ -90,5 +90,8 @@ def city_search():
 
 
 @app.errorhandler(404)
-def page_not_found(error):
+def page_not_found():
+    """
+    route for 404 error handler
+    """
     return render_template('404.html', title='404'), 404
