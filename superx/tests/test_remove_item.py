@@ -1,9 +1,5 @@
 '''
-<<<<<<< HEAD
-import session for cart
-=======
 import client session
->>>>>>> d401d71e33604fb7c2ad3db81ed43469c72534a8
 '''
 import pytest
 from flask import session
@@ -15,14 +11,13 @@ def test_remove_item(client):
     tests removing item from comparing cart
     '''
     test_item = {
-        'id': '45232123',
-        'name': 'mushrooms',
-        'quantity': '2',
-        'is_weighted': 'Flase',
-        'unit_of_measure': 'גרם'
+        'id': '123123123',
+        'name': 'ananas',
+        'quantity': '1',
+        'is_weighted': 'True',
+        'unit_of_measure': 'קילו'
     }
 
     with client:
-        client.post('/addItem', data=test_item, follow_redirects=True)
         client.post('/removeItem', data=test_item, follow_redirects=True)
         assert session['cart'] == []
