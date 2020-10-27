@@ -4,7 +4,8 @@ importing pytet and app
 import pytest
 from app import app # pylint: disable=import-error
 
-@pytest.fixture
+
+@pytest.fixture(scope="session", autouse=True)
 def client():
     '''
     configuring pytest and test client to use
