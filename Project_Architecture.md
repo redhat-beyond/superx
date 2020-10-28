@@ -59,4 +59,4 @@ Contain _ init _.py, a file which determines the different tables columns define
 
 # App run diagram
 
-![App run diagram](superx/static/img/app_run_diagram.jpg)
+![App run diagram](superx/static/img/app_run_diagram.JPG)
