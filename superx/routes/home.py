@@ -3,7 +3,7 @@ import from flask and models and db
 """
 # pylint: disable=redefined-outer-name, no-member, consider-using-enumerate
 
-from flask import render_template, request, session
+from flask import render_template, request, session, jsonify
 from models import Branch, BranchPrice, Product
 from app import db, supermarket_info_dictionary as sd
 
@@ -115,7 +115,12 @@ def add_item():
     cart_list.append(item)
     session['cart'] = cart_list
 
-    return ''
+    was_city_chosen = False
+    if 'city' in session:
+        was_city_chosen = True
+    
+
+    return jsonify({'was_city_chosen' : was_city_chosen})
 
 
 def remove_item():

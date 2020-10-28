@@ -8,7 +8,7 @@ from wtforms import StringField, PasswordField, SelectField
 from wtforms.validators import InputRequired, Length, ValidationError, EqualTo
 from wtforms.fields.html5 import EmailField
 from flask import render_template, redirect, url_for, session
-from flask_login import LoginManager, login_required, logout_user, login_user
+from flask_login import LoginManager, login_required, logout_user, login_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import app, db # pylint: disable=import-error disable=no-name-in-module
 from models import User, Branch # pylint: disable=import-error

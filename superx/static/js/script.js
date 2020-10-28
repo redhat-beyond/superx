@@ -22,7 +22,7 @@ function addItemIfInCart(product_id, product_name){
 
 // adding Items from "myTable" table to "mycart" table
 function addItem(product_id, product_name){
-  $.ajax({
+  req = $.ajax({
     url: "/addItem",
     method: "POST",
     data: {id: product_id, name: product_name},
@@ -35,6 +35,12 @@ function addItem(product_id, product_name){
         <td><button onclick="removeItem(${product_id})" type="button" class="btn btn-outline-danger">הסר מהעגלה</button></td>
         <td colspan="0"><input type="hidden" name="${product_id}"></td>
             </tr>`));
+    }
+  })
+
+  req.done(function(data){
+    if (data.was_city_chosen)
+    {
       $('#comperbutton').removeAttr('disabled');
     }
   })
@@ -107,10 +113,17 @@ $(document).ready(function(e) {
 
     function citySearch() {
         console.log("Executing search()");
-        $.ajax({
+        req = $.ajax({
         url: "/city",
         method: "POST",
         data: {city: $("#cityChoice").val()},
+        success: function (res) {
+          if ($('#cartbody tr').length != 0)
+          {
+            $('#comperbutton').removeAttr('disabled');
+          }
+        }
+
       })
     }
 });
