@@ -118,7 +118,7 @@ def add_item():
     was_city_chosen = False
     if 'city' in session:
         was_city_chosen = True
-    
+
 
     return jsonify({'was_city_chosen' : was_city_chosen})
 
