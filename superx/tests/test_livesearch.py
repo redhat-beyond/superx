@@ -28,6 +28,8 @@ def do_it(client, item_input):
     """
     with client:
 
+        # added test data to session
+        session['branches_data'] = [7290055700360, 7290055702337, 7290055702847]
         response = client.get('/livesearch', data=item_input, follow_redirects=True)
         cart_html = BeautifulSoup(response.data, 'html.parser')
 
