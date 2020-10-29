@@ -80,27 +80,44 @@ def cart():
 
 def livesearch():
     """
-    returns search functin using jquery data and ajax so not to redirect
+    returns search function using jquery data and ajax so not to redirect
     """
 
-    json_list_of_items = []
+    products = []
+    search_res = request.form.get("input").strip()
 
     # if search_res is empty string, return empty json
-    search_res = request.form.get("input").strip()
     if not search_res:
-        return render_template('products_table.html', products=json_list_of_items)
+        return render_template('products_table.html', products=products)
 
-    products_list = db.session.query(Product).order_by(Product.name)\
+    # query all products from DB that contains search_res in their name
+    products_list = db.session.query(Product).order_by(Product.name) \
         .filter(Product.name.contains(search_res)).all()
 
-    for item in products_list:
-        json_list_of_items.append({
-            "id": item.id,
-            "name": item.name,
-            "quantity": float(item.quantity),
-            "unit_of_measure": item.unit_of_measure
-        })
-    return render_template('products_table.html', products=json_list_of_items)
+    for item_count, item in enumerate(products_list):
+
+        # after NUMBER_OF_ITEMS_TO_SHOW items added break from the loop
+        if item_count == NUMBER_OF_ITEMS_TO_SHOW:
+            break
+
+        # query all the BranchPrice objects associated with the item variable
+        branch_price_list_of_item = BranchPrice.query.filter_by(item_code=item.id).all()
+
+        for branch_price_item in branch_price_list_of_item:
+
+            # check if the BranchPrice object belongs to branch located in city
+            if branch_price_item.chain_id+branch_price_item.branch_id in session['branches_data']:
+
+                products.append({
+                    "id": item.id,
+                    "name": item.name,
+                    "quantity": float(item.quantity),
+                    "unit_of_measure": item.unit_of_measure
+                })
+                item_count += 1
+                break
+
+    return render_template('products_table.html', products=products)
 
 
 # This method is used by addItem function in static/js/script.js
