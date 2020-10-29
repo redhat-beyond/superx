@@ -5,6 +5,7 @@ import app and routing modules
 from app import app
 from routes import home, signup
 from flask import session, request, render_template
+from models import Branch
 
 
 @app.route('/', methods=['GET', 'POST'])
