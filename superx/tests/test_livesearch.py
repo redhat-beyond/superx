@@ -10,10 +10,10 @@ def test_livesearch(client):
     """
     tests livesearch functionality
     """
-    item_input1 = {'input': "שימורים"}
-    item_input2 = {'input': "sdsdd"}
-    item_input3 = {'input': "     "}
-    item_input4 = {'input': ""}
+    item_input1 = {'input': "שימורים", 'branches_data': 'branches_data'}
+    item_input2 = {'input': "sdsdd", 'branches_data': 'branches_data'}
+    item_input3 = {'input': "     ", 'branches_data': 'branches_data'}
+    item_input4 = {'input': "", 'branches_data': 'branches_data'}
 
     do_it(client, item_input1)
     do_it(client, item_input2)
