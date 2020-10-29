@@ -55,9 +55,8 @@ def cart():
             # check if item belong to branch from this 'city' in this 'super_name'
             for branch in branches_list:
 
-                if branch.city == city and branch.chain_id == sd[super_name]['chain_id']\
+                if branch.city == city and branch.chain_id == sd[super_name]['chain_id'] \
                         and not already_associate[super_name]:
-
                     total_prices[super_name]['list'].append({
                         "name": item['name'],
                         "price": same_item.price,
@@ -126,7 +125,7 @@ def add_item():
     adds item to cart using jquery to get the data and ajax so not to redirect
     """
 
-    item = {'id' : request.form.get('id'), 'name' : request.form.get('name')}
+    item = {'id': request.form.get('id'), 'name': request.form.get('name')}
     # If there are no chosen products yet initiate cart in session object
 
     if 'cart' not in session:
@@ -155,7 +154,6 @@ def remove_item():
     session['cart'] = cart_list
 
     return ''
-
 
 
 def city_search():
