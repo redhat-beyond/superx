@@ -3,6 +3,7 @@ import html parser
 """
 import pytest
 from bs4 import BeautifulSoup
+from flask import session
 
 
 @pytest.mark.run(order=6)
@@ -10,10 +11,10 @@ def test_livesearch(client):
     """
     tests livesearch functionality
     """
-    item_input1 = {'input': "שימורים", 'branches_data': 'branches_data'}
-    item_input2 = {'input': "sdsdd", 'branches_data': 'branches_data'}
-    item_input3 = {'input': "     ", 'branches_data': 'branches_data'}
-    item_input4 = {'input': "", 'branches_data': 'branches_data'}
+    item_input1 = {'input': "שימורים"}
+    item_input2 = {'input': "sdsdd"}
+    item_input3 = {'input': "     "}
+    item_input4 = {'input': ""}
 
     do_it(client, item_input1)
     do_it(client, item_input2)
@@ -26,6 +27,9 @@ def do_it(client, item_input):
     execute the tests
     """
     with client:
+
+        # added test data to session
+        session['branches_data'] = [7290055700360, 7290055702337, 7290055702847]
         response = client.get('/livesearch', data=item_input, follow_redirects=True)
         cart_html = BeautifulSoup(response.data, 'html.parser')
 
