@@ -28,7 +28,7 @@ def do_it(client, item_input, city_input):
     execute the tests
     """
     with client:
-        client.get('/city', data=city_input, fllow_redirects=False)
+        client.get('/city', data=city_input, follow_redirects=False)
         response = client.get('/livesearch', data=item_input, follow_redirects=True)
         cart_html = BeautifulSoup(response.data, 'html.parser')
 
