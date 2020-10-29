@@ -115,7 +115,7 @@ def add_item():
     cart_list.append(item)
     session['cart'] = cart_list
 
-    was_city_chosen = True if 'city' in session else False
+    was_city_chosen = bool('city' in session)
 
 
     return jsonify({'was_city_chosen' : was_city_chosen})
