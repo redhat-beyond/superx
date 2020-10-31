@@ -85,6 +85,7 @@ def livesearch():
 
     products = []
     search_res = request.form.get("input").strip()
+    branches_code_list = session['branches_data']
 
     # if search_res is empty string, return empty json
     if not search_res:
