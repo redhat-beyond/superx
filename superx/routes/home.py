@@ -106,8 +106,12 @@ def livesearch():
 
         for branch_price_item in branch_price_list_of_item:
 
+            # save the unique code that composed of branch_id number plus chain_id number
+            unique_branch_code = (branch_price_item.chain_id + branch_price_item.branch_id)
+
             # check if the BranchPrice object belongs to branch located in city
-            if branch_price_item.chain_id+branch_price_item.branch_id in session['branches_data']:
+            # if so adding the product to the products list
+            if unique_branch_code in branches_code_list:
 
                 products.append({
                     "id": item.id,
