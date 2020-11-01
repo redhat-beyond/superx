@@ -17,13 +17,13 @@ def test_livesearch(client):
 
     city_input = {'city': 'ירושלים'}
 
-    do_it(client, item_input1, city_input)
-    do_it(client, item_input2, city_input)
-    do_it(client, item_input3, city_input)
-    do_it(client, item_input4, city_input)
+    execute_test(client, item_input1, city_input)
+    execute_test(client, item_input2, city_input)
+    execute_test(client, item_input3, city_input)
+    execute_test(client, item_input4, city_input)
 
 
-def do_it(client, item_input, city_input):
+def execute_test(client, item_input, city_input):
     """
     execute the tests
     """
