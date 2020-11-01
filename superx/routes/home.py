@@ -18,7 +18,7 @@ def home():
     """
     city_list = db.session.query(Branch.city).order_by(Branch.city).distinct().all()
     return render_template('home.html', city_list=city_list,
-                           NUMBER_OF_ITEMS_TO_SHOW=NUMBER_OF_ITEMS_TO_SHOW)
+                           number_of_items_to_show=NUMBER_OF_ITEMS_TO_SHOW)
 
 
 def cart():
