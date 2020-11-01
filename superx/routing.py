@@ -5,6 +5,7 @@ import app and routing modules
 from app import app
 from routes import home, signup
 from flask import session, request, render_template
+from models import Branch
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -76,8 +77,21 @@ def city():
     """
     adds city that was chosen, using jquery to get the data and ajax so not to redirect
     """
+    # gets the city name from the user
     session['city'] = request.form.get('city')
 
+    # entering the data of all branches in the city to branches_data
+    branches_from_city = Branch.query.filter_by(city=session['city']).all()
+    branches_data = []
+
+    for branch in branches_from_city:
+
+        # generates unique code for each branch -
+        # this is an efficient way to produce a unique code for each branch
+        branches_data.append(branch.chain_id+branch.id)
+
+    # add branches_data to session
+    session['branches_data'] = branches_data
     return ''
 
 

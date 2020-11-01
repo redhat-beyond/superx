@@ -29,9 +29,12 @@
         
 
       <!-- Product search and Compare button -->
+        <p></p>
           <label style="font-size: large; font-weight: bold" for="myInput"> הכנס שם מוצר בתיבת החיפוש </label>
 
           <input id="myInput" class="form-control mr-sm-2 text-center" type="text" placeholder="הכנס שם מוצר" aria-label="Search">
+            <p></p>
+          <label style="font-size: medium; font-weight: bold" for="myInput"> *מציג את {{ number_of_items_to_show }} המוצרים הראשונים ברשימת המוצרים* </label>
           <p></p>
           <a class="btn" href="{{ url_for('cart') }}"><input id="comperbutton" form="cartForm" type="submit" value="השווה מחירים" class="btn btn-outline-success btn-lg" ></a>
       </form>

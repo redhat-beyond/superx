@@ -7,13 +7,18 @@ from flask import render_template, request, session, jsonify
 from models import Branch, BranchPrice, Product
 from app import db, supermarket_info_dictionary as sd
 
+#  The amount of items to show the customer each search
+# (more items = bigger delay from the input to the presentation)
+NUMBER_OF_ITEMS_TO_SHOW = 20
+
 
 def home():
     """
     returns landing page of application
     """
     city_list = db.session.query(Branch.city).order_by(Branch.city).distinct().all()
-    return render_template('home.html', city_list=city_list)
+    return render_template('home.html', city_list=city_list,
+                           number_of_items_to_show=NUMBER_OF_ITEMS_TO_SHOW)
 
 
 def cart():
@@ -51,9 +56,8 @@ def cart():
             # check if item belong to branch from this 'city' in this 'super_name'
             for branch in branches_list:
 
-                if branch.city == city and branch.chain_id == sd[super_name]['chain_id']\
+                if branch.city == city and branch.chain_id == sd[super_name]['chain_id'] \
                         and not already_associate[super_name]:
-
                     total_prices[super_name]['list'].append({
                         "name": item['name'],
                         "price": same_item.price,
@@ -76,27 +80,48 @@ def cart():
 
 def livesearch():
     """
-    returns search functin using jquery data and ajax so not to redirect
+    returns search function using jquery data and ajax so not to redirect
     """
 
-    json_list_of_items = []
-
-    # if search_res is empty string, return empty json
+    products = []
     search_res = request.form.get("input").strip()
-    if not search_res:
-        return render_template('products_table.html', products=json_list_of_items)
+    branches_code_list = session['branches_data']
 
-    products_list = db.session.query(Product).order_by(Product.name)\
-        .filter(Product.name.contains(search_res)).all()
+    # if search_res is empty string, skip and return empty products list
+    if search_res:
 
-    for item in products_list:
-        json_list_of_items.append({
-            "id": item.id,
-            "name": item.name,
-            "quantity": float(item.quantity),
-            "unit_of_measure": item.unit_of_measure
-        })
-    return render_template('products_table.html', products=json_list_of_items)
+        # query all products from DB that contains search_res in their name
+        products_list = db.session.query(Product).order_by(Product.name) \
+            .filter(Product.name.contains(search_res)).all()
+
+        for item_count, item in enumerate(products_list):
+
+            # after NUMBER_OF_ITEMS_TO_SHOW items added break from the loop
+            if item_count == NUMBER_OF_ITEMS_TO_SHOW:
+                break
+
+            # query all the BranchPrice objects associated with the item variable
+            branch_price_list_of_item = BranchPrice.query.filter_by(item_code=item.id).all()
+
+            for branch_price_item in branch_price_list_of_item:
+
+                # save the unique code that composed of branch_id number plus chain_id number
+                unique_branch_code = (branch_price_item.chain_id + branch_price_item.branch_id)
+
+                # check if the BranchPrice object belongs to branch located in city
+                # if so adding the product to the products list
+                if unique_branch_code in branches_code_list:
+
+                    products.append({
+                        "id": item.id,
+                        "name": item.name,
+                        "quantity": float(item.quantity),
+                        "unit_of_measure": item.unit_of_measure
+                    })
+                    item_count += 1
+                    break
+
+    return render_template('products_table.html', products=products)
 
 
 # This method is used by addItem function in static/js/script.js
@@ -105,7 +130,7 @@ def add_item():
     adds item to cart using jquery to get the data and ajax so not to redirect
     """
 
-    item = {'id' : request.form.get('id'), 'name' : request.form.get('name')}
+    item = {'id': request.form.get('id'), 'name': request.form.get('name')}
     # If there are no chosen products yet initiate cart in session object
 
     if 'cart' not in session:
@@ -137,7 +162,6 @@ def remove_item():
     session['cart'] = cart_list
 
     return ''
-
 
 
 def city_search():

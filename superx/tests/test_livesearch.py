@@ -15,17 +15,20 @@ def test_livesearch(client):
     item_input3 = {'input': "     "}
     item_input4 = {'input': ""}
 
-    do_it(client, item_input1)
-    do_it(client, item_input2)
-    do_it(client, item_input3)
-    do_it(client, item_input4)
+    city_input = {'city': 'ירושלים'}
+
+    execute_test(client, item_input1, city_input)
+    execute_test(client, item_input2, city_input)
+    execute_test(client, item_input3, city_input)
+    execute_test(client, item_input4, city_input)
 
 
-def do_it(client, item_input):
+def execute_test(client, item_input, city_input):
     """
     execute the tests
     """
     with client:
+        client.get('/city', data=city_input, follow_redirects=False)
         response = client.get('/livesearch', data=item_input, follow_redirects=True)
         cart_html = BeautifulSoup(response.data, 'html.parser')
 
