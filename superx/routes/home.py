@@ -87,40 +87,39 @@ def livesearch():
     search_res = request.form.get("input").strip()
     branches_code_list = session['branches_data']
 
-    # if search_res is empty string, return empty json
-    if not search_res:
-        return render_template('products_table.html', products=products)
+    # if search_res is empty string, skip and return empty products list
+    if search_res:
 
-    # query all products from DB that contains search_res in their name
-    products_list = db.session.query(Product).order_by(Product.name) \
-        .filter(Product.name.contains(search_res)).all()
+        # query all products from DB that contains search_res in their name
+        products_list = db.session.query(Product).order_by(Product.name) \
+            .filter(Product.name.contains(search_res)).all()
 
-    for item_count, item in enumerate(products_list):
+        for item_count, item in enumerate(products_list):
 
-        # after NUMBER_OF_ITEMS_TO_SHOW items added break from the loop
-        if item_count == NUMBER_OF_ITEMS_TO_SHOW:
-            break
-
-        # query all the BranchPrice objects associated with the item variable
-        branch_price_list_of_item = BranchPrice.query.filter_by(item_code=item.id).all()
-
-        for branch_price_item in branch_price_list_of_item:
-
-            # save the unique code that composed of branch_id number plus chain_id number
-            unique_branch_code = (branch_price_item.chain_id + branch_price_item.branch_id)
-
-            # check if the BranchPrice object belongs to branch located in city
-            # if so adding the product to the products list
-            if unique_branch_code in branches_code_list:
-
-                products.append({
-                    "id": item.id,
-                    "name": item.name,
-                    "quantity": float(item.quantity),
-                    "unit_of_measure": item.unit_of_measure
-                })
-                item_count += 1
+            # after NUMBER_OF_ITEMS_TO_SHOW items added break from the loop
+            if item_count == NUMBER_OF_ITEMS_TO_SHOW:
                 break
+
+            # query all the BranchPrice objects associated with the item variable
+            branch_price_list_of_item = BranchPrice.query.filter_by(item_code=item.id).all()
+
+            for branch_price_item in branch_price_list_of_item:
+
+                # save the unique code that composed of branch_id number plus chain_id number
+                unique_branch_code = (branch_price_item.chain_id + branch_price_item.branch_id)
+
+                # check if the BranchPrice object belongs to branch located in city
+                # if so adding the product to the products list
+                if unique_branch_code in branches_code_list:
+
+                    products.append({
+                        "id": item.id,
+                        "name": item.name,
+                        "quantity": float(item.quantity),
+                        "unit_of_measure": item.unit_of_measure
+                    })
+                    item_count += 1
+                    break
 
     return render_template('products_table.html', products=products)
 
