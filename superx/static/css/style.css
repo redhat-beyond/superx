@@ -150,3 +150,13 @@ input {
 .container .info span .fa {
     color: #EF3B3A;
 }
+
+#numItems1, #numItems2{
+    padding: 6px;
+    width: 35%;
+    border-radius: .25rem;
+    text-align: center;
+    vertical-align: middle;
+    background-color: white;
+    border: 1px solid green;
+}

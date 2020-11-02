@@ -1,7 +1,7 @@
 // JavaScripts functions
 
 // Check if item is already in cart
-function addItemIfInCart(product_id, product_name){
+function addItemIfInCart(product_id, product_name, num_items){
   //test 1- console.log("yes");
   var b = false;
   var table = $('#cartbody');
@@ -17,21 +17,22 @@ function addItemIfInCart(product_id, product_name){
   }
   //test 5- console.log(b);
   if(!b)
-    addItem(product_id, product_name);
+    addItem(product_id, product_name, num_items);
 }
 
 // adding Items from "myTable" table to "mycart" table
-function addItem(product_id, product_name){
+function addItem(product_id, product_name, num_items){
   req = $.ajax({
     url: "/addItem",
     method: "POST",
-    data: {id: product_id, name: product_name},
+    data: {id: product_id, name: product_name, num_items: num_items},
     success: function (res) {
-      console.log("did it2");
+      // console.log("did it2");
       const tableBody = $('#cartbody');
       tableBody.append($(`<tr id="${product_id}">
-        <td colspan="2">${product_id}</td>
+        <td colspan="0" hidden>${product_id}</td>
         <td colspan="2">${product_name}</td>
+        <td colspan="2"><input type="number" onchange="addToSession(${product_id}, this.value)" id="numItems2" value="1" min="1"></td>
         <td><button onclick="removeItem(${product_id})" type="button" class="btn btn-outline-danger">הסר מהעגלה</button></td>
         <td colspan="0"><input type="hidden" name="${product_id}"></td>
             </tr>`));
@@ -139,3 +140,14 @@ $(document).ready(function(e) {
     })   
   });
 });
+
+function addToSession (product_id, num_items){
+    $.ajax({
+        url: "/update_num_items",
+        method: "POST",
+        data: {id: product_id, num_items: num_items},
+        success: function (res) {
+            console.log("success")
+        }
+    })
+}

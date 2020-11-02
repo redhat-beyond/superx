@@ -61,10 +61,12 @@ def cart():
                     total_prices[super_name]['list'].append({
                         "name": item['name'],
                         "price": same_item.price,
+                        "num_items": item['num_items'],
+                        "total_item_price": same_item.price*(int(item['num_items'])),
                         "associated": True
                     })
                     already_associate[super_name] = True
-                    total_prices[super_name]['price'] += same_item.price
+                    total_prices[super_name]['price'] += total_prices[super_name]['list'][-1]['total_item_price']
                     break
 
         for i in already_associate:
@@ -116,6 +118,7 @@ def livesearch():
                         "id": item.id,
                         "name": item.name,
                         "quantity": float(item.quantity),
+                        "num_items": 1,
                         "unit_of_measure": item.unit_of_measure
                     })
                     item_count += 1
@@ -130,7 +133,8 @@ def add_item():
     adds item to cart using jquery to get the data and ajax so not to redirect
     """
 
-    item = {'id': request.form.get('id'), 'name': request.form.get('name')}
+    item = {'id': request.form.get('id'), 'name': request.form.get('name'),
+            'num_items': request.form.get('num_items')}
     # If there are no chosen products yet initiate cart in session object
 
     if 'cart' not in session:
@@ -170,3 +174,20 @@ def city_search():
     """
     city_list = db.session.query(Branch.city).order_by(Branch.city).distinct().all()
     return render_template('city_list.html', city_list=city_list)
+
+
+def update_num_items():
+    """
+    renders number of items chosen for a product according to user's input
+    """
+    id_to_update = request.form.get('id')
+    num_items = request.form.get('num_items')
+
+    cart_list = session['cart']
+    for i in range(len(cart_list)):
+        if cart_list[i]['id'] == id_to_update:
+            cart_list[i]['num_items'] = num_items
+            break
+    session['cart'] = cart_list
+
+    return ''

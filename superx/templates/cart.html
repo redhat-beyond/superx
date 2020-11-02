@@ -22,7 +22,7 @@
   <table id="megaTable" class="table text-center" dir="rtl">
     <thead>
         <tr>
-            <th colspan="3"><img src="/static/img/MegaLogo.png" alt="שופרסל" width="260" height="100"></th>
+            <th colspan="3"><img src="/static/img/MegaLogo.png" alt="מגה" width="220" height="80"></th>
         </tr>
     </thead>
     <tbody id="megaBody">
@@ -30,21 +30,22 @@
             {% if not product.associated %}
 
             <tr>
-                <td> <strong>{{ product.name|replace('\'', '') }}</strong><br> *מוצר זה לא נמצא באף סניף בעיר <br>{{ session.city }} </td>
-                <td> 0 ש''ח</td>
+                <td colspan="3"> <strong>{{ product.name|replace('\'', '') }}</strong><span style="color:red"><br> לא זמין ב{{ session.city }} <br> </span> </td>
             </tr>
 
             {% else %}
 
             <tr>
                 <td> <strong>{{ product.name|replace('\'', '') }} </strong><p><br></p></td>
-                <td> {{ product.price }} ש''ח</td>
+                <td id="price1"> {{ product.price }} ש''ח</td>
+                <td id="numItems3"> {{ product.num_items }} יח' </td>
+                <td id="tot_items1"> סה"כ {{ product.total_item_price }}</td>
             </tr>
 
             {% endif %}
         {% endfor %}
         <tr>
-            <td colspan="2"><strong>מחיר הסל: {{ total_prices['mega']['price'] }} ש''ח </strong></td>
+            <td id="mega_total" colspan="2"><strong>מחיר הסל: {{ total_prices['mega']['price'] }} ש''ח </strong></td>
         </tr>
     </tbody>
   </table>
@@ -55,29 +56,30 @@
   <table id="shufersalTable" class="table text-center" dir="rtl">
     <thead>
         <tr>
-            <th colspan="3"><img src="/static/img/ShufersalLogo.png" alt="שופרסל" width="260" height="100"></th>
+            <th colspan="3"><img src="/static/img/ShufersalLogo.png" alt="שופרסל" width="220" height="80"></th>
         </tr>
     </thead>
     <tbody id="shufersalBody">
       {% for product in total_prices['shufersal']['list'] %}
-          {% if not product.associated %}
+          {% if product.associated %}
 
             <tr>
-                <td> <strong>{{ product.name|replace('\'', '') }}</strong><br> *מוצר זה לא נמצא באף סניף בעיר <br>{{ session.city }} </td>
-                <td> 0 ש''ח</td>
+                <td> <strong>{{ product.name|replace('\'', '') }} </strong><p><br></p></td>
+                <td id="price2"> {{ product.price }} ש''ח</td>
+                <td id="numItems4"> {{ product.num_items }} יח' </td>
+                <td id="tot_items2"> סה"כ {{ product.total_item_price }}</td>
             </tr>
 
             {% else %}
 
             <tr>
-                <td><strong> {{ product.name|replace('\'', '') }}</strong><p><br></p></td>
-                <td> {{ product.price }} ש''ח</td>
+                <td colspan="3"> <strong>{{ product.name|replace('\'', '') }}</strong><span style="color:red"><br> לא זמין ב{{ session.city }} <br> </span> </td>
             </tr>
 
           {% endif %}
         {% endfor %}
         <tr>
-            <td colspan="2"><strong>מחיר הסל: {{ total_prices['shufersal']['price'] }} ש''ח </strong></td>
+            <td id="shuf_total" colspan="2"><strong>מחיר הסל: {{ total_prices['shufersal']['price'] }} ש''ח </strong></td>
         </tr>
     </tbody>
   </table>
@@ -88,7 +90,7 @@
   <table id="victoryTable" class="table text-center" dir="rtl">
     <thead>
         <tr>
-            <th colspan="3"><img src="/static/img/VictoryLogo.png" alt="וויקטורי" width="260" height="100"></th>
+            <th colspan="3"><img src="/static/img/VictoryLogo.png" alt="וויקטורי" width="220" height="80"></th>
         </tr>
     </thead>
     <tbody id="victoryBody">
@@ -96,21 +98,22 @@
           {% if not product.associated %}
 
             <tr>
-                <td> <strong>{{ product.name|replace('\'', '') }}</strong><br> *מוצר זה לא נמצא באף סניף בעיר <br>{{ session.city }} </td>
-                <td> 0 ש''ח</td>
+                <td colspan="3"> <strong>{{ product.name|replace('\'', '') }}</strong><span style="color:red"><br> לא זמין ב{{ session.city }} <br> </span> </td>
             </tr>
 
             {% else %}
 
             <tr>
-                <td><strong> {{ product.name|replace('\'', '') }} </strong><p><br></p></td>
-                <td> {{ product.price }} ש''ח</td>
+                <td> <strong>{{ product.name|replace('\'', '') }} </strong><p><br></p></td>
+                <td id="price3"> {{ product.price }} ש''ח</td>
+                <td id="numItems5"> {{ product.num_items }} יח' </td>
+                <td id="tot_items3"> סה"כ {{ product.total_item_price }}</td>
             </tr>
 
           {% endif %}
         {% endfor %}
         <tr>
-            <td colspan="2"><strong>מחיר הסל: {{ total_prices['victory']['price'] }} ש''ח </strong></td>
+            <td id="vic_total" colspan="2"><strong>מחיר הסל: {{ total_prices['victory']['price'] }} ש''ח </strong></td>
         </tr>
     </tbody>
   </table>

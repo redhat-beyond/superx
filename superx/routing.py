@@ -103,6 +103,14 @@ def city_search():
     return home.city_search()
 
 
+@app.route('/update_num_items', methods=['GET', 'POST'])
+def update_num_items():
+    """
+    update num of items chosen
+    """
+    return home.update_num_items()
+
+
 @app.errorhandler(404)
 def page_not_found():
     """
