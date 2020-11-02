@@ -1,7 +1,7 @@
 """
 import from flask and models and db
 """
-# pylint: disable=redefined-outer-name, no-member, consider-using-enumerate
+# pylint: disable=redefined-outer-name, no-member, consider-using-enumerate, line-too-long
 
 from flask import render_template, request, session, jsonify
 from models import Branch, BranchPrice, Product
