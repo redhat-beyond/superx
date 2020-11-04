@@ -185,9 +185,9 @@ def update_num_items():
     num_items = request.form.get('num_items')
 
     cart_list = session['cart']
-    for i in range(len(cart_list)):
-        if cart_list[i]['id'] == id_to_update:
-            cart_list[i]['num_items'] = num_items
+    for item in cart_list:
+        if item['id'] == id_to_update:
+            item['num_items'] = num_items
             break
     session['cart'] = cart_list
 
