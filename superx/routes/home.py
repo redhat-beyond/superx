@@ -66,8 +66,8 @@ def cart():
                         "associated": True
                     })
                     already_associate[super_name] = True
-                    total_price = total_prices[super_name]['list'][-1]['total_item_price']
-                    total_prices[super_name]['price'] += total_price
+                    sum_price = total_prices[super_name]['list'][-1]['total_item_price']
+                    total_prices[super_name]['price'] += sum_price
                     break
 
         for i in already_associate:
