@@ -9,8 +9,10 @@
             <td>{{ product.quantity|int }} {{ product.unit_of_measure }}</td>
         {% endif %}
        <td>
-        
-        <button onclick="addItemIfInCart({{ product.id }}, '{{product.name |replace('\'', '')}}')" type="button" class="btn btn-outline-success">הוסף לעגלה</button></td>
-    
+
+        <button onclick="addItemIfInCart({{ product.id }}, '{{product.name |replace('\'', '')}}', {{ product.num_items }})" type="button" class="btn btn-outline-success">הוסף לעגלה</button>
+
+       </td>
+        <!-- calls add item function from static.js.script -->
     </tr>
     {% endfor %}

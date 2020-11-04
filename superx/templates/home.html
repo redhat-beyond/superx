@@ -68,16 +68,18 @@
         <th colspan="5">העגלה שלי</th>
     </tr>
   <tr>
-        <th scope="col" colspan="2">קוד מוצר</th>
         <th scope="col" colspan="2">שם מוצר</th>
+        <th id="quantity" scope="col" colspan="2">כמות</th>
         <th scope="col" colspan="1">הסר מהעגלה</th>
   </tr>
 </thead>
 <tbody id="cartbody">
   {% for item in session['cart'] %}
   <tr id="{{ item['id'] }}">
-    <td colspan="2">{{ item['id']  }}</td>
+    <td colspan="2" hidden>{{ item['id']  }}</td>
     <td colspan="2">{{ item['name']  }}</td>
+    <td colspan="2"><input type="number" onchange="addToSession({{ item['id'] }}, this.value)"
+                           id="numItems2" value="1" min="1"></td>
     <td><button onclick="removeItem({{ item['id'] }})" type="button" class="btn btn-outline-danger">הסר מהעגלה</button></td>
     <td colspan="0"><input type="hidden" name="${product_id}"></td>
      </tr>
