@@ -1,7 +1,7 @@
 """
 import from flask and models and db
 """
-# pylint: disable=redefined-outer-name, no-member, consider-using-enumerate, line-too-long
+# pylint: disable=redefined-outer-name, no-member, consider-using-enumerate
 
 from flask import render_template, request, session, jsonify
 from models import Branch, BranchPrice, Product
@@ -66,7 +66,8 @@ def cart():
                         "associated": True
                     })
                     already_associate[super_name] = True
-                    total_prices[super_name]['price'] += total_prices[super_name]['list'][-1]['total_item_price']
+                    total_price = total_prices[super_name]['list'][-1]['total_item_price']
+                    total_prices[super_name]['price'] += total_price
                     break
 
         for i in already_associate:
