@@ -1,7 +1,7 @@
 ![superx](superx/static/img/superx.JPG)
 
 ## **Main Goal** 
-**Comparing prices between supermarkets by using accesible data- to save money**
+**Comparing prices between supermarkets by using accessible data- to save money**
 - To activate and use the app- please follow the instructions in [User's_Guide file](User's_Guide.md)
 
 ## Project Architecture
@@ -13,7 +13,7 @@ Client UI to choose the products to compare and the city where the client lives.
 <u>Languages</u>- HTML, CSS, JS
 
 ### **Backend**
-Information extractors scripts that contact the relevant urls and extract the relevant data to the database.<br>
+Information extractor scripts that web scrape supermarket urls, extract the relevant information and places it into the db.<br>
 <u>Language</u>- Python
 
 ### **Database** 
