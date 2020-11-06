@@ -134,10 +134,16 @@ def add_item():
     adds item to cart using jquery to get the data and ajax so not to redirect
     """
 
-    item = {'id': request.form.get('id'), 'name': request.form.get('name'),
-            'num_items': request.form.get('num_items')}
-    # If there are no chosen products yet initiate cart in session object
+    item_code = request.form.get('id')
+    item = {'id': item_code, 'name': request.form.get('name'),
+            'num_items': request.form.get('num_items'),
+            'branch_price_items': [{'chain_id': item.chain_id,
+                                    'branch_id': item.branch_id,
+                                    'price': float(item.price)}
+                                   for item in BranchPrice.query.filter_by(item_code=item_code).all()]
+            }
 
+    # If there are no chosen products yet initiate cart in session object
     if 'cart' not in session:
         session['cart'] = []
 
@@ -147,8 +153,7 @@ def add_item():
 
     was_city_chosen = bool('city' in session)
 
-
-    return jsonify({'was_city_chosen' : was_city_chosen})
+    return jsonify({'was_city_chosen': was_city_chosen})
 
 
 def remove_item():
