@@ -52,7 +52,7 @@ class Product(db.Model):
 
     id = Column(BigInteger, primary_key=True)
     name = Column(Text)
-    quantity = Column(DECIMAL)
+    quantity = Column(DECIMAL(5, 2))
     is_weighted = Column(Boolean)
     unit_of_measure = Column(Text)
 
@@ -68,7 +68,7 @@ class BranchPrice(db.Model):
     chain_id = Column(db.ForeignKey('chain.id'))
     item_code = Column(db.ForeignKey('product.id'))
     branch_id = Column(db.ForeignKey('branch.id'))
-    price = Column(DECIMAL)
+    price = Column(DECIMAL(5, 2))
     update_date = Column(Text)
 
 
@@ -96,8 +96,8 @@ class BasketProduct(db.Model):
     product_id = Column(db.ForeignKey('product.id'))
 
     product = db.relationship('Product',
-                            primaryjoin='BasketProduct.product_id == Product.id',
-                            uselist=False)
+                              primaryjoin='BasketProduct.product_id == Product.id',
+                              uselist=False)
     basket = db.relationship('Basket',
-                    primaryjoin='BasketProduct.basket_id == Basket.id',
-                            uselist=False)
+                             primaryjoin='BasketProduct.basket_id == Basket.id',
+                             uselist=False)
