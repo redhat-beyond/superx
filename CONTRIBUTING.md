@@ -50,6 +50,8 @@ Adding a supermarket involves a number of actions.
 1. The supermarket must be added properly to the information extractor script
 2. A new column must be added to the front end of the SuperX website.
 
+>**IMPORTANT NOTE:** Adding a new supermarket will not be accepted unless **BOTH** step are completed! 
+
 #### Adding a new column to the webpage
 
 > **Note**: currently this part is hard coded into the code. 
