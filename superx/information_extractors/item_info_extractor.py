@@ -1,20 +1,15 @@
-'''
+"""
 imports
-'''
-import os
-import sys
+"""
 from datetime import datetime
 import gzip
 import logging
 import xml.etree.ElementTree as ET
 from decimal import Decimal
-from bs4 import BeautifulSoup # pylint: disable=import-error
-import requests # pylint: disable=import-error
-add_to_python_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
-sys.path.append(add_to_python_path)
-from app import supermarket_info_dictionary, session # pylint: disable=import-error disable=wrong-import-position
-from models import Product, BranchPrice # pylint: disable=import-error disable=wrong-import-position
-
+from bs4 import BeautifulSoup  # pylint: disable=import-error
+import requests  # pylint: disable=import-error
+from app import supermarket_info_dictionary, session  # pylint: disable=import-error disable=wrong-import-position
+from models import Product, BranchPrice  # pylint: disable=import-error disable=wrong-import-position
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
@@ -66,12 +61,14 @@ class InfoExtractor:
                 xml_info_list = self.extract_information_from_parsed_xml(info_child_node)
                 if branch_id == '86' and self.current_super['store_name'] == 'victory':
                     continue
+
                 product_info_list, branch_price_list = self.fill_product_and_branch_price_tables(
-                    xml_info_list,
-                    branch_id)
+                                                                        xml_info_list, branch_id)
                 session.bulk_save_objects(product_info_list)
                 session.bulk_save_objects(branch_price_list)
-                session.commit()
+                session.flush()
+
+        session.commit()
 
     def get_zip_file_links(self, url_list):
         """
@@ -132,7 +129,7 @@ class InfoExtractor:
                 tree = ET.fromstring(xml_file)
                 branch_id = tree.find(store_id).text.lstrip('0')
                 # gets child containing item information
-                info_child_node = tree.getchildren()[-1]  #pylint: disable=deprecated-method
+                info_child_node = tree.getchildren()[-1]  # pylint: disable=deprecated-method
                 node_info_list.append((info_child_node, branch_id))
 
         return node_info_list
@@ -141,7 +138,7 @@ class InfoExtractor:
         """
         This method iterates over all items in the supermarket and extracts the relevant data
         The data is then committed packed into a tuple and placed in a list of all the info tuples
-        :param xml_info_child_node: The child of the parsed xml tree containing all item information
+        :param xml_info_child_node: The child of the parsed xml tree containing all item info
         :return: a list of tuples containing the information
         """
         item_attr_name = self.current_super['item_attr_name']
@@ -171,7 +168,7 @@ class InfoExtractor:
                 unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text.strip())
 
             xml_info_list.append(
-            (item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date))
+                (item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date))
 
         return xml_info_list
 
@@ -186,22 +183,26 @@ class InfoExtractor:
         branch_price_list = []
         product_info_list = []
 
-        for item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date in information_list: # pylint: disable=line-too-long
+        for item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date in information_list:
+            # pylint: disable=line-too-long
             # If the item is in the db , skip it
             if item_code not in self.item_id_set:
-                product_info_list.append(Product(id=item_code, name=item_name, quantity=quantity,
+                product_info_list.append(Product(id=item_code,
+                                                 name=item_name,
+                                                 quantity=quantity,
                                                  is_weighted=is_weighted,
                                                  unit_of_measure=unit_of_measure))
                 self.item_id_set.add(item_code)
 
             branch_price_list.append(BranchPrice(chain_id=self.current_super['chain_id'],
-                                                branch_id=branch_id,
-                                                item_code=item_code, price=price,
-                                                update_date=update_date))
+                                                 branch_id=branch_id,
+                                                 item_code=item_code,
+                                                 price=price,
+                                                 update_date=update_date))
 
         return product_info_list, branch_price_list
 
-    def standardize_weight_name(self, unit_in_hebrew): #pylint: disable=no-self-use
+    def standardize_weight_name(self, unit_in_hebrew):  # pylint: disable=no-self-use
         """
         This method standardizes the unit of measurement
         if the unit of measurement is not know, returns unknown
@@ -216,7 +217,7 @@ class InfoExtractor:
             'יחידה': ['יחידה', 'לא ידוע', "יח'", "'יח", "יח`", "מטרים", "מארז", "קרטון"]
         }
 
-        for unit in unit_dict.keys(): #pylint: disable=C0201
+        for unit in unit_dict.keys():  # pylint: disable=C0201
             if unit_in_hebrew in unit_dict[unit]:
                 return unit
 
@@ -248,9 +249,8 @@ class InfoExtractor:
         """
         num_of_pages = self.get_num_of_pages()
         if num_of_pages == -1:
-            raise ConnectionError(
-                f'''Unable to connect to url to find number of pages for
-                {self.current_super["store_name"]}''')
+            raise ConnectionError(f'Unable to connect to url to find number of pages for '
+                                  f'{self.current_super["store_name"]}')
 
         general_url = self.current_super['url']
         general_url = general_url[:len(general_url) - 1]

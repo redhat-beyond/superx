@@ -3,8 +3,6 @@ imports
 """
 # pylint: disable=import-error
 import gzip
-import os
-import sys
 import xml.etree.ElementTree as et
 import logging
 import requests
@@ -12,8 +10,6 @@ from bs4 import BeautifulSoup
 from models import Branch
 from app import supermarket_info_dictionary, session
 
-add_to_python_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
-sys.path.append(add_to_python_path)
 
 logging.basicConfig(filename='branch-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
@@ -56,7 +52,9 @@ class BranchExtractor:
                 xml_info_list = self.extract_info_from_xml(xml_file)
                 branch_list = self.fill_branch_table(xml_info_list)
                 session.bulk_save_objects(branch_list)
-                session.commit()
+                session.flush()
+
+        session.commit()
 
     def get_zip_file_link(self):
         """
