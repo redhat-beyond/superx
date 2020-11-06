@@ -7,8 +7,8 @@ import xml.etree.ElementTree as et
 import logging
 import requests
 from bs4 import BeautifulSoup
+from app import supermarket_info_dictionary, db
 from models import Branch
-from app import supermarket_info_dictionary, session
 
 
 logging.basicConfig(filename='branch-extractor.log', level=logging.INFO,
@@ -51,10 +51,12 @@ class BranchExtractor:
             else:
                 xml_info_list = self.extract_info_from_xml(xml_file)
                 branch_list = self.fill_branch_table(xml_info_list)
-                session.bulk_save_objects(branch_list)
-                session.flush()
+                # if there are no branches to add then continue
+                if len(branch_list) != 0:
+                    db.session.bulk_save_objects(branch_list)
+                    db.session.flush()
 
-        session.commit()
+        db.session.commit()
 
     def get_zip_file_link(self):
         """
@@ -150,10 +152,12 @@ class BranchExtractor:
         branch_list = []
 
         for branch_id, branch_name, address, sub_chain_id, city in xml_info_list:
-            branch_list.append(Branch(id=branch_id,
-                                      name=branch_name, address=address,
-                                      sub_chain_id=sub_chain_id,
-                                      city=city,
-                                      chain_id=self.current_super['chain_id']))
+            is_in_db = bool(len(Branch.query.filter_by(id=branch_id, chain_id=self.current_super['chain_id']).all())) # pylint: disable=line-too-long
+            if not is_in_db:
+                branch_list.append(Branch(id=branch_id,
+                                          name=branch_name, address=address,
+                                          sub_chain_id=sub_chain_id,
+                                          city=city,
+                                          chain_id=self.current_super['chain_id']))
 
         return branch_list

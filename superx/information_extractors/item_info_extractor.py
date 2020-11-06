@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 from decimal import Decimal
 from bs4 import BeautifulSoup  # pylint: disable=import-error
 import requests  # pylint: disable=import-error
-from app import supermarket_info_dictionary, session  # pylint: disable=import-error disable=wrong-import-position
+from app import supermarket_info_dictionary, db  # pylint: disable=import-error disable=wrong-import-position
 from models import Product, BranchPrice  # pylint: disable=import-error disable=wrong-import-position
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
@@ -64,11 +64,13 @@ class InfoExtractor:
 
                 product_info_list, branch_price_list = self.fill_product_and_branch_price_tables(
                                                                         xml_info_list, branch_id)
-                session.bulk_save_objects(product_info_list)
-                session.bulk_save_objects(branch_price_list)
-                session.flush()
+                if len(product_info_list) != 0:
+                    db.session.bulk_save_objects(product_info_list)
+                if len(branch_price_list) != 0:
+                    db.session.bulk_save_objects(branch_price_list)
+                db.session.flush()
 
-        session.commit()
+        db.session.commit()
 
     def get_zip_file_links(self, url_list):
         """
@@ -184,20 +186,37 @@ class InfoExtractor:
         product_info_list = []
 
         for item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date in information_list: # pylint: disable=line-too-long
-            # If the item is in the db , skip it
-            if item_code not in self.item_id_set:
+            item_in_db = bool(len(Product.query.filter_by(id=item_code).all()))
+            branch_filter_list = BranchPrice.query.filter_by(chain_id=self.current_super['chain_id'],
+                                                             item_code=item_code,
+                                                             branch_id=branch_id).all()
+            branch_price_in_db = bool(len(branch_filter_list))
+
+            # If the item is not in the db , add it
+            if not item_in_db:
                 product_info_list.append(Product(id=item_code,
                                                  name=item_name,
                                                  quantity=quantity,
                                                  is_weighted=is_weighted,
                                                  unit_of_measure=unit_of_measure))
-                self.item_id_set.add(item_code)
 
-            branch_price_list.append(BranchPrice(chain_id=self.current_super['chain_id'],
-                                                 branch_id=branch_id,
-                                                 item_code=item_code,
-                                                 price=price,
-                                                 update_date=update_date))
+            # if not in the db then add it
+            if not branch_price_in_db:
+                branch_price_list.append(BranchPrice(chain_id=self.current_super['chain_id'],
+                                                     branch_id=branch_id,
+                                                     item_code=item_code,
+                                                     price=price,
+                                                     update_date=update_date))
+            else:
+                old_price = BranchPrice.query.filter_by(chain_id=self.current_super['chain_id'],
+                                                        item_code=item_code,
+                                                        branch_id=branch_id).all()[0].price
+                # update the price if it has changed
+                if old_price != price:
+                    branch_obj = branch_filter_list[0]
+                    branch_obj.price = price
+
+        db.session.flush()
 
         return product_info_list, branch_price_list
 
