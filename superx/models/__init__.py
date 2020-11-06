@@ -52,7 +52,7 @@ class Product(db.Model):
 
     id = Column(BigInteger, primary_key=True)
     name = Column(Text)
-    quantity = Column(DECIMAL(5, 2))
+    quantity = Column(DECIMAL(6, 2))
     is_weighted = Column(Boolean)
     unit_of_measure = Column(Text)
 
