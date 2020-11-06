@@ -33,8 +33,8 @@ def cart():
 
         already_associate = {'mega': False, 'shufersal': False, 'victory': False}
 
-        # list of all BranchPrice objects that have common id
-        price_list_of_item = BranchPrice.query.filter_by(item_code=item['id']).all()
+        # list of all BranchPrice objects data that have common id
+        price_list_of_item = item['branch_price_items']
 
         for same_item in price_list_of_item:
 
@@ -50,7 +50,7 @@ def cart():
             if already_associate[super_name]:
                 continue
 
-            current_item_branch_id = same_item.branch_id
+            current_item_branch_id = same_item['branch_id']
             branches_list = Branch.query.filter_by(id=current_item_branch_id).all()
 
             # check if item belong to branch from this 'city' in this 'super_name'
@@ -60,9 +60,9 @@ def cart():
                         and not already_associate[super_name]:
                     total_prices[super_name]['list'].append({
                         "name": item['name'],
-                        "price": same_item.price,
+                        "price": same_item['price'],
                         "num_items": item['num_items'],
-                        "total_item_price": same_item.price*(int(item['num_items'])),
+                        "total_item_price": same_item['price'] * (int(item['num_items'])),
                         "associated": True
                     })
                     already_associate[super_name] = True
