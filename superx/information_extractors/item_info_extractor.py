@@ -183,8 +183,7 @@ class InfoExtractor:
         branch_price_list = []
         product_info_list = []
 
-        for item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date in information_list:
-            # pylint: disable=line-too-long
+        for item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date in information_list: # pylint: disable=line-too-long
             # If the item is in the db , skip it
             if item_code not in self.item_id_set:
                 product_info_list.append(Product(id=item_code,
