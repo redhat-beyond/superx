@@ -137,12 +137,13 @@ def add_item():
     """
 
     item_code = request.form.get('id')
+    branch_price_item_list = BranchPrice.query.filter_by(item_code=item_code).all()
     item = {'id': item_code, 'name': request.form.get('name'),
             'num_items': request.form.get('num_items'),
             'branch_price_items': [{'chain_id': item.chain_id,
                                     'branch_id': item.branch_id,
                                     'price': float(item.price)}
-                                   for item in BranchPrice.query.filter_by(item_code=item_code).all()]
+                                   for item in branch_price_item_list]
             }
 
     # If there are no chosen products yet initiate cart in session object
