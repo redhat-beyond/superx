@@ -174,7 +174,7 @@ class InfoExtractor:
 
         return xml_info_list
 
-    def fill_product_and_branch_price_tables(self, information_list, branch_id):
+    def fill_product_and_branch_price_tables(self, information_list, branch_id): # pylint: disable=too-many-locals
         """
         This method receives a list containing a tuple of all the xml info
         and places it into the correct table
@@ -187,9 +187,10 @@ class InfoExtractor:
 
         for item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date in information_list: # pylint: disable=line-too-long
             item_in_db = bool(len(Product.query.filter_by(id=item_code).all()))
-            branch_filter_list = BranchPrice.query.filter_by(chain_id=self.current_super['chain_id'],
-                                                             item_code=item_code,
-                                                             branch_id=branch_id).all()
+            branch_filter_list = BranchPrice.query.filter_by(
+                                                         chain_id=self.current_super['chain_id'],
+                                                         item_code=item_code,
+                                                         branch_id=branch_id).all()
             branch_price_in_db = bool(len(branch_filter_list))
 
             # If the item is not in the db , add it
