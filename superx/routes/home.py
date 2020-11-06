@@ -25,27 +25,30 @@ def cart():
     """
     returns price comparison page with the users cart
     """
-    total_prices = {'mega': {'price': 0, 'list': []}, 'shufersal': {'price': 0, 'list': []},
-                    'victory': {'price': 0, 'list': []}}
+
+    # create generic dict for each chain
+    total_prices = {key: {'price': 0, 'list': []} for key in sd}
+
     city = session['city']
 
+    # loops on cart list
     for item in session['cart']:
 
-        already_associate = {'mega': False, 'shufersal': False, 'victory': False}
+        # create generic associate dict for each chain
+        already_associate = {key: False for key in sd}
 
         # list of all BranchPrice objects data that have common id
         price_list_of_item = item['branch_price_items']
 
+        # Loops on every BranchPrice objects with the same id as item
         for same_item in price_list_of_item:
 
             super_name = ''
 
-            if same_item.chain_id == sd['mega']['chain_id']:
-                super_name = 'mega'
-            elif same_item.chain_id == sd['shufersal']['chain_id']:
-                super_name = 'shufersal'
-            elif same_item.chain_id == sd['victory']['chain_id']:
-                super_name = 'victory'
+            # sets the supermarket name
+            for key in sd:
+                if same_item['chain_id'] == sd[key]['chain_id']:
+                    super_name = key
 
             if already_associate[super_name]:
                 continue
@@ -114,7 +117,6 @@ def livesearch():
                 # check if the BranchPrice object belongs to branch located in city
                 # if so adding the product to the products list
                 if unique_branch_code in branches_code_list:
-
                     products.append({
                         "id": item.id,
                         "name": item.name,
