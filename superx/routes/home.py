@@ -25,13 +25,20 @@ def cart():
     """
     returns price comparison page with the users cart
     """
-    total_prices = {'mega': {'price': 0, 'list': []}, 'shufersal': {'price': 0, 'list': []},
-                    'victory': {'price': 0, 'list': []}}
+    # intitialize the total price dictionary in a generic way
+    total_prices = {}
+    already_associate = {}
+
+    for key in sd:
+        total_prices[key] = {'price': 0, 'list': []}
+
     city = session['city']
 
     for item in session['cart']:
-
-        already_associate = {'mega': False, 'shufersal': False, 'victory': False}
+        # sets all the super markets associate to false
+        for key in total_prices:
+            already_associate[key] = False
+        # already_associate = {'mega': False, 'shufersal': False, 'victory': False}
 
         # list of all BranchPrice objects that have common id
         price_list_of_item = BranchPrice.query.filter_by(item_code=item['id']).all()
@@ -39,13 +46,16 @@ def cart():
         for same_item in price_list_of_item:
 
             super_name = ''
+            for key in sd:
+                if same_item.chain_id == sd[key]['chain_id']:
+                    super_name = key
 
-            if same_item.chain_id == sd['mega']['chain_id']:
-                super_name = 'mega'
-            elif same_item.chain_id == sd['shufersal']['chain_id']:
-                super_name = 'shufersal'
-            elif same_item.chain_id == sd['victory']['chain_id']:
-                super_name = 'victory'
+            # if same_item.chain_id == sd['mega']['chain_id']:
+            #     super_name = 'mega'
+            # elif same_item.chain_id == sd['shufersal']['chain_id']:
+            #     super_name = 'shufersal'
+            # elif same_item.chain_id == sd['victory']['chain_id']:
+            #     super_name = 'victory'
 
             if already_associate[super_name]:
                 continue
