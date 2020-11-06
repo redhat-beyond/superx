@@ -108,7 +108,7 @@ class BranchExtractor:
 
         return xml_file
 
-    # take one element and check that we have the right info 
+   
     def extract_info_from_xml(self, xml_file):
         """
         This method parses the xml file and then
