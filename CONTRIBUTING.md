@@ -50,14 +50,14 @@ Adding a supermarket involves a number of actions.
 1. The supermarket must be added properly to the information extractor script
 2. A new column must be added to the front end of the SuperX website.
 
-#### Adding a new column 
+#### Adding a new column to the webpage
 
 > **Note**: currently this part is hard coded into the code. 
 We are working to make this a general so that when a supermarket is added to the extractors this will update the columns automatically. 
 
 In order to add a new column you must alter a number of the html templates found under Superx --> templates
 
-Routes.home.py will be able to detect the new super market after following the steps of adding to the information extractors.
+routes.home.py will be able to detect the new super market after following the steps of adding to the information extractors.
 
 
  
