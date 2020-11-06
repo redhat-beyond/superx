@@ -59,8 +59,6 @@ In order to add a new column you must alter a number of the html templates found
 
 routes.home.py will be able to detect the new super market after following the steps of adding to the information extractors.
 
-
- 
 #### Information extractors
 The SuperX project uses 2 scripts for extracting the wanted information from the supermarkets.
 * branch_info_extractor - is incharge of getting all the branch data from each chain
