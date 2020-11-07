@@ -14,7 +14,6 @@ def test_update_item(client):
         'id': '123123123',
         'num_items': '5',
     }
-
     with client:
         client.post('/update_num_items', data=test_item, follow_redirects=True)
         item = session['cart']['123123123']
@@ -23,5 +22,5 @@ def test_update_item(client):
                 num_items = item['num_items']
                 break
             
-            
+
         assert num_items == '5'
