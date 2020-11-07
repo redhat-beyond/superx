@@ -2,12 +2,12 @@
 imports
 """
 from datetime import datetime
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 import gzip
 import logging
 import xml.etree.ElementTree as ET
 from decimal import Decimal
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 from bs4 import BeautifulSoup  # pylint: disable=import-error
 import requests  # pylint: disable=import-error
 from app import supermarket_info_dictionary  # pylint: disable=import-error disable=wrong-import-position
@@ -317,7 +317,9 @@ class InfoExtractor:
         return num_of_pages
 
     def create_branch_price_set(self):
-
+        """
+        queries the DB for all rows and saves the unique contraints in a set
+        """
         all_rows = BranchPrice.query.all()
 
         for row in all_rows:
@@ -327,13 +329,9 @@ class InfoExtractor:
             self.branch_price_unique_constraint_set.add(unique_constraints)
 
     def create_product_set(self):
+        """
+        queries the DB for all rows and saves the unique contraints in a set
+        """
         all_rows = Product.query.all()
         for row in all_rows:
             self.item_id_set.add(row.id)
-
-
-
-if __name__ == '__main__':
-    p = InfoExtractor()
-    p.create_product_set()
-    print('s')

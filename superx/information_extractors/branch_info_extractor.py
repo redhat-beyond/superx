@@ -2,14 +2,14 @@
 imports
 """
 # pylint: disable=import-error
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 import gzip
 import xml.etree.ElementTree as et
 import logging
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 import requests
 from bs4 import BeautifulSoup
-from app import supermarket_info_dictionary, db
+from app import supermarket_info_dictionary
 from models import Branch
 
 
@@ -170,11 +170,14 @@ class BranchExtractor:
                                           sub_chain_id=sub_chain_id,
                                           city=city,
                                           chain_id=self.current_super['chain_id']))
-                self.branch_unique_constraint_set.add((int(branch_id), self.current_super['chain_id']))
+                self.branch_unique_constraint_set.add((int(branch_id), self.current_super['chain_id'])) # pylint: disable=line-too-long
 
         return branch_list
 
     def create_branch_unique_contraint_set(self):
+        """
+        queries the DB for all rows and saves the unique contraints in a set
+        """
         all_rows = Branch.query.all()
         for row in all_rows:
             self.branch_unique_constraint_set.add((row.id, row.chain_id))
