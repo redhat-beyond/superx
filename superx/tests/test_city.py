@@ -1,5 +1,5 @@
 '''
-import User from models and pytest and database
+import pytest and session
 '''
 import pytest
 from flask import session 
@@ -16,4 +16,3 @@ def test_choose_city(client):
     with client:
         client.post('/city', data=test_city, follow_redirects=True)
         assert session['city'] is 'ירושלים'
- 
