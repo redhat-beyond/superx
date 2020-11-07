@@ -3,14 +3,21 @@ imports
 """
 # pylint: disable=import-error
 import gzip
+import os
+import sys
 import xml.etree.ElementTree as et
 import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 import requests
 from bs4 import BeautifulSoup
-from app import supermarket_info_dictionary
-from models import Branch
+
+# this allows for the automation sytem to find the relevant scripts in the file
+add_to_python_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+sys.path.append(add_to_python_path)
+
+from app import supermarket_info_dictionary # pylint: disable=import-error disable=wrong-import-position
+from models import Branch # pylint: disable=import-error disable=wrong-import-position
 
 
 logging.basicConfig(filename='branch-extractor.log', level=logging.INFO,
@@ -181,3 +188,8 @@ class BranchExtractor:
         all_rows = Branch.query.all()
         for row in all_rows:
             self.branch_unique_constraint_set.add((row.id, row.chain_id))
+
+
+if __name__ == '__main__':
+    b_e = BranchExtractor()
+    b_e.run_branch_extractor()

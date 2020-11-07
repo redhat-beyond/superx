@@ -1,6 +1,8 @@
 """
 imports
 """
+import os
+import sys
 from datetime import datetime
 import gzip
 import logging
@@ -10,8 +12,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from bs4 import BeautifulSoup  # pylint: disable=import-error
 import requests  # pylint: disable=import-error
-from app import supermarket_info_dictionary  # pylint: disable=import-error disable=wrong-import-position
-from models import Product, BranchPrice  # pylint: disable=import-error disable=wrong-import-position
+
+# this allows for the automation sytem to find the relevant scripts in the file
+add_to_python_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+sys.path.append(add_to_python_path)
+
+from app import supermarket_info_dictionary # pylint: disable=import-error disable=wrong-import-position
+from models import Product, BranchPrice # pylint: disable=import-error disable=wrong-import-position
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
@@ -335,3 +342,8 @@ class InfoExtractor:
         all_rows = Product.query.all()
         for row in all_rows:
             self.item_id_set.add(row.id)
+
+
+if __name__ == '__main__':
+    i_e = InfoExtractor()
+    i_e.run_info_extractor()
