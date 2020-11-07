@@ -161,3 +161,8 @@ class BranchExtractor:
                                           chain_id=self.current_super['chain_id']))
 
         return branch_list
+
+
+if __name__ == '__main__':
+    p = BranchExtractor()
+    p.run_branch_extractor()

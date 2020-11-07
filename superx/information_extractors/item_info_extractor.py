@@ -186,11 +186,12 @@ class InfoExtractor:
         product_info_list = []
 
         for item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date in information_list: # pylint: disable=line-too-long
-            item_in_db = bool(len(Product.query.filter_by(id=item_code).all()))
-            branch_filter_list = BranchPrice.query.filter_by(
+            item_in_db = bool(len(db.session.query(Product).filter_by(id=item_code).all()))
+            branch_filter_list = db.session.query(BranchPrice).filter_by(
                                                          chain_id=self.current_super['chain_id'],
                                                          item_code=item_code,
                                                          branch_id=branch_id).all()
+
             branch_price_in_db = bool(len(branch_filter_list))
 
             # If the item is not in the db , add it
@@ -209,15 +210,13 @@ class InfoExtractor:
                                                      price=price,
                                                      update_date=update_date))
             else:
-                old_price = BranchPrice.query.filter_by(chain_id=self.current_super['chain_id'],
-                                                        item_code=item_code,
-                                                        branch_id=branch_id).all()[0].price
+                old_price = branch_filter_list[0].price
                 # update the price if it has changed
                 if old_price != price:
                     branch_obj = branch_filter_list[0]
                     branch_obj.price = price
 
-        db.session.flush()
+                db.session.flush()
 
         return product_info_list, branch_price_list
 
