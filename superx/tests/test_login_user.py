@@ -21,7 +21,8 @@ def test_login_user(client):
         'email': 'aryehlevklein@gmail.com',
         'password' : '12345678',
     }
-    user = User.query.filter(User.email == 'aryehlevklein@gmail.com').first()
-    client.post('/login', data=test_user, follow_redirects=True)
-    assert user.is_authenticated is True
-    assert session['city'] is 'ירושלים'
+    with client:
+        user = User.query.filter(User.email == 'aryehlevklein@gmail.com').first()
+        client.post('/login', data=test_user, follow_redirects=True)
+        assert user.is_authenticated is True
+        assert session['city'] == 'ירושלים'
