@@ -2,13 +2,15 @@
 imports
 """
 from datetime import datetime
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 import gzip
 import logging
 import xml.etree.ElementTree as ET
 from decimal import Decimal
 from bs4 import BeautifulSoup  # pylint: disable=import-error
 import requests  # pylint: disable=import-error
-from app import supermarket_info_dictionary, db  # pylint: disable=import-error disable=wrong-import-position
+from app import supermarket_info_dictionary  # pylint: disable=import-error disable=wrong-import-position
 from models import Product, BranchPrice  # pylint: disable=import-error disable=wrong-import-position
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
@@ -34,6 +36,11 @@ class InfoExtractor:
         # list of unwanted names to be filter out
         self.exclude_names = ['משלוחים', 'ריק', 'פיקדון', 'תיבה', 'משלוח']
         self.item_id_set = set()
+        self.branch_price_unique_constraint_set = set()
+        engine = create_engine('mysql+pymysql://Super_User:SuperX1234'
+                               '@mysql-13101-0.cloudclusters.net:13101/SuperX',
+                               echo=False)
+        self.session = Session(bind=engine)
 
     def run_info_extractor(self):
         """
@@ -44,6 +51,9 @@ class InfoExtractor:
         3. creates 2 lists one containing all Product info and the other all BranchPrice info
         4. commits to the db
         """
+        self.create_branch_price_set()
+        self.create_product_set()
+
         for key in supermarket_info_dictionary:
             self.current_super = supermarket_info_dictionary[key]
             url_list = [self.current_super['url']]
@@ -65,12 +75,14 @@ class InfoExtractor:
                 product_info_list, branch_price_list = self.fill_product_and_branch_price_tables(
                                                                         xml_info_list, branch_id)
                 if len(product_info_list) != 0:
-                    db.session.bulk_save_objects(product_info_list)
+                    self.session.bulk_save_objects(product_info_list)
                 if len(branch_price_list) != 0:
-                    db.session.bulk_save_objects(branch_price_list)
-                db.session.flush()
+                    self.session.bulk_save_objects(branch_price_list)
+                self.session.flush()
 
-        db.session.commit()
+            self.session.commit()
+
+        self.session.close()
 
     def get_zip_file_links(self, url_list):
         """
@@ -186,37 +198,36 @@ class InfoExtractor:
         product_info_list = []
 
         for item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date in information_list: # pylint: disable=line-too-long
-            item_in_db = bool(len(db.session.query(Product).filter_by(id=item_code).all()))
-            branch_filter_list = db.session.query(BranchPrice).filter_by(
-                                                         chain_id=self.current_super['chain_id'],
-                                                         item_code=item_code,
-                                                         branch_id=branch_id).all()
-
-            branch_price_in_db = bool(len(branch_filter_list))
-
             # If the item is not in the db , add it
-            if not item_in_db:
+            if item_code not in self.item_id_set:
                 product_info_list.append(Product(id=item_code,
                                                  name=item_name,
                                                  quantity=quantity,
                                                  is_weighted=is_weighted,
                                                  unit_of_measure=unit_of_measure))
+                self.item_id_set.add(item_code)
 
             # if not in the db then add it
-            if not branch_price_in_db:
+            if (self.current_super['chain_id'], item_code, int(branch_id)) not in self.branch_price_unique_constraint_set: # pylint: disable=line-too-long
                 branch_price_list.append(BranchPrice(chain_id=self.current_super['chain_id'],
                                                      branch_id=branch_id,
                                                      item_code=item_code,
                                                      price=price,
                                                      update_date=update_date))
+                self.branch_price_unique_constraint_set.add((self.current_super['chain_id'],
+                                                             item_code,
+                                                             int(branch_id)))
             else:
-                old_price = branch_filter_list[0].price
+                current_branch = self.session.query(BranchPrice).filter_by(
+                                                    chain_id=self.current_super['chain_id'],
+                                                    item_code=item_code,
+                                                    branch_id=branch_id).all()[0]
+                old_price = current_branch.price
                 # update the price if it has changed
                 if old_price != price:
-                    branch_obj = branch_filter_list[0]
-                    branch_obj.price = price
+                    current_branch.price = price
 
-                db.session.flush()
+                self.session.flush()
 
         return product_info_list, branch_price_list
 
@@ -304,3 +315,25 @@ class InfoExtractor:
                         break
 
         return num_of_pages
+
+    def create_branch_price_set(self):
+
+        all_rows = BranchPrice.query.all()
+
+        for row in all_rows:
+            unique_constraints = (row.chain_id,
+                                  row.item_code,
+                                  row.branch_id)
+            self.branch_price_unique_constraint_set.add(unique_constraints)
+
+    def create_product_set(self):
+        all_rows = Product.query.all()
+        for row in all_rows:
+            self.item_id_set.add(row.id)
+
+
+
+if __name__ == '__main__':
+    p = InfoExtractor()
+    p.create_product_set()
+    print('s')

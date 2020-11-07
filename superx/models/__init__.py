@@ -52,7 +52,7 @@ class Product(db.Model):
 
     id = Column(BigInteger, primary_key=True)
     name = Column(Text)
-    quantity = Column(DECIMAL(6, 2))
+    quantity = Column(DECIMAL(8, 2))
     is_weighted = Column(Boolean)
     unit_of_measure = Column(Text)
 
@@ -68,7 +68,7 @@ class BranchPrice(db.Model):
     chain_id = Column(db.ForeignKey('chain.id'))
     item_code = Column(db.ForeignKey('product.id'))
     branch_id = Column(db.ForeignKey('branch.id'))
-    price = Column(DECIMAL(5, 2))
+    price = Column(DECIMAL(6, 2))
     update_date = Column(Text)
 
 
