@@ -2,7 +2,7 @@
 import pytest and session
 '''
 import pytest
-from flask import session 
+from flask import session
 
 
 @pytest.mark.run(order=8)
