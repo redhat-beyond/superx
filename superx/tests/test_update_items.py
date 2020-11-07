@@ -16,7 +16,6 @@ def test_update_item(client):
     }
     with client:
         client.post('/update_num_items', data=test_item, follow_redirects=True)
-        item = session['cart']['123123123']
         for item in session['cart']:
             if item['id'] == '123123123':
                 num_items = item['num_items']
