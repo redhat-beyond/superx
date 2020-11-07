@@ -80,18 +80,7 @@ def city():
     # gets the city name from the user
     session['city'] = request.form.get('city')
 
-    # entering the data of all branches in the city to branches_data
-    branches_from_city = Branch.query.filter_by(city=session['city']).all()
-    branches_data = []
-
-    for branch in branches_from_city:
-
-        # generates unique code for each branch -
-        # this is an efficient way to produce a unique code for each branch
-        branches_data.append(branch.chain_id+branch.id)
-
-    # add branches_data to session
-    session['branches_data'] = branches_data
+    signup.save_branches()
     return ''
 
 

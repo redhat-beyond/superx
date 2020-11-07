@@ -136,8 +136,8 @@ class InfoExtractor:
                 node_info_list.append((info_child_node, branch_id))
 
         return node_info_list
-    
-   
+
+
     def extract_information_from_parsed_xml(self, xml_info_child_node):
         """
         This method iterates over all items in the supermarket and extracts the relevant data
@@ -202,7 +202,7 @@ class InfoExtractor:
 
         return product_info_list, branch_price_list
 
-   
+
     def standardize_weight_name(self, unit_in_hebrew): #pylint: disable=no-self-use
         """
         This method standardizes the unit of measurement
