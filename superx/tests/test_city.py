@@ -5,7 +5,7 @@ import pytest
 from flask import session 
 
 
-@pytest.mark.run(order=7)
+@pytest.mark.run(order=8)
 def test_choose_city(client):
     '''
     tests add city

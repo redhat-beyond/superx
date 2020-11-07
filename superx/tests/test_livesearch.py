@@ -5,7 +5,7 @@ import pytest
 from bs4 import BeautifulSoup
 
 
-@pytest.mark.run(order=6)
+@pytest.mark.run(order=7)
 def test_livesearch(client):
     """
     tests livesearch functionality

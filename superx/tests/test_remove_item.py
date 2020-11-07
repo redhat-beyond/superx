@@ -5,7 +5,7 @@ import pytest
 from flask import session
 
 
-@pytest.mark.run(order=5)
+@pytest.mark.run(order=6)
 def test_remove_item(client):
     '''
     tests removing item from comparing cart
