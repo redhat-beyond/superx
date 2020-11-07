@@ -15,4 +15,5 @@ def test_choose_city(client):
     }
     with client:
         client.post('/city', data=test_city, follow_redirects=True)
-        assert session['city'] is 'ירושלים' 
+        assert session['city'] is 'ירושלים'
+ 
