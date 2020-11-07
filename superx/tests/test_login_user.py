@@ -2,7 +2,7 @@
 import User from models and pytest
 '''
 import pytest
-from flask import session 
+from flask import session
 from models import User # pylint: disable=import-error
 
 
