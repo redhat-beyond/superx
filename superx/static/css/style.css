@@ -160,7 +160,7 @@ input {
     border: 1px solid green;
 }
 
-#firstBlock{
+#firstBlock, #secondBlock{
     padding: 20px 20px 5px 5px;
     width: 75%;
     color: green;
@@ -175,7 +175,7 @@ input {
 }
 
 
-#imageHere{
+#imageCart, #imageHere{
     background-image: url("https://nutrifusion.com/wp-content/uploads/2016/11/composition-of-fruits-and-vegetables-in-rainbow-82DUL49-min-1024x683.jpg");
     background-repeat: no-repeat;
     background-size: cover;
