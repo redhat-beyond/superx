@@ -2,7 +2,7 @@
 
     {% for product in products %}
     <tr>
-       <td> {{ product.name|replace('\'', '') }} </td>
+       <td style="color: #565555">{{ product.name|replace('\'', '') }}</td>
         {% if product.unit_of_measure == 'יחידה' %}
             <td> יחידה </td>
         {% else %}
