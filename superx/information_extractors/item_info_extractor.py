@@ -155,6 +155,7 @@ class InfoExtractor:
 
         return node_info_list
 
+
     def extract_information_from_parsed_xml(self, xml_info_child_node):
         """
         This method iterates over all items in the supermarket and extracts the relevant data

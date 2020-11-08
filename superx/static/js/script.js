@@ -123,6 +123,7 @@ $(document).ready(function(e) {
           {
             $('#comperbutton').removeAttr('disabled');
           }
+          
         }
 
       })
@@ -135,6 +136,7 @@ $(document).ready(function(e) {
       url: "/city_search",
       method: "POST",
       success: function (res) {
+        $('#cityCompare').remove();
         $( ".inner" ).append(res);
       }
     })   

@@ -50,7 +50,18 @@ Adding a supermarket involves a number of actions.
 1. The supermarket must be added properly to the information extractor script
 2. A new column must be added to the front end of the SuperX website.
 
-### Information extractors
+>**IMPORTANT NOTE:** Adding a new supermarket will not be accepted unless **BOTH** step are completed! 
+
+#### Adding a new column to the webpage
+
+> **Note**: currently this part is hard coded into the code. 
+We are working to make this a general so that when a supermarket is added to the extractors this will update the columns automatically. 
+
+In order to add a new column you must alter a number of the html templates found under superx.templates.cart.html
+
+routes.home.py will be able to detect the new super market after following the steps of adding to the information extractors.
+
+#### Information extractors
 The SuperX project uses 2 scripts for extracting the wanted information from the supermarkets.
 * branch_info_extractor - is incharge of getting all the branch data from each chain
 * item_info_extractor - is incharge of getting all the product data and price-per-branch from each supermarket.

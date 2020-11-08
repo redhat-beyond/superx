@@ -25,32 +25,35 @@ def cart():
     """
     returns price comparison page with the users cart
     """
-    total_prices = {'mega': {'price': 0, 'list': []}, 'shufersal': {'price': 0, 'list': []},
-                    'victory': {'price': 0, 'list': []}}
+
+    # create generic dict for each chain
+    total_prices = {key: {'price': 0, 'list': []} for key in sd}
+
     city = session['city']
 
+    # loops on cart list
     for item in session['cart']:
 
-        already_associate = {'mega': False, 'shufersal': False, 'victory': False}
+        # create generic associate dict for each chain
+        already_associate = {key: False for key in sd}
 
-        # list of all BranchPrice objects that have common id
-        price_list_of_item = BranchPrice.query.filter_by(item_code=item['id']).all()
+        # list of all BranchPrice objects data that have common id
+        price_list_of_item = item['branch_price_items']
 
+        # Loops on every BranchPrice objects with the same id as item
         for same_item in price_list_of_item:
 
             super_name = ''
 
-            if same_item.chain_id == sd['mega']['chain_id']:
-                super_name = 'mega'
-            elif same_item.chain_id == sd['shufersal']['chain_id']:
-                super_name = 'shufersal'
-            elif same_item.chain_id == sd['victory']['chain_id']:
-                super_name = 'victory'
+            # sets the supermarket name
+            for key in sd:
+                if same_item['chain_id'] == sd[key]['chain_id']:
+                    super_name = key
 
             if already_associate[super_name]:
                 continue
 
-            current_item_branch_id = same_item.branch_id
+            current_item_branch_id = same_item['branch_id']
             branches_list = Branch.query.filter_by(id=current_item_branch_id).all()
 
             # check if item belong to branch from this 'city' in this 'super_name'
@@ -60,9 +63,9 @@ def cart():
                         and not already_associate[super_name]:
                     total_prices[super_name]['list'].append({
                         "name": item['name'],
-                        "price": same_item.price,
+                        "price": same_item['price'],
                         "num_items": item['num_items'],
-                        "total_item_price": same_item.price*(int(item['num_items'])),
+                        "total_item_price": same_item['price'] * (int(item['num_items'])),
                         "associated": True
                     })
                     already_associate[super_name] = True
@@ -114,7 +117,6 @@ def livesearch():
                 # check if the BranchPrice object belongs to branch located in city
                 # if so adding the product to the products list
                 if unique_branch_code in branches_code_list:
-
                     products.append({
                         "id": item.id,
                         "name": item.name,
@@ -134,10 +136,17 @@ def add_item():
     adds item to cart using jquery to get the data and ajax so not to redirect
     """
 
-    item = {'id': request.form.get('id'), 'name': request.form.get('name'),
-            'num_items': request.form.get('num_items')}
-    # If there are no chosen products yet initiate cart in session object
+    item_code = request.form.get('id')
+    branch_price_item_list = BranchPrice.query.filter_by(item_code=item_code).all()
+    item = {'id': item_code, 'name': request.form.get('name'),
+            'num_items': request.form.get('num_items'),
+            'branch_price_items': [{'chain_id': item.chain_id,
+                                    'branch_id': item.branch_id,
+                                    'price': float(item.price)}
+                                   for item in branch_price_item_list]
+            }
 
+    # If there are no chosen products yet initiate cart in session object
     if 'cart' not in session:
         session['cart'] = []
 
@@ -147,8 +156,7 @@ def add_item():
 
     was_city_chosen = bool('city' in session)
 
-
-    return jsonify({'was_city_chosen' : was_city_chosen})
+    return jsonify({'was_city_chosen': was_city_chosen})
 
 
 def remove_item():
