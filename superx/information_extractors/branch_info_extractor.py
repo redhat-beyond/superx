@@ -7,13 +7,18 @@ import os
 import sys
 import xml.etree.ElementTree as et
 import logging
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 import requests
 from bs4 import BeautifulSoup
-from models import Branch
-from app import supermarket_info_dictionary, session
 
+# this allows for the automation sytem to find the relevant scripts in the file
 add_to_python_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
 sys.path.append(add_to_python_path)
+
+from app import supermarket_info_dictionary # pylint: disable=import-error disable=wrong-import-position
+from models import Branch # pylint: disable=import-error disable=wrong-import-position
+
 
 logging.basicConfig(filename='branch-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
@@ -26,6 +31,11 @@ class BranchExtractor:
 
     def __init__(self):
         self.current_super = ''
+        engine = create_engine('mysql+pymysql://Super_User:SuperX1234'
+                               '@mysql-13101-0.cloudclusters.net:13101/SuperX',
+                               echo=False)
+        self.session = Session(bind=engine)
+        self.branch_unique_constraint_set = set()
 
     def run_branch_extractor(self):
         """
@@ -36,6 +46,8 @@ class BranchExtractor:
         3. creates a list of Branch objects to be committed into the db
         4. commits all the Branch objects to the db (per supermarket)
         """
+        self.create_branch_unique_contraint_set()
+
         for keys in supermarket_info_dictionary:
             self.current_super = supermarket_info_dictionary[keys]
 
@@ -55,8 +67,14 @@ class BranchExtractor:
             else:
                 xml_info_list = self.extract_info_from_xml(xml_file)
                 branch_list = self.fill_branch_table(xml_info_list)
-                session.bulk_save_objects(branch_list)
-                session.commit()
+                # if there are no branches to add then continue
+                if len(branch_list) != 0:
+                    self.session.bulk_save_objects(branch_list)
+                    self.session.flush()
+
+            self.session.commit()
+
+        self.session.close()
 
     def get_zip_file_link(self):
         """
@@ -153,10 +171,28 @@ class BranchExtractor:
         branch_list = []
 
         for branch_id, branch_name, address, sub_chain_id, city in xml_info_list:
-            branch_list.append(Branch(id=branch_id,
-                                      name=branch_name, address=address,
-                                      sub_chain_id=sub_chain_id,
-                                      city=city,
-                                      chain_id=self.current_super['chain_id']))
+            # if not in db then add it
+            if (int(branch_id), self.current_super['chain_id']) not in \
+                    self.branch_unique_constraint_set:
+                branch_list.append(Branch(id=branch_id,
+                                          name=branch_name, address=address,
+                                          sub_chain_id=sub_chain_id,
+                                          city=city,
+                                          chain_id=self.current_super['chain_id']))
+                self.branch_unique_constraint_set.add((int(branch_id),
+                                                       self.current_super['chain_id']))
 
         return branch_list
+
+    def create_branch_unique_contraint_set(self):
+        """
+        queries the DB for all rows and saves the unique contraints in a set
+        """
+        all_rows = Branch.query.all()
+        for row in all_rows:
+            self.branch_unique_constraint_set.add((row.id, row.chain_id))
+
+
+if __name__ == '__main__':
+    b_e = BranchExtractor()
+    b_e.run_branch_extractor()

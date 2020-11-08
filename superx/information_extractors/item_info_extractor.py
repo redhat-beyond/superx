@@ -1,6 +1,6 @@
-'''
+"""
 imports
-'''
+"""
 import os
 import sys
 from datetime import datetime
@@ -8,13 +8,17 @@ import gzip
 import logging
 import xml.etree.ElementTree as ET
 from decimal import Decimal
-from bs4 import BeautifulSoup # pylint: disable=import-error
-import requests # pylint: disable=import-error
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+from bs4 import BeautifulSoup  # pylint: disable=import-error
+import requests  # pylint: disable=import-error
+
+# this allows for the automation sytem to find the relevant scripts in the file
 add_to_python_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
 sys.path.append(add_to_python_path)
-from app import supermarket_info_dictionary, session # pylint: disable=import-error disable=wrong-import-position
-from models import Product, BranchPrice # pylint: disable=import-error disable=wrong-import-position
 
+from app import supermarket_info_dictionary # pylint: disable=import-error disable=wrong-import-position
+from models import Product, BranchPrice # pylint: disable=import-error disable=wrong-import-position
 
 logging.basicConfig(filename='info-extractor.log', level=logging.INFO,
                     format='%(asctime)s: %(funcName)s: %(levelname)s: %(message)s')
@@ -39,6 +43,11 @@ class InfoExtractor:
         # list of unwanted names to be filter out
         self.exclude_names = ['משלוחים', 'ריק', 'פיקדון', 'תיבה', 'משלוח']
         self.item_id_set = set()
+        self.branch_price_unique_constraint_set = set()
+        engine = create_engine('mysql+pymysql://Super_User:SuperX1234'
+                               '@mysql-13101-0.cloudclusters.net:13101/SuperX',
+                               echo=False)
+        self.session = Session(bind=engine)
 
     def run_info_extractor(self):
         """
@@ -49,6 +58,9 @@ class InfoExtractor:
         3. creates 2 lists one containing all Product info and the other all BranchPrice info
         4. commits to the db
         """
+        self.create_branch_price_set()
+        self.create_product_set()
+
         for key in supermarket_info_dictionary:
             self.current_super = supermarket_info_dictionary[key]
             url_list = [self.current_super['url']]
@@ -66,12 +78,18 @@ class InfoExtractor:
                 xml_info_list = self.extract_information_from_parsed_xml(info_child_node)
                 if branch_id == '86' and self.current_super['store_name'] == 'victory':
                     continue
+
                 product_info_list, branch_price_list = self.fill_product_and_branch_price_tables(
-                    xml_info_list,
-                    branch_id)
-                session.bulk_save_objects(product_info_list)
-                session.bulk_save_objects(branch_price_list)
-                session.commit()
+                                                                        xml_info_list, branch_id)
+                if len(product_info_list) != 0:
+                    self.session.bulk_save_objects(product_info_list)
+                if len(branch_price_list) != 0:
+                    self.session.bulk_save_objects(branch_price_list)
+                self.session.flush()
+
+            self.session.commit()
+
+        self.session.close()
 
     def get_zip_file_links(self, url_list):
         """
@@ -132,7 +150,7 @@ class InfoExtractor:
                 tree = ET.fromstring(xml_file)
                 branch_id = tree.find(store_id).text.lstrip('0')
                 # gets child containing item information
-                info_child_node = tree.getchildren()[-1]  #pylint: disable=deprecated-method
+                info_child_node = tree.getchildren()[-1]  # pylint: disable=deprecated-method
                 node_info_list.append((info_child_node, branch_id))
 
         return node_info_list
@@ -142,7 +160,7 @@ class InfoExtractor:
         """
         This method iterates over all items in the supermarket and extracts the relevant data
         The data is then committed packed into a tuple and placed in a list of all the info tuples
-        :param xml_info_child_node: The child of the parsed xml tree containing all item information
+        :param xml_info_child_node: The child of the parsed xml tree containing all item info
         :return: a list of tuples containing the information
         """
         item_attr_name = self.current_super['item_attr_name']
@@ -172,11 +190,11 @@ class InfoExtractor:
                 unit_of_measure = self.standardize_weight_name(item.find('UnitQty').text.strip())
 
             xml_info_list.append(
-            (item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date))
+                (item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date))
 
         return xml_info_list
 
-    def fill_product_and_branch_price_tables(self, information_list, branch_id):
+    def fill_product_and_branch_price_tables(self, information_list, branch_id): # pylint: disable=too-many-locals
         """
         This method receives a list containing a tuple of all the xml info
         and places it into the correct table
@@ -188,22 +206,41 @@ class InfoExtractor:
         product_info_list = []
 
         for item_code, item_name, quantity, is_weighted, unit_of_measure, price, update_date in information_list: # pylint: disable=line-too-long
-            # If the item is in the db , skip it
+            # If the item is not in the db , add it
             if item_code not in self.item_id_set:
-                product_info_list.append(Product(id=item_code, name=item_name, quantity=quantity,
+                product_info_list.append(Product(id=item_code,
+                                                 name=item_name,
+                                                 quantity=quantity,
                                                  is_weighted=is_weighted,
                                                  unit_of_measure=unit_of_measure))
                 self.item_id_set.add(item_code)
 
-            branch_price_list.append(BranchPrice(chain_id=self.current_super['chain_id'],
-                                                branch_id=branch_id,
-                                                item_code=item_code, price=price,
-                                                update_date=update_date))
+            # if not in the db then add it
+            if (self.current_super['chain_id'], item_code, int(branch_id)) not in \
+                    self.branch_price_unique_constraint_set:
+                branch_price_list.append(BranchPrice(chain_id=self.current_super['chain_id'],
+                                                     branch_id=branch_id,
+                                                     item_code=item_code,
+                                                     price=price,
+                                                     update_date=update_date))
+                self.branch_price_unique_constraint_set.add((self.current_super['chain_id'],
+                                                             item_code,
+                                                             int(branch_id)))
+            else:
+                current_branch = self.session.query(BranchPrice).filter_by(
+                                                    chain_id=self.current_super['chain_id'],
+                                                    item_code=item_code,
+                                                    branch_id=branch_id).all()[0]
+                old_price = current_branch.price
+                # update the price if it has changed
+                if old_price != price:
+                    current_branch.price = price
+
+                self.session.flush()
 
         return product_info_list, branch_price_list
 
-
-    def standardize_weight_name(self, unit_in_hebrew): #pylint: disable=no-self-use
+    def standardize_weight_name(self, unit_in_hebrew):  # pylint: disable=no-self-use
         """
         This method standardizes the unit of measurement
         if the unit of measurement is not know, returns unknown
@@ -218,7 +255,7 @@ class InfoExtractor:
             'יחידה': ['יחידה', 'לא ידוע', "יח'", "'יח", "יח`", "מטרים", "מארז", "קרטון"]
         }
 
-        for unit in unit_dict.keys(): #pylint: disable=C0201
+        for unit in unit_dict.keys():  # pylint: disable=C0201
             if unit_in_hebrew in unit_dict[unit]:
                 return unit
 
@@ -250,9 +287,8 @@ class InfoExtractor:
         """
         num_of_pages = self.get_num_of_pages()
         if num_of_pages == -1:
-            raise ConnectionError(
-                f'''Unable to connect to url to find number of pages for
-                {self.current_super["store_name"]}''')
+            raise ConnectionError(f'Unable to connect to url to find number of pages for '
+                                  f'{self.current_super["store_name"]}')
 
         general_url = self.current_super['url']
         general_url = general_url[:len(general_url) - 1]
@@ -288,3 +324,28 @@ class InfoExtractor:
                         break
 
         return num_of_pages
+
+    def create_branch_price_set(self):
+        """
+        queries the DB for all rows and saves the unique contraints in a set
+        """
+        all_rows = BranchPrice.query.all()
+
+        for row in all_rows:
+            unique_constraints = (row.chain_id,
+                                  row.item_code,
+                                  row.branch_id)
+            self.branch_price_unique_constraint_set.add(unique_constraints)
+
+    def create_product_set(self):
+        """
+        queries the DB for all rows and saves the unique contraints in a set
+        """
+        all_rows = Product.query.all()
+        for row in all_rows:
+            self.item_id_set.add(row.id)
+
+
+if __name__ == '__main__':
+    i_e = InfoExtractor()
+    i_e.run_info_extractor()
