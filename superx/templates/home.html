@@ -10,8 +10,8 @@
 
         <form id="searchbutton" class="form-inline mt-2 mt-md-0">
         <!-- City search with datalist -->
-        {% if current_user.is_authenticated %}
-        <p><b>עיר שלך: {{ current_user.city }} </b></p>
+        {% if 'city' in session %}
+        <p id='yourCity'><b>עיר שלך: {{ session['city'] }} </b></p>
         <input id="cityCompare" class="btn btn-outline-success btn-lg" form="cityForm" type="submit" value="תרצה עיר אחרת?">
         <div class="inner"></div>
         {% else %}
