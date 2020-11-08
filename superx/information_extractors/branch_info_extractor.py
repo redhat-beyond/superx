@@ -171,13 +171,15 @@ class BranchExtractor:
 
         for branch_id, branch_name, address, sub_chain_id, city in xml_info_list:
             # if not in db then add it
-            if (int(branch_id), self.current_super['chain_id']) not in self.branch_unique_constraint_set: # pylint: disable=line-too-long
+            if (int(branch_id), self.current_super['chain_id']) not in \
+                    self.branch_unique_constraint_set:
                 branch_list.append(Branch(id=branch_id,
                                           name=branch_name, address=address,
                                           sub_chain_id=sub_chain_id,
                                           city=city,
                                           chain_id=self.current_super['chain_id']))
-                self.branch_unique_constraint_set.add((int(branch_id), self.current_super['chain_id'])) # pylint: disable=line-too-long
+                self.branch_unique_constraint_set.add((int(branch_id),
+                                                       self.current_super['chain_id']))
 
         return branch_list
 
