@@ -99,9 +99,27 @@ def login():
         if check_password_hash(user.password, form.password.data):
             login_user(user)
             session['city'] = user.city
+            save_branches()
             return redirect(url_for('index'))
 
     return render_template('login.jinja2', form=form)
+
+def save_branches():
+    '''
+    save branches for quiker search
+    '''
+    # entering the data of all branches in the city to branches_data
+    branches_from_city = Branch.query.filter_by(city=session['city']).all()
+    branches_data = []
+
+    for branch in branches_from_city:
+
+        # generates unique code for each branch -
+        # this is an efficient way to produce a unique code for each branch
+        branches_data.append(branch.chain_id+branch.id)
+
+    # add branches_data to session
+    session['branches_data'] = branches_data
 
 
 def register():

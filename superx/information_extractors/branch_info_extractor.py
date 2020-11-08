@@ -126,6 +126,7 @@ class BranchExtractor:
 
         return xml_file
 
+
     def extract_info_from_xml(self, xml_file):
         """
         This method parses the xml file and then

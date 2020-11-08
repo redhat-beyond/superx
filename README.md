@@ -1,60 +1,37 @@
-# SuperX
-## Team members:
-### 1. Oded Hellman
-### 2. Yoav Ben Hur
-### 3. Aryeh Klein
-### 4. Tzachi Elrom
-### 5. Shai Brown
+![superx](superx/static/img/superx.JPG)
 
-________________________________
+## **Main Goal** 
+**Comparing prices between supermarkets by using accessible data- to save money**
+- To activate and use the app- please follow the instructions in [User's_Guide file](User's_Guide.md)
 
-## Initial System Spesification:
+## Project Architecture
+The project runs on Vagrant VM & uses flask as a web framework.
+To create the project's envrionment- bootstrap.sh file is triggered when the app starts running.
 
-**SuperX purpose:** price comparison between supermarkets in Israel
-  
-#### User Story:
-1. User logs in to the website and chooses the relevant grocery store
-2. The user enters "Prices Comparison" button
-3. A get request is sent to the prices' table in the server
-4. The user gets a list of supermarkets' prices around him, cheapest first
-*There are details about the prices of each product
-5. The user gets an option to order the grocery list directly from the wanted supermarket by clicking on the "order" button
+### **Frontend** 
+Client UI to choose the products to compare and the city where the client lives. <br>
+<u>Languages</u>- HTML, CSS, JS
 
-*There's an option to show the supermarkets that are in a certain radius from user's location
+### **Backend**
+Information extractor scripts that web scrape supermarket urls, extract the relevant information and places it into the db.<br>
+<u>Language</u>- Python
 
-*Catching mistakes- further thiking is required with regards to how to deal with products that are sold in one supermarket but not in another (maybe suggest similar products)
+### **Database** 
+MySQL relational database, stored in the cloud.<br>
+<u>ORM</u>- SQLAlchemy
 
-#### Front-End:
+![structure](superx/static/img/app_run_diagram.JPG)
 
-1. "Add product" Bar- with automatic completion of text based on our products DB
-2. Detailed list of the products, grouped by 3 in a row, divided to categories
+- For better understanding of the code structure & different files please visit [Architecture guide](Project_Architecture.md)
 
-#### Back-End:
+### Contribute :tada:
+- At this point we compare between 3 major supermarkets - Mega, Shufersal & Victory
+- To help us compare between more products and more supermarkets- please read [CONTRIBUTING file](CONTRIBUTING.md)
 
-1. Python based script that sends request to the supermarkets server every defined period of time, and downloads the prices files from them.
+## Team
+- Oded Hellman
+- Yoav Ben Hur  
+- Aryeh Klein
+- Shai Brown
 
-2. Python based parser that reads the xml prices files and sends them to the relevant spot in the DB
 
-#### Database:
-
-1. Contains system's data- products prices by firm, branch & date
-2. Saves users' copmared shopping carts' prices
-*MySQL based
-
-#### MVP:
-
-Our first MVP is focused on technological POC:
-1. Download xml files from supermarkets' servers script
-2. Parser to read those xml files and allocate them to the right place on the DB
-3. MySQL based DB to contain all the relevant data
-4. Basic UI to represent the data to the user, Django/Flusk based
-*For the MVP stage, we will focus on one branch of Shufersal firm
-
-#### Value Proposition:
-
-1. Money saving
-2. Wise consumption
-3. Online grocery shopping by click
-4. Focus & shopping experience
-
-Cheers to SuperX!
