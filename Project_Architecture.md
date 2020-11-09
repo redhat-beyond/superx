@@ -1,15 +1,15 @@
 # Project Architecture
-  In this document we will describe how the project is built, which technologies we used to built it and how they interact.
+  In this document, we will describe how the project is built, which technologies we used to build it and how they interact.
   - [Flow & Structure](#Flow-&-Structure)
   - [App run diagram](#App-run-diagram)
 
 ## Flow & Structure
 
 <font color="blue"> _**Vagrant file-**_ </font>
- Defines the VM the app runs on. Works on ubuntu/bionic64 OS, triggers bootstrap.sh file.
+ Defines the VM the app runs on. Works on ubuntu/bionic64 OS and triggers bootstrap.sh file.
 
 <font color="blue"> _**bootstrap.sh-**_ </font>
- Updates the OS (if update exists), defines the app environment & installs dependencies. Then runs app.py on localhost:5000
+ Updates the OS (if an update exists), defines the app environment & installs dependencies. Then runs app.py on localhost:5000
 
 <font color="blue"> _**app.py-**_ </font> 
 Configures the app variables, configures the connection to the DB (based on config.py), runs all app routes (from routing.py) and defines a dictionary that will be used in the extractors scripts
@@ -17,10 +17,10 @@ Configures the app variables, configures the connection to the DB (based on conf
 ## superx folder
 
 <font color="blue"> _**information extractors-**_ </font>
- Two scripts which run on the relevant urls and extract data published by different food chains. branch_extractor gets the data of the different food branches, and item_extractor gets the products and their prices. The data is stored in the DB configured in app.py
+ Two scripts that run on the relevant URLs and extract data published by different food chains. branch_extractor gets the data of the different food branches, and item_extractor gets the products and their prices. The data is stored in the DB configured in app.py
 
 <font color="blue"> _**models-**_ </font>
-Contain _ init _.py, a file which determines the different tables columns defined in the DB. 
+Contain _ init _.py, a file that determines the columns of the different tables defined in the DB. 
 <br/> Post & Get methods to the DB requires importing models folders
 
 <font color="blue"> _**routes-**_ </font>
