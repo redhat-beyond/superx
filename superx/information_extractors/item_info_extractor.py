@@ -215,7 +215,8 @@ class InfoExtractor:
                 self.item_id_set.add(item_code)
 
             # if not in the db then add it
-            if (self.current_super['chain_id'], item_code, int(branch_id)) not in self.branch_price_unique_constraint_set: # pylint: disable=line-too-long
+            if (self.current_super['chain_id'], item_code, int(branch_id)) not in \
+                    self.branch_price_unique_constraint_set:
                 branch_price_list.append(BranchPrice(chain_id=self.current_super['chain_id'],
                                                      branch_id=branch_id,
                                                      item_code=item_code,
