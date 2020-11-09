@@ -16,7 +16,7 @@ Explain clearly what you intend on contributing and an owner will review and com
 
 ## Before you get started
 ### Git flow
-#### We here at Superx use [Git Flow](https://guides.github.com/introduction/flow/index.html), all changes to the code are through pull requests
+#### We here at SuperX use [Git Flow](https://guides.github.com/introduction/flow/index.html), all changes to the code are through pull requests
 
 1. Fork the repo and create a new branch from branch `master`.
 2. All code that requires testing should be added with tests!
@@ -35,7 +35,7 @@ Explain clearly what you intend on contributing and an owner will review and com
 * Tested - All code submitted must be tested by the coder, and if need be submitted with tests.
 * Clean and well written - Code submitted must have comments where necessary and must be **Readable**.
 * All python code should conform to the [PEP8](https://www.python.org/dev/peps/pep-0008/) standard
-* Third-party code **must** adhere to the Superx licensing.
+* Third-party code **must** adhere to the SuperX licensing.
 
 **Any code that violates these guidelines will not be accepted.**
 
