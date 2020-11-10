@@ -3,17 +3,17 @@ body {
     direction: rtl;
 
     background: white; /* fallback for old browsers */
-    background: -webkit-linear-gradient(right, white, #8DC26F);
-    background: -moz-linear-gradient(right, white, #8DC26F);
-    background: -o-linear-gradient(right, white, #8DC26F);
-    background: linear-gradient(to left, white, #8DC26F);
+    background: -webkit-linear-gradient(right, white, #ffffff);
+    background: -moz-linear-gradient(right, white, #ffffff);
+    background: -o-linear-gradient(right, white, #ffffff);
+    background: linear-gradient(to left, white, #ffffff);
     font-family: "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 footer {
     text-align:center;
-    padding-top: 20%;
+    padding-top: 5%;
 }
 input {
     text-align:center;
@@ -27,8 +27,7 @@ input {
     text-align: center;
 }
 .jumbotron {
-    background-image: url("https://thumbor.thedailymeal.com/9-S6usaC3fCTj3BFHLU7tAgeUaM=//https://www.thedailymeal.com/sites/default/files/2019/08/13/0_Hero_Image_Shutterstock.jpg");
-    background-size: cover;
+    background-size: 50%;
     text-align: center;
     color: black;
 }
@@ -159,4 +158,40 @@ input {
     vertical-align: middle;
     background-color: white;
     border: 1px solid green;
+}
+
+#firstBlock, #secondBlock{
+    padding: 20px 20px 5px 5px;
+    width: 75%;
+    color: green;
+    background-color: white;
+    opacity: 0.90;
+    margin: 30px auto 30px auto;
+    align-self: center;
+}
+
+#navi{
+    border-bottom: 2px solid lightgreen;
+}
+
+
+#imageCart, #imageHere{
+    background-image: url("../img/hompageImage.JPG");
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin: 30px auto 30px auto;
+}
+
+#cartPhoto{
+    background-image: url("../img/myCartImage.jpg");
+    background-size: 12%;
+    background-position: 157px;
+    background-repeat: no-repeat;
+}
+
+#prodPhoto{
+    background-image: url("../img/cartIcon.jpg");
+    background-size: 13%;
+    background-position: 165px;
+    background-repeat: no-repeat;
 }
