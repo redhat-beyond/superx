@@ -176,21 +176,21 @@ input {
 
 
 #imageCart, #imageHere{
-    background-image: url("https://nutrifusion.com/wp-content/uploads/2016/11/composition-of-fruits-and-vegetables-in-rainbow-82DUL49-min-1024x683.jpg");
+    background-image: url("../img/hompageImage.JPG");
     background-repeat: no-repeat;
     background-size: cover;
     margin: 30px auto 30px auto;
 }
 
 #cartPhoto{
-    background-image: url("https://static4.depositphotos.com/1020804/383/i/450/depositphotos_3834953-stock-photo-paper-bag-with-food-on.jpg");
+    background-image: url("../img/myCartImage.jpg");
     background-size: 12%;
     background-position: 157px;
     background-repeat: no-repeat;
 }
 
 #prodPhoto{
-    background-image: url("https://www.clearviewwomenscenter.com/wp-content/uploads/2014/07/BPD-NPD-differences.jpg");
+    background-image: url("../img/cartIcon.jpg");
     background-size: 13%;
     background-position: 165px;
     background-repeat: no-repeat;
