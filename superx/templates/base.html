@@ -23,15 +23,15 @@
 
 
   <body dir="rtl">
-    <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
+    <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light" id="navi">
 
-    <a class="navbar-brand" href="{{ url_for('index')}}"><strong>superX</strong></a>
+    <a class="navbar-brand" href="{{ url_for('index')}}" style="color: green;"><strong>SuperX</strong></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     {% if current_user.is_authenticated %}
-    <h5>שלום  {{ current_user.name }}! </h5>
+    <h5> שלום  {{ current_user.name }}! </h5>
     {% endif %}
 
 
@@ -39,13 +39,13 @@
     <ul class="navbar-nav mr-auto">
 
       <li class="nav-item active">
-        <a class="nav-link" href="{{ url_for('login')}}">כניסה/הרשמה</a>
+        <a class="nav-link" href="{{ url_for('login')}}" style="color: green;"><b> כניסה/הרשמה &ensp;</b></a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="#">אזור אישי</a>
+        <a class="nav-link" href="#" style="color: green;"><b> אזור אישי &ensp;</b></a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="#">עזרה</a>
+        <a class="nav-link" href="#" style="color: green;"><b>עזרה</b></a>
       </li>
       {% if current_user.is_authenticated %}
       <li class="nav-item active">
@@ -64,7 +64,7 @@
 {%endblock%}
 </body>
 
-<footer class="container">
+<footer class="container" style="color: green">
 <p>&copy; superX  2020</p>
 </footer>
 
