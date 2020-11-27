@@ -227,16 +227,18 @@ class InfoExtractor:
                                                              item_code,
                                                              int(branch_id)))
             else:
-                current_branch = self.session.query(BranchPrice).filter_by(
+                current_branch_list = self.session.query(BranchPrice).filter_by(
                                                     chain_id=self.current_super['chain_id'],
                                                     item_code=item_code,
-                                                    branch_id=branch_id).all()[0]
-                old_price = current_branch.price
-                # update the price if it has changed
-                if old_price != price:
-                    current_branch.price = price
+                                                    branch_id=branch_id).all()
+                if current_branch_list:
+                    current_branch = current_branch_list[0]
+                    old_price = current_branch.price
+                    # update the price if it has changed
+                    if old_price != price:
+                        current_branch.price = price
 
-                self.session.flush()
+                    self.session.flush()
 
         return product_info_list, branch_price_list
 
