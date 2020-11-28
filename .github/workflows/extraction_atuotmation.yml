@@ -1,8 +1,8 @@
 name: Extract Info
 on:
-  push:
-    branches: [Aryeh]
-
+  schedule:
+    # runs at 7 AM UTC
+    - cron:  '0 7 * * *'
 
 jobs:
   build:
