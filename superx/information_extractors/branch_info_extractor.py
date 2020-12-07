@@ -191,8 +191,3 @@ class BranchExtractor:
         all_rows = Branch.query.all()
         for row in all_rows:
             self.branch_unique_constraint_set.add((row.id, row.chain_id))
-
-
-if __name__ == '__main__':
-    b_e = BranchExtractor()
-    b_e.run_branch_extractor()
