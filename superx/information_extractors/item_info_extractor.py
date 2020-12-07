@@ -346,8 +346,3 @@ class InfoExtractor:
         all_rows = Product.query.all()
         for row in all_rows:
             self.item_id_set.add(row.id)
-
-
-if __name__ == '__main__':
-    i_e = InfoExtractor()
-    i_e.run_info_extractor()
